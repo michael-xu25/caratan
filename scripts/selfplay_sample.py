@@ -165,6 +165,16 @@ def main() -> int:
     summary_path = Path(args.run_dir) / "summary.txt"
     summary_path.write_text(summary)
     print(f"\nTranscripts + summary -> {args.run_dir}/")
+
+    # Share the run by default (commit + push the transcripts). Non-fatal; opt out
+    # with SHARE_TRANSCRIPTS=0, or use a transcripts/_<name> run dir to keep local.
+    import subprocess
+    try:
+        subprocess.run(
+            [str(Path(__file__).resolve().parent / "share_transcripts.sh"), args.run_dir],
+            check=False)
+    except Exception as e:  # never let sharing break a completed run
+        print(f"(transcript share skipped: {e})")
     return 0
 
 
