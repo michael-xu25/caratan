@@ -34,16 +34,10 @@
     </div>
     <div id="scroll">
       <div class="sec">
-        <div class="sechead"><span>Current move</span>
-          <button id="gradetoggle" class="iconbtn" title="Show grading verdicts" style="display:none;width:auto;border-radius:7px;padding:2px 8px">⚖️</button></div>
+        <div class="sechead"><span>Current move</span></div>
         <div id="action" class="statusline">—</div>
         <div id="note" class="muted" style="margin-bottom:8px"></div>
         <div id="reason"></div>
-      </div>
-      <div class="sec" id="gradingpad" style="display:none">
-        <div class="sechead">⚖️ Grading <span id="gradewinner" class="muted"></span></div>
-        <div id="failuremodes" style="margin-bottom:8px"></div>
-        <div id="stepgrade" class="muted">—</div>
       </div>
       <div class="sec">
         <div class="sechead">Victory points <span class="tagpub">public</span></div>
@@ -56,6 +50,11 @@
       <div class="sec">
         <div class="sechead">Resource cards <span class="tagpub">public</span> · dev <span class="tagpriv">🔒 click 🃏</span></div>
         <div id="hands"></div>
+      </div>
+      <div class="sec" id="gradingpad" style="display:none">
+        <div class="sechead">⚖️ Grading — this decision <span id="gradewinner" class="muted"></span></div>
+        <div id="stepgrade" class="muted" style="margin-bottom:12px">—</div>
+        <div id="failuremodes"></div>
       </div>
     </div>
     <div id="controls">
@@ -217,14 +216,13 @@ async function takeOver(){
 }
 
 // ---- grading overlay (per-game <game>.grading.json sidecar) ----
-let GRADING = null, gradeShown = false;
+let GRADING = null, gradeShown = true;   // grading section is always shown when a sidecar exists
 const gradeUrlOf = v => v.replace(/\.view\.json$/, ".grading.json");
 async function loadGrading(viewUrl){
   GRADING = null;
   try { GRADING = await (await fetch(gradeUrlOf(viewUrl), {cache:"no-store"})).json(); } catch(e){}
-  const btn = $("gradetoggle");
-  if (GRADING){ btn.style.display = ""; renderFailureModes(); if (gradeShown && DATA) renderStepGrade(DATA.steps[idx]); }
-  else { btn.style.display = "none"; $("gradingpad").style.display = "none"; gradeShown = false; }
+  if (GRADING){ $("gradingpad").style.display = ""; renderFailureModes(); if (DATA) renderStepGrade(DATA.steps[idx]); }
+  else { $("gradingpad").style.display = "none"; }
 }
 function renderFailureModes(){
   if (!GRADING) return;
@@ -261,11 +259,6 @@ function renderStepGrade(step){
       return `<div style="margin-top:6px"><b>${f.criterion}</b> ${badge}${reasons}</div>`;
     }).join("");
 }
-$("gradetoggle").onclick = () => {
-  gradeShown = !gradeShown;
-  $("gradingpad").style.display = gradeShown ? "" : "none";
-  if (gradeShown && DATA) renderStepGrade(DATA.steps[idx]);
-};
 
 // ---- startup: ?data wins; then ?run (a matchup/run dir); else first run ----
 (async () => {
