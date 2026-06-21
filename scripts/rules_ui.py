@@ -50,6 +50,8 @@ pre{background:#23201a;color:#ece6d8;border-radius:10px;padding:16px;overflow:au
 details{margin:10px 0}
 summary{cursor:pointer;color:var(--accent);font-weight:600}
 .note{color:var(--muted);font-size:14px;margin:6px 0 0}
+.banner{background:#fff5ec;border:1px solid var(--accent);border-radius:10px;padding:14px 18px;margin:18px 0;font-size:14.5px;line-height:1.5}
+.banner b{color:var(--accent)}
 """
 
 
@@ -112,6 +114,18 @@ def main() -> int:
 <p class="sub">Generated from the live code (<code>goldilocks_eval/prompt.py</code> +
 <code>goldilocks_eval/prompting.py</code>) — this is byte-for-byte what the model sees.
 Review the sections below and flag anything wrong or missing.</p>
+
+<div class="banner">
+<b>Why there is no strategy on this page.</b> This is the <b>statable floor</b> —
+the game rules, the legal moves, how to read the board (including pips as plain
+dice-odds facts), and the output format — given <b>identically to the baseline and
+the trained model</b>. All un-enumerable judgment (when to take a high-pip vs. a
+resource-diverse spot, when to trade or block, when to switch from expanding to
+cities to longest road) is taught only through the <b>RL reward</b> and never
+appears here. That separation is what makes the trained-vs-baseline before/after a
+valid measure of <i>learned strategy</i> rather than hint-following. See
+<code>words-vs-rl.md</code> for the full principle.
+</div>
 
 <h2>Rules primer <span class="tag">CATAN_RULES — shared by play &amp; grading</span></h2>
 {sections}

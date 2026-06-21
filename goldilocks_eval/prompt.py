@@ -323,7 +323,12 @@ _LIVE_ACTION_GLOSSARY = (
     "PLAY_MONOPOLY R: name resource R and take all of it from the opponent. "
     "PLAY_YEAR_OF_PLENTY (R1, R2): take those two resources from the bank. "
     "PLAY_ROAD_BUILDING: place two roads for free.\n"
-    "- ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say."
+    "- ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say.\n\n"
+    "WHAT YOU CAN SEE: the state above is complete public information — every "
+    "player's settlements, cities, roads, victory points, longest-road length, "
+    "knights played, and resource hand, plus the whole board and the robber. The "
+    "only thing hidden from you is which specific development cards the opponent "
+    "holds (you see their count, not their types)."
 )
 
 RULES_1V1 = CATAN_RULES + "\n\n" + _LIVE_ACTION_GLOSSARY
