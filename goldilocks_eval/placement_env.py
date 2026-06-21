@@ -125,6 +125,37 @@ def cmd_generate(args):
     print(f"weights: {weights}")
 
 
+def cmd_traindata(args):
+    """Convert generated scenarios -> reward-kit/TRL rows: a `prompt` (system+user
+    messages, mechanics only) and `ground_truth` (flat node->score map + gold) the
+    reward function reads. No scores ever appear in the prompt."""
+    rows = []
+    for line in open(args.in_):
+        line = line.strip()
+        if not line:
+            continue
+        s = json.loads(line)
+        scn = {"serialized_state": s["serialized_state"],
+               "legal_actions": s["legal_actions"], "env": s["env"]}
+        rows.append({
+            "id": s["scenario_id"],
+            "placement_index": s["placement_index"],
+            "prompt": [
+                {"role": "system", "content": prompting.SYSTEM},
+                {"role": "user", "content": prompting.build_prompt(scn)},
+            ],
+            "ground_truth": {
+                "spot_scores": {n: sc["score"] for n, sc in s["spot_scores"].items()},
+                "gold": s["gold_action"],
+            },
+        })
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    with open(args.out, "w") as f:
+        for r in rows:
+            f.write(json.dumps(r) + "\n")
+    print(f"wrote {len(rows)} reward-kit training rows -> {args.out}")
+
+
 def cmd_show(args):
     """Print the scoring for one board's four openings — to sanity-check weights."""
     scns = generate_opening_scenarios(args.seed, dict(WEIGHTS))
@@ -217,6 +248,8 @@ def main(argv=None) -> int:
     g = sub.add_parser("generate"); g.add_argument("--split", default="example_pool")
     g.add_argument("--n", type=int, default=50); g.add_argument("--out", required=True)
     g.set_defaults(func=cmd_generate)
+    t = sub.add_parser("traindata"); t.add_argument("--in", dest="in_", required=True)
+    t.add_argument("--out", required=True); t.set_defaults(func=cmd_traindata)
     s = sub.add_parser("show"); s.add_argument("--seed", type=int, default=1000)
     s.add_argument("--top", type=int, default=6); s.set_defaults(func=cmd_show)
     e = sub.add_parser("eval"); e.add_argument("--split", default="grader_games")

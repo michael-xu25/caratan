@@ -72,25 +72,38 @@ def score_legal_spots(game, legal_nodes: List[int],
     return scored, best
 
 
-def placement_reward(chosen: int, scored: Dict[int, Tuple[float, dict]],
-                     mode: str = "normalized") -> float:
-    """Reward for picking `chosen` from the scored legal set. In [0, 1].
-
-    mode:
-      "normalized" (default, recommended for GRPO) — where the chosen spot's
-        score falls between the worst and best available: (c-worst)/(best-worst).
-        Uses the full [0,1] range each decision, so even subtle quality gaps give
-        GRPO a gradient. 1.0 = picked the optimal spot, 0.0 = picked the worst.
-      "ratio" — chosen_score / best_score (gentler; compresses the low end).
-      "rank" — 1 - rank/(n-1), rank 0 = best (purely ordinal).
-    """
-    totals = {n: v[0] for n, v in scored.items()}
+def _reward(chosen, totals: dict, mode: str) -> float:
+    """Reward in [0,1] for `chosen` given {key: score}. 0.0 if `chosen` absent
+    (e.g. an illegal pick during training)."""
+    if chosen not in totals or not totals:
+        return 0.0
     c = totals[chosen]
     best, worst = max(totals.values()), min(totals.values())
     if mode == "ratio":
         return c / best if best > 0 else 1.0
     if mode == "rank":
         order = sorted(totals.values(), reverse=True)
-        rank = order.index(c)
-        return 1.0 - rank / (len(order) - 1) if len(order) > 1 else 1.0
+        return 1.0 - order.index(c) / (len(order) - 1) if len(order) > 1 else 1.0
     return (c - worst) / (best - worst) if best > worst else 1.0
+
+
+def placement_reward(chosen: int, scored: Dict[int, Tuple[float, dict]],
+                     mode: str = "normalized") -> float:
+    """Reward for picking node `chosen` from the scored legal set (eval path).
+
+    mode:
+      "normalized" (default, recommended for GRPO) — (c-worst)/(best-worst):
+        1.0 = optimal spot, 0.0 = worst; uses the full range each decision.
+      "ratio" — chosen_score / best_score (gentler).
+      "rank" — 1 - rank/(n-1), ordinal.
+    """
+    return _reward(chosen, {n: v[0] for n, v in scored.items()}, mode)
+
+
+def reward_from_scores(chosen, scores: Dict, mode: str = "normalized") -> float:
+    """Reward from a flat {node_id_str: score} map (training-reward path — the
+    reward function reconstructs this from the dataset's ground_truth). Keys and
+    `chosen` are normalized to 'node_<int>'."""
+    from goldilocks_eval.prompting import node_id_str
+    totals = {node_id_str(k): float(v) for k, v in scores.items()}
+    return _reward(node_id_str(chosen) if chosen is not None else None, totals, mode)
