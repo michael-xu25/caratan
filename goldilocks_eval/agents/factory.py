@@ -9,6 +9,7 @@ Baselines (no API key needed):
 LLM agents (model-agnostic; backend chosen by prefix):
     claude               -> Claude, default model (claude-opus-4-8)
     claude:<model-id>    -> Claude, specific model (e.g. claude:claude-haiku-4-5)
+    fireworks:<model-id> -> Fireworks-served model (the models we train)
     gemini[:<model>]     -> stub (not yet wired) — shows the swap point
 """
 from __future__ import annotations
@@ -42,6 +43,10 @@ def make_player(spec: str, color: Color) -> Player:
         from goldilocks_eval.agents.claude_backend import ClaudeBackend, DEFAULT_MODEL
         return LLMPlayer(color, ClaudeBackend(model=arg or DEFAULT_MODEL))
 
+    if head == "fireworks":
+        from goldilocks_eval.agents.fireworks_backend import FireworksBackend, DEFAULT_MODEL
+        return LLMPlayer(color, FireworksBackend(model=arg or DEFAULT_MODEL))
+
     if head == "gemini":
         raise NotImplementedError(
             "Gemini backend is a stub. Implement LLMBackend.complete() in "
@@ -68,9 +73,12 @@ def make_backend(spec: str):
     if head == "claude":
         from goldilocks_eval.agents.claude_backend import ClaudeBackend, DEFAULT_MODEL
         return ClaudeBackend(model=arg or DEFAULT_MODEL)
+    if head == "fireworks":
+        from goldilocks_eval.agents.fireworks_backend import FireworksBackend, DEFAULT_MODEL
+        return FireworksBackend(model=arg or DEFAULT_MODEL)
     if head == "gemini":
         raise NotImplementedError("Gemini backend is a stub — see make_player().")
     raise ValueError(
-        f"Scenario eval needs an LLM backend (claude[:model]); got {spec!r}. "
+        f"Scenario eval needs an LLM backend (claude[:model] / fireworks[:model]); got {spec!r}. "
         f"Baselines like {sorted(BASELINES)} can only run in the head-to-head runner."
     )
