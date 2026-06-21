@@ -220,10 +220,15 @@ async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
 async def run_mirror_pair(agent_a_spec, agent_b_spec, seed,
                           run_dir="transcripts/pair", capture_reasoning=False,
                           balanced_dice=False, max_turns=400, vps_to_win=10):
-    """The fairness primitive: one board, two games with seats swapped.
+    """The fairness primitive: one board, two games with the agents' COLORS swapped.
 
-    Game 1: A seats first (RED), B second (BLUE).
-    Game 2: same seed -> same board, seats swapped (B first, A second).
+    Game 1 (normal): agent A plays RED, agent B plays BLUE.
+    Game 2 (swapped): same seed -> same board+dice, agent A plays BLUE, B plays RED.
+
+    Turn order is decided by catanatron from the seed (`random.sample`), so which
+    COLOR moves first is identical across the pair; what swaps is which agent wears
+    each color. Because color->turn-slot is seed-fixed, each agent therefore plays
+    both the first and the second seat across the pair -- that's the fairness we want.
 
     Returns (normal_match, swapped_match). Compare their `board_fingerprint`
     to confirm the board really was identical; compare winners to separate

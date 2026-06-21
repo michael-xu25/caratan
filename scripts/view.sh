@@ -13,8 +13,10 @@ PORT="${PORT:-8000}"
 
 target="${1:?usage: view.sh <transcript.json | dir>}"
 
-# Build view data.
+# Build view data, then refresh the run-picker manifest (viewer/runs.json) so the
+# in-UI dropdown lists every built run.
 "$PY" scripts/build_viewer_data.py "$target"
+"$PY" scripts/build_viewer_index.py >/dev/null
 
 # Resolve the .view.json to open.
 if [ -d "$target" ]; then

@@ -56,6 +56,9 @@
   .pub { color: #7fa8c9; }
   .priv { color: #e0b36a; }            /* subtle warm tint = hidden info */
   .devdetail { font-size: 11px; color: #cfe0ef; margin: 2px 0 4px 70px; }
+  #picker { padding: 10px 16px 0; }
+  select { width: 100%; background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
+           border-radius: 7px; padding: 7px 9px; font-size: 13px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -70,6 +73,9 @@
 
   <div id="side">
     <h1>🎲 Caratan Replay</h1>
+    <div id="picker" style="display:none">
+      <select id="runsel" title="Pick a sample run / game"></select>
+    </div>
     <div class="pad" id="hdr"><div class="muted">No game loaded.</div></div>
     <div class="pad">
       <div class="row" style="justify-content:space-between">
@@ -110,7 +116,11 @@ const RES_COLOR = { WOOD:"#2f7d32", BRICK:"#c4502a", SHEEP:"#9ed16f", WHEAT:"#e6
                     ORE:"#8b97a6", DESERT:"#d8c79a" };
 const RES_ICON = { WOOD:"🌲", BRICK:"🧱", SHEEP:"🐑", WHEAT:"🌾", ORE:"🪨", DEV:"🃏" };
 const RES_ORDER = ["WOOD","BRICK","SHEEP","WHEAT","ORE","DEV"];
-const PLAYER_COLOR = { RED:"#d83b3b", BLUE:"#2f74d0", ORANGE:"#e8862e", WHITE:"#e9eef2" };
+// The first 1v1 seat is Color.RED in the engine/transcripts but is shown as
+// ORANGE in this UI (display-only; data keys stay "RED"). dname() maps the label.
+const PLAYER_COLOR = { RED:"#e8862e", BLUE:"#2f74d0", ORANGE:"#e8862e", WHITE:"#e9eef2" };
+const DNAME = { RED: "ORANGE" };
+const dname = c => DNAME[c] || c;
 const SVG_NS = "http://www.w3.org/2000/svg";
 const NODE_DELTA = { NORTH:[0,-1], NORTHEAST:[Math.sqrt(3)/2,-0.5], SOUTHEAST:[Math.sqrt(3)/2,0.5],
                      SOUTH:[0,1], SOUTHWEST:[-Math.sqrt(3)/2,0.5], NORTHWEST:[-Math.sqrt(3)/2,-0.5] };
@@ -250,7 +260,7 @@ function updatePanel(step) {
   $("dice").innerHTML = step.dice ? step.dice.map(dieHTML).join("") : "";
   const valTxt = Array.isArray(step.value) ? `[${step.value}]` : (step.value ?? "");
   $("action").innerHTML =
-      `<span class="chip" style="background:${pcolor(step.color)}">${step.color}</span> `
+      `<span class="chip" style="background:${pcolor(step.color)}">${dname(step.color)}</span> `
     + `<b>${step.action_type}</b> <span class="muted">${valTxt}</span>`
     + `<span class="muted" style="float:right">${(step.vp||{})[step.color]??""} VP · ${handTotal(step.color)} cards</span>`;
   $("note").textContent = step.note || "";
@@ -260,7 +270,7 @@ function updatePanel(step) {
   const fv = DATA.meta.final_vp || {};
   $("vptable").innerHTML = DATA.players.map(c => {
     const v = (step.vp||{})[c]||0, pct = Math.min(100, v/10*100);
-    return `<tr><td style="width:60px"><span class="chip" style="background:${pcolor(c)}">${c}</span></td>
+    return `<tr><td style="width:60px"><span class="chip" style="background:${pcolor(c)}">${dname(c)}</span></td>
       <td><div class="vpbar"><div class="vpfill" style="width:${pct}%;background:${pcolor(c)}"></div></div></td>
       <td style="width:64px;text-align:right" class="muted">${v} · fin ${fv[c]??"?"}</td></tr>`;
   }).join("");
@@ -272,7 +282,7 @@ function updatePanel(step) {
              + `🛣️ ${aw.road_len||0}${aw.has_road?' · Longest Road +2':''}</span>`;
     const la = `<span style="${aw.has_army?'color:#ffd24d;font-weight:700':'opacity:.7'}">`
              + `⚔️ ${aw.knights||0}${aw.has_army?' · Largest Army +2':''}</span>`;
-    return `<div class="awardrow"><span class="chip" style="background:${pcolor(c)};width:46px;justify-content:center">${c}</span>${lr}${la}</div>`;
+    return `<div class="awardrow"><span class="chip" style="background:${pcolor(c)};width:46px;justify-content:center">${dname(c)}</span>${lr}${la}</div>`;
   }).join("");
 
   // Resource + dev cards (private; dev chip click reveals types)
@@ -284,7 +294,7 @@ function updatePanel(step) {
     }).join("");
     const dn = h.DEV||0;
     const devChip = `<span class="card dev" onclick="toggleDev('${c}')" title="click to reveal dev cards">${RES_ICON.DEV}&thinsp;${dn}</span>`;
-    let row = `<div class="handrow"><span class="chip" style="background:${pcolor(c)};width:46px;justify-content:center">${c}</span>`
+    let row = `<div class="handrow"><span class="chip" style="background:${pcolor(c)};width:46px;justify-content:center">${dname(c)}</span>`
             + `<span class="cards">${cards}${devChip}</span>`
             + `<span class="muted" style="margin-left:auto">${handTotal(c)}</span></div>`;
     if (expandedDevs.has(c)) {
@@ -302,9 +312,9 @@ function updatePanel(step) {
 function setHeader() {
   const m = DATA.meta, s = m.seats||{};
   const seatStr = Object.entries(s).map(([c,a]) =>
-    `<span class="chip" style="background:${pcolor(c)}">${c}</span> ${a}`).join(" &nbsp;vs&nbsp; ");
+    `<span class="chip" style="background:${pcolor(c)}">${dname(c)}</span> ${a}`).join(" &nbsp;vs&nbsp; ");
   $("hdr").innerHTML = `<div class="row" style="flex-wrap:wrap;gap:6px">${seatStr}</div>
-    <div class="muted" style="margin-top:6px">seed ${m.seed} · winner <b style="color:${pcolor(m.winner)}">${m.winner||"draw"}</b></div>`;
+    <div class="muted" style="margin-top:6px">seed ${m.seed} · winner <b style="color:${pcolor(m.winner)}">${m.winner?dname(m.winner):"draw"}</b></div>`;
 }
 
 function go(i){ idx = Math.max(0, Math.min(DATA.meta.num_steps-1, i)); render(); }
@@ -336,11 +346,51 @@ drop.ondrop = e => { e.preventDefault(); readFile(e.dataTransfer.files[0]); };
 function readFile(f){ if(!f) return; const r=new FileReader();
   r.onload = ()=>load(JSON.parse(r.result)); r.readAsText(f); }
 
-// optional: ?data=<url> when served over http
+// ---- run picker (populated from viewer/runs.json) ----
 const params = new URLSearchParams(location.search);
-const q = params.get("data");
-if (q) fetch(q).then(r=>r.json()).then(d=>{ load(d);
-  const s = params.get("step"); if (s!=null) go(+s); }).catch(()=>{});
+
+function fmtGame(g){
+  const w = g.winner ? dname(g.winner) : "draw";
+  return `${g.label} — ${w}` + (g.num_steps ? ` · ${g.num_steps} plies` : "");
+}
+async function initPicker(){
+  let manifest = null;
+  try { manifest = await (await fetch("runs.json", {cache:"no-store"})).json(); } catch(e){}
+  if (!manifest || !manifest.runs || !manifest.runs.length) return null;
+  const sel = $("runsel"); sel.innerHTML = "";
+  for (const run of manifest.runs){
+    const og = document.createElement("optgroup"); og.label = run.name;
+    for (const g of run.games){
+      const o = document.createElement("option"); o.value = g.view; o.textContent = fmtGame(g);
+      og.appendChild(o);
+    }
+    sel.appendChild(og);
+  }
+  sel.onchange = () => loadUrl(sel.value);
+  $("picker").style.display = "";
+  return manifest;
+}
+function loadUrl(url){
+  fetch(url).then(r=>r.json()).then(d=>{
+    load(d);
+    history.replaceState(null, "", `?data=${url}`);
+    const sel = $("runsel"); if (sel) sel.value = url;
+  }).catch(()=>{});
+}
+
+// ---- startup: ?data wins; else first run in the manifest ----
+(async () => {
+  const manifest = await initPicker();
+  const q = params.get("data");
+  if (q){
+    fetch(q).then(r=>r.json()).then(d=>{ load(d);
+      const sel = $("runsel"); if (sel) sel.value = q;
+      const s = params.get("step"); if (s!=null) go(+s);
+    }).catch(()=>{});
+  } else if (manifest){
+    loadUrl(manifest.runs[0].games[0].view);
+  }
+})();
 </script>
 </body>
 </html>
