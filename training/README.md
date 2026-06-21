@@ -2,8 +2,15 @@
 
 Trains Qwen2.5-7B to place the four opening settlements well. Approved config:
 **reward = normalized**, **weights = pip/res/num 1/1/1**, **50 train boards
-(example_pool) / 30 eval boards (grader_games, held out)**. GRPO is **not** kicked
-off here — this doc + the wired pieces are for you to launch on Fireworks.
+(example_pool) / 30 eval boards (grader_games, held out)**.
+
+**Output format: answer-only (no chain-of-thought).** The model replies with ONLY
+`<answer>node_N</answer>` — no `<reasoning>` block. CoT was for baseline
+weakness-discovery in live play; for GRPO rollouts it only slows generation and
+adds reward variance, and we reward the decision not the prose. Training rollouts
+and eval BOTH render their prompt from `goldilocks_eval/prompting.py` (one module),
+so the format is provably identical and the baseline-vs-trained comparison can't be
+confounded by a format mismatch.
 
 ## 1. Generate data (already run; regenerate after tuning weights)
 ```bash
@@ -41,20 +48,33 @@ reward-kit run --reward training.placement_reward:placement_reward_fn \
 `examples/math_example`. The function signature + dataset shape above are correct;
 adapt the CLI to the installed version.)
 
-## 3. GRPO run (Fireworks RFT — follow the HUD `fireworks-rl-training` cookbook)
-- **Base model:** the deployed Qwen2.5-7B (`fireworks:$FIREWORKS_MODEL` =
-  `accounts/brickedup25/deployments/blpxetwj`), or the public
-  `accounts/fireworks/models/qwen2p5-7b-instruct` for training.
-- **Reward:** `training.placement_reward:placement_reward_fn`.
+## 3. GRPO run (Fireworks RFT — GRPO on their GPUs, our reward fn grades rollouts)
+- **Base model:** the public `accounts/fireworks/models/qwen2p5-7b-instruct`
+  (same family as the deployed `$FIREWORKS_MODEL`).
+- **Evaluator/reward:** `training.placement_reward:placement_reward_fn`.
 - **Dataset:** `data/placement_opening_train.trl.jsonl` (200 rows; the four
   placement positions are mixed in).
 - **Suggested GRPO hyperparameters (first run):** group size G = 8–16,
   temperature 0.8–1.0 (the group needs variance), lr ≈ 1e-6, 2–4 epochs over the
   200 rows. Start small; scale boards (`--n`) once the loop trains.
 
-Per the build spec this runs on Fireworks RFT (rollouts + GRPO on their GPUs, the
-reward runs as the Python function above). Wire it via the cookbook; **do not**
-commit any API key.
+Launch (`eval-protocol`, recommended — uploads evaluator + dataset, then starts):
+```bash
+set -a; source .env; set +a            # FIREWORKS_API_KEY
+eval-protocol create rft \
+    --base-model accounts/fireworks/models/qwen2p5-7b-instruct \
+    --output-model placement-opening-grpo \
+    --dataset data/placement_opening_train.trl.jsonl \
+    --evaluator training.placement_reward:placement_reward_fn \
+    --epochs 3
+# (equivalent: firectl rftj create --base-model ... --dataset ... --evaluator ... --output-model ...)
+```
+**W&B is optional.** Default monitoring is the Fireworks RFT dashboard (the job
+link is printed on create). For W&B charts, add `--wandb-project <p> --wandb-entity
+<e>` and set `WANDB_API_KEY` first. **Never commit any API key.**
+
+When training finishes, deploy the resulting LoRA as an on-demand deployment and
+note its deployment id for the AFTER eval below.
 
 ## 4. Eval — before/after (the demo)
 Run the SAME held-out boards on the base and the trained model; each places all
