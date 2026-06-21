@@ -89,7 +89,7 @@ const LOOP = [
   },
   {
     t: "GRPO-train",
-    d: "Group-relative policy optimization on Qwen3-8B via HUD / Tinker, our graders as reward.",
+    d: "Group-relative policy optimization on Qwen3.5 8B (thinking off) via HUD / Tinker, our graders as reward.",
   },
   {
     t: "Measure improvement",
@@ -119,7 +119,7 @@ const EXPLORE = [
 ];
 
 export default function Page() {
-  const { model, curves, heldout, stats } = results;
+  const { model, curves, heldout, stats, winrate } = results;
   const curveOrder = ["placement", "maritime", "build"];
 
   return (
@@ -132,6 +132,7 @@ export default function Page() {
             Caratan
           </div>
           <div className="nav-links">
+            <a href="#winrate">Win rate</a>
             <a href="#loop">The loop</a>
             <a href="#results">Results</a>
             <a href="#curves">Training</a>
@@ -163,6 +164,29 @@ export default function Page() {
         </div>
       </header>
 
+      {/* win rate — headline stat, first thing after hero */}
+      <section id="winrate" className="winrate-band">
+        <div className="wrap">
+          <p className="eyebrow">Headline · full-game win rate</p>
+          <h2 className="section-title">The trained model wins more games</h2>
+          <p className="section-sub">
+            1v1 self-play, {winrate.cap_turns}-turn cap.
+          </p>
+          <div className="wr-cards">
+            {winrate.entries.map((e, i) => (
+              <div className={"wr-card" + (i === 0 ? " best" : "")} key={e.label}>
+                {i === 0 && <span className="wr-flag">Best checkpoint</span>}
+                <div className="wr-value">{Math.round(e.value * 100)}%</div>
+                <div className="wr-label">{e.label}</div>
+                <div className="wr-sub">{e.sub}</div>
+                <div className="wr-note">{e.note}</div>
+              </div>
+            ))}
+          </div>
+          <p className="heldout-note">{winrate.footnote}</p>
+        </div>
+      </section>
+
       {/* the loop */}
       <section id="loop">
         <div className="wrap">
@@ -190,8 +214,8 @@ export default function Page() {
           <p className="eyebrow">Headline results</p>
           <h2 className="section-title">Before → after on held-out boards</h2>
           <p className="section-sub">
-            Each environment evaluated on a disjoint set of unseen boards. Base
-            Qwen3-8B vs. the GRPO-trained checkpoint, both forced to answer
+            Each environment evaluated on a disjoint set of unseen boards. The
+            base model vs. the GRPO-trained checkpoint, both forced to answer
             directly so we measure pick quality, not formatting.
           </p>
           <div className="results">

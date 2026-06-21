@@ -1,5 +1,5 @@
 {
- "model": "Qwen3-8B \u00b7 LoRA \u00b7 GRPO via HUD/Tinker",
+ "model": "Qwen3.5 8B \u00b7 thinking off",
  "curves": {
   "placement": {
    "metric": "top-3 hit rate",
@@ -131,5 +131,23 @@
   "rollouts": 12979,
   "train_minutes": 123,
   "infer_cost_usd": 4.6
+ },
+ "winrate": {
+  "cap_turns": 300,
+  "entries": [
+   {
+    "label": "Placement-trained",
+    "sub": "best checkpoint",
+    "value": 0.88,
+    "note": "opening-placement RL alone \u2014 the strongest model"
+   },
+   {
+    "label": "Full chain",
+    "sub": "placement + maritime + build",
+    "value": 0.7,
+    "note": "later envs sharpened isolated decisions but slightly hurt end-to-end play"
+   }
+  ],
+  "footnote": "Self-play win rate at a 300-turn cap. The full-chain model got actively worse at whole-game play, so the placement-only checkpoint is the one to ship (the earlier 59% was at a lower turn cap)."
  }
 }
