@@ -47,8 +47,15 @@
   td { padding: 2px 0; }
   .handrow { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
   .cards { display: flex; gap: 6px; font-size: 13px; }
-  .card { white-space: nowrap; }
-  .awards { display: flex; gap: 6px; font-size: 12px; }
+  .card { white-space: nowrap; cursor: default; }
+  .card.dev { cursor: pointer; text-decoration: underline dotted; }
+  .awardrow { display: flex; align-items: center; gap: 10px; margin: 4px 0; font-size: 12px; }
+  .seclabel { font-size: 12px; color: var(--muted); margin-bottom: 6px;
+              display: flex; justify-content: space-between; align-items: center; }
+  .pub, .priv { font-size: 9px; font-weight: 700; letter-spacing: .4px; opacity: .55; }
+  .pub { color: #7fa8c9; }
+  .priv { color: #e0b36a; }            /* subtle warm tint = hidden info */
+  .devdetail { font-size: 11px; color: #cfe0ef; margin: 2px 0 4px 70px; }
 </style>
 </head>
 <body>
@@ -74,11 +81,15 @@
       <div id="reason"></div>
     </div>
     <div class="pad">
-      <div class="muted" style="margin-bottom:6px">Victory points (engine — actual VP)</div>
+      <div class="seclabel">Victory points <span class="pub">PUBLIC</span></div>
       <table id="vptable"></table>
     </div>
     <div class="pad">
-      <div class="muted" style="margin-bottom:6px">Resource cards (in hand)</div>
+      <div class="seclabel">Awards <span class="pub">PUBLIC</span></div>
+      <div id="awards"></div>
+    </div>
+    <div class="pad">
+      <div class="seclabel">Resource cards <span class="pub">PUBLIC</span> · dev <span class="priv">🔒 click 🃏</span></div>
       <div id="hands"></div>
     </div>
     <div id="controls">
@@ -154,30 +165,33 @@ function drawStatic(g) {
       }
     }
   }
-  // ports: a dock from the coastal edge out to the two settleable corner nodes + a ratio badge
+  // ports (Catanatron-style): a badge offset toward the coast + two thin docks
+  // to the settleable corner nodes. 2:1 ports are colored by their resource so
+  // they read at a glance; 3:1 generic ports are neutral with an anchor.
   for (const t of DATA.board.tiles) {
     if (t.type !== "PORT" || !t.direction || !PORT_DIR[t.direction]) continue;
     const [rA, rB] = PORT_DIR[t.direction];
     const nA = [t.x + NODE_DELTA[rA][0], t.y + NODE_DELTA[rA][1]];
     const nB = [t.x + NODE_DELTA[rB][0], t.y + NODE_DELTA[rB][1]];
-    // harbor anchor: midpoint of the two coastal nodes, pulled toward the sea tile
     const mid = [(nA[0]+nB[0])/2, (nA[1]+nB[1])/2];
-    const anchor = [mid[0] + (t.x-mid[0])*0.45, mid[1] + (t.y-mid[1])*0.45];
+    const anchor = [mid[0] + (t.x-mid[0])*0.40, mid[1] + (t.y-mid[1])*0.40];
     const [ax,ay] = T(...anchor);
+    // thin rope docks to the two coastal nodes
     for (const nd of [nA, nB]) {
       const [nx,ny] = T(...nd);
-      g.appendChild(el("line", { x1:ax, y1:ay, x2:nx, y2:ny, stroke:"#caa46a",
-        "stroke-width":0.07, "stroke-linecap":"round", opacity:0.9 }));
+      g.appendChild(el("line", { x1:ax, y1:ay, x2:nx, y2:ny, stroke:"#d9b98a",
+        "stroke-width":0.045, "stroke-linecap":"round", opacity:0.7,
+        "stroke-dasharray":"0.12 0.08" }));
     }
-    g.appendChild(el("circle", { cx:ax, cy:ay, r:0.30, fill:"#1d3a52", stroke:"#caa46a", "stroke-width":0.04 }));
     const is3 = t.port === "3:1";
-    const lbl = el("text", { x:ax, y:ay+0.10, "text-anchor":"middle",
-      "font-size": is3?0.26:0.24, "font-weight":700, fill:"#f3ead2" });
-    lbl.textContent = is3 ? "3:1" : "2:1"; g.appendChild(lbl);
-    if (!is3) {  // 2:1 resource port — show the resource colour as a ring
-      g.appendChild(el("circle", { cx:ax, cy:ay, r:0.30, fill:"none",
-        stroke: RES_COLOR[t.port] || "#fff", "stroke-width":0.06 }));
-    }
+    const w=0.78, h=0.46;
+    g.appendChild(el("rect", { x:ax-w/2, y:ay-h/2, width:w, height:h, rx:0.12,
+      fill: is3 ? "#15324a" : (RES_COLOR[t.port] || "#777"),
+      stroke:"#f3ead2", "stroke-width":0.045, opacity:0.97 }));
+    const lbl = el("text", { x:ax, y:ay+0.12, "text-anchor":"middle", "font-size":0.30,
+      "font-weight":800, fill: is3 ? "#dfe9f2" : "#11202c" });
+    lbl.textContent = is3 ? "⚓ 3:1" : `${t.port.slice(0,2)} 2:1`;
+    g.appendChild(lbl);
   }
 }
 
@@ -220,41 +234,65 @@ function render() {
 
 function dieHTML(n){ return `<span class="die">${n}</span>`; }
 
+const RES5 = ["WOOD","BRICK","SHEEP","WHEAT","ORE"];
+const DEV_NAME = { KNIGHT:"Knight", YEAR_OF_PLENTY:"Year of Plenty", MONOPOLY:"Monopoly",
+                   ROAD_BUILDING:"Road Building", VICTORY_POINT:"Victory Point" };
+const expandedDevs = new Set();
+let curStep = null;
+window.toggleDev = c => { expandedDevs.has(c) ? expandedDevs.delete(c) : expandedDevs.add(c);
+                         if (curStep) updatePanel(curStep); };
+
 function updatePanel(step) {
-  $("turnlbl").textContent = `Turn ${step.turn ?? "—"}`;
+  curStep = step;
+  const handTotal = (c) => RES5.reduce((s,r)=>s+(((step.hands||{})[c]||{})[r]||0),0);
+  // turn header — richer: turn, ply, acting player's standing
+  $("turnlbl").textContent = `Turn ${step.turn ?? "—"} · ply ${idx+1}/${DATA.meta.num_steps}`;
   $("dice").innerHTML = step.dice ? step.dice.map(dieHTML).join("") : "";
   const valTxt = Array.isArray(step.value) ? `[${step.value}]` : (step.value ?? "");
-  $("action").innerHTML = `<span class="chip" style="background:${pcolor(step.color)}">${step.color}</span> ` +
-                          `${step.action_type} <span class="muted">${valTxt}</span>`;
+  $("action").innerHTML =
+      `<span class="chip" style="background:${pcolor(step.color)}">${step.color}</span> `
+    + `<b>${step.action_type}</b> <span class="muted">${valTxt}</span>`
+    + `<span class="muted" style="float:right">${(step.vp||{})[step.color]??""} VP · ${handTotal(step.color)} cards</span>`;
   $("note").textContent = step.note || "";
-  $("reason").textContent = step.reasoning || "(no reasoning recorded)";
-  // vp table
+  $("reason").textContent = step.reasoning || "(reasoning capture off for this run)";
+
+  // VP (public)
   const fv = DATA.meta.final_vp || {};
   $("vptable").innerHTML = DATA.players.map(c => {
-    const v = step.vp[c]||0, pct = Math.min(100, v/10*100);
-    return `<tr><td style="width:64px"><span class="chip" style="background:${pcolor(c)}">${c}</span></td>
+    const v = (step.vp||{})[c]||0, pct = Math.min(100, v/10*100);
+    return `<tr><td style="width:60px"><span class="chip" style="background:${pcolor(c)}">${c}</span></td>
       <td><div class="vpbar"><div class="vpfill" style="width:${pct}%;background:${pcolor(c)}"></div></div></td>
       <td style="width:64px;text-align:right" class="muted">${v} · fin ${fv[c]??"?"}</td></tr>`;
   }).join("");
-  // resource cards in hand + Longest Road / Largest Army awards, per player
-  const hands = step.hands || {}, awards = step.awards || {};
+
+  // Awards (public) — separate section
+  $("awards").innerHTML = DATA.players.map(c => {
+    const aw = (step.awards||{})[c] || {};
+    const lr = `<span style="${aw.has_road?'color:#ffd24d;font-weight:700':'opacity:.7'}">`
+             + `🛣️ ${aw.road_len||0}${aw.has_road?' · Longest Road +2':''}</span>`;
+    const la = `<span style="${aw.has_army?'color:#ffd24d;font-weight:700':'opacity:.7'}">`
+             + `⚔️ ${aw.knights||0}${aw.has_army?' · Largest Army +2':''}</span>`;
+    return `<div class="awardrow"><span class="chip" style="background:${pcolor(c)};width:46px;justify-content:center">${c}</span>${lr}${la}</div>`;
+  }).join("");
+
+  // Resource + dev cards (private; dev chip click reveals types)
   $("hands").innerHTML = DATA.players.map(c => {
-    const h = hands[c] || {}, aw = awards[c] || {};
-    const cards = RES_ORDER.map(r => {
-      const n = h[r] || 0;
-      const dim = n === 0 ? "opacity:.3" : "";
-      return `<span class="card" style="${dim}" title="${r}">${RES_ICON[r]}&thinsp;${n}</span>`;
+    const h = (step.hands||{})[c] || {};
+    const cards = RES5.map(r => {
+      const n = h[r]||0;
+      return `<span class="card" style="${n===0?'opacity:.3':''}" title="${r}">${RES_ICON[r]}&thinsp;${n}</span>`;
     }).join("");
-    const total = ["WOOD","BRICK","SHEEP","WHEAT","ORE"].reduce((s,r)=>s+(h[r]||0),0);
-    // gold = currently HOLDS the +2 VP award; dim = just the count
-    const lr = `<span title="longest road (${aw.has_road?'HOLDS +2 VP':'length'})" `
-             + `style="${aw.has_road?'color:#ffd24d;font-weight:700':'opacity:.55'}">🛣️${aw.road_len||0}</span>`;
-    const la = `<span title="knights played (${aw.has_army?'LARGEST ARMY +2 VP':'count'})" `
-             + `style="${aw.has_army?'color:#ffd24d;font-weight:700':'opacity:.55'}">⚔️${aw.knights||0}</span>`;
-    return `<div class="handrow"><span class="chip" style="background:${pcolor(c)}">${c}</span>`
-         + `<span class="awards">${lr}${la}</span>`
-         + `<span class="cards">${cards}</span>`
-         + `<span class="muted" style="margin-left:auto">${total}</span></div>`;
+    const dn = h.DEV||0;
+    const devChip = `<span class="card dev" onclick="toggleDev('${c}')" title="click to reveal dev cards">${RES_ICON.DEV}&thinsp;${dn}</span>`;
+    let row = `<div class="handrow"><span class="chip" style="background:${pcolor(c)};width:46px;justify-content:center">${c}</span>`
+            + `<span class="cards">${cards}${devChip}</span>`
+            + `<span class="muted" style="margin-left:auto">${handTotal(c)}</span></div>`;
+    if (expandedDevs.has(c)) {
+      const dc = h.dev_cards || {};
+      const parts = Object.entries(dc).filter(([,v])=>v>0).map(([k,v])=>`${DEV_NAME[k]||k}×${v}`);
+      row += `<div class="devdetail">${parts.length ? parts.join(", ") : "(no dev cards)"}</div>`;
+    }
+    return row;
   }).join("");
 
   $("slider").value = idx;

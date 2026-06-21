@@ -72,7 +72,10 @@ def _snapshot(state) -> dict:
             roads[f"{a}-{b}"] = color.value
         i = state.color_to_index[color]
         hand = {r: state.player_state[f"P{i}_{r}_IN_HAND"] for r in RESOURCES}
-        hand["DEV"] = sum(state.player_state.get(f"P{i}_{d}_IN_HAND", 0) for d in _DEV_KEYS)
+        # dev cards: per-type breakdown (revealable in the viewer) + total
+        dev = {d: state.player_state.get(f"P{i}_{d}_IN_HAND", 0) for d in _DEV_KEYS}
+        hand["DEV"] = sum(dev.values())
+        hand["dev_cards"] = dev
         hands[color.value] = hand
         vp[color.value] = get_actual_victory_points(state, color)
         awards[color.value] = {
@@ -105,7 +108,7 @@ def build_view(transcript_path: Path) -> dict:
     def decider(player, gm, playable):
         rec = records[cursor["i"]][0]          # [color, type, value]
         rtype, rval = rec[1], rec[2]
-        if rtype == "ROLL":                    # dice come from the seeded deck
+        if rtype == "ROLL":                    # dice injected from the record (below)
             for a in playable:
                 if a.action_type.value == "ROLL":
                     return a
@@ -118,8 +121,16 @@ def build_view(transcript_path: Path) -> dict:
         raise RuntimeError(f"replay mismatch at ply {cursor['i']}: "
                            f"recorded {rec} not in playable {playable}")
 
+    # Faithful dice: replay the EXACT recorded dice (don't regenerate from a seed —
+    # that can drift if the RNG changes). Patch roll_dice to pop the recorded seq.
+    import catanatron.apply_action as _apply_action
+    recorded_dice = iter([tuple(r[0][2]) for r in records
+                          if r[0][1] == "ROLL" and r[0][2]])
+    _orig_roll = _apply_action.roll_dice
+    _apply_action.roll_dice = lambda: next(recorded_dice, (1, 1))
+
     steps = []
-    with seeded_dice(seed, balanced=False):
+    try:
         while (game.winning_color() is None
                and game.state.num_turns < _cg.TURNS_LIMIT
                and cursor["i"] < len(records)):
@@ -132,11 +143,13 @@ def build_view(transcript_path: Path) -> dict:
                 "i": cursor["i"], "turn": dec.get("turn"),
                 "color": action[0], "action_type": action[1], "value": action[2],
                 "dice": action[2] if action[1] == "ROLL" else None,
-                "note": _trade_note(action) ,
+                "note": _trade_note(action),
                 "reasoning": dec.get("reasoning"),
                 **snap,
             })
             cursor["i"] += 1
+    finally:
+        _apply_action.roll_dice = _orig_roll
 
     return {
         "meta": {"label": d.get("label"), "seed": seed, "seats": d.get("seats", {}),

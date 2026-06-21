@@ -14,19 +14,31 @@ from catanatron.models.enums import RESOURCES
 from catanatron.state_functions import (
     get_actual_victory_points,
     get_longest_road_length,
+    player_key,
     player_num_dev_cards,
     player_num_resource_cards,
 )
 
 
-def _player_line(game: Game, color: Color, label: str) -> str:
-    hand = {r: player_num_resource_cards(game.state, color, r) for r in RESOURCES}
+def _player_line(game: Game, color: Color, label: str, public_only: bool = False) -> str:
+    """One-line player summary. Public info (resources, VP, longest road,
+    dev-card COUNT) is shown for everyone. The only hidden info is dev-card
+    IDENTITY: for the OPPONENT (`public_only`) we show the *visible* VP, which
+    excludes their hidden victory-point cards; for YOU we show actual VP."""
+    state = game.state
+    lr = get_longest_road_length(state, color)
+    ndev = player_num_dev_cards(state, color)            # count is public; types are not
+    hand = {r: player_num_resource_cards(state, color, r) for r in RESOURCES}  # resources are PUBLIC
     hand_str = " ".join(f"{r[:2]}={hand[r]}" for r in RESOURCES)
+    if public_only:
+        # visible VP excludes the opponent's hidden victory-point dev cards
+        vp = state.player_state[f"{player_key(state, color)}_VICTORY_POINTS"]
+        vp_str = f"{vp} (visible)"
+    else:
+        vp_str = str(get_actual_victory_points(state, color))
     return (
         f"{label} ({color.value}): "
-        f"VP={get_actual_victory_points(game.state, color)} "
-        f"longest_road={get_longest_road_length(game.state, color)} "
-        f"dev_cards={player_num_dev_cards(game.state, color)} "
+        f"VP={vp_str} longest_road={lr} dev_cards={ndev} "
         f"| hand: {hand_str}"
     )
 
@@ -110,7 +122,7 @@ def render_state(game: Game, me: Color, opponent: Color) -> str:
     lines = [
         f"Turn {game.state.num_turns}. You are {me.value}. First to 10 VP wins.",
         _player_line(game, me, "YOU"),
-        _player_line(game, opponent, "OPPONENT"),
+        _player_line(game, opponent, "OPPONENT", public_only=True),
         f"Robber is on tile: {game.state.board.robber_coordinate}",
         "",
         render_board_summary(game),
