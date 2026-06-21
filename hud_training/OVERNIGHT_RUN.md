@@ -53,6 +53,20 @@ its raw "as-deployed" score is ~0, an even bigger but less fair gap). Determinis
 3. Log cosmetic: per-step "top3 <x>" is really mean-reward for maritime/build.
 4. Data is 16 fixed boards/env (fast, clear climb). Scale `--limit` up for breadth.
 
+## HUD run stats (the whole session on the fork)
+- **104 optim steps**, **12,979 rollouts** (datums), across **12 jobs** (smokes +
+  the real runs), **123 min** of active training (10:39–12:42).
+- Tokens (est): ~19.5M in / ~454k out → **~$4.6 inference** for rollout sampling
+  (Tinker training/gradient compute billed separately).
+- Step time ~45–55s, rollout-bound on the HUD→Tinker gateway (~85% rollout / 15%
+  train); concurrency 48.
+- **Caveat on the raw checkpoint reward curve** (`hud models checkpoints`): the per-
+  step reward is NOT comparable across the session because the reward function
+  changed during iteration (normalized → sharpness → top-3-binary; pip 1.0→1.5→3.0).
+  The clean per-phase climbs are the FINAL runs only (the Results tables above).
+  Visible artifacts in the curve: steps 9–14 (lr=1e-5) reward fell 0.79→0.27 — the
+  timid-lr failure; step 55 = −0.46 = maritime's over-trading baseline.
+
 ## How to use the trained model
 ```bash
 set -a; source .env; set +a
