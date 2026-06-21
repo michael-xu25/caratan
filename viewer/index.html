@@ -9,6 +9,7 @@
 <body>
   <div id="board">
     <div class="boardbtns">
+      <a class="navbtn" href="matchups.html" title="Win-rate matchups & per-decision evals">📊 Matchups &amp; Evals</a>
       <a class="navbtn" href="play.html" title="Play a fresh game vs the model">🎮 Play vs Model</a>
       <button class="navbtn" id="takeover" title="Play on from THIS position vs the model (does not change the transcript)">🕹️ Take over from here</button>
     </div>
@@ -191,7 +192,7 @@ function readFile(f){ if(!f) return; const r=new FileReader();
 
 // ---- run picker (populated from viewer/runs.json) ----
 const params = new URLSearchParams(location.search);
-function fmtGame(g){ const w = g.winner ? dname(g.winner) : "draw";
+function fmtGame(g){ const w = g.winner ? mshort((g.seats||{})[g.winner]) + " won" : "draw";
   return `${g.label} — ${w}` + (g.num_steps ? ` · ${g.num_steps} plies` : ""); }
 async function initPicker(){
   let manifest = null;
