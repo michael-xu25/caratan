@@ -34,6 +34,12 @@
   select,input{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:13px}
   table{width:100%;font-size:12px} td{padding:2px 0}
   .vpbar{height:13px;border-radius:7px;background:var(--panel2);overflow:hidden;flex:1} .vpfill{height:100%}
+  #recipes{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin:6px 0;font-size:13px}
+  #recipes .rcp{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+  #rolls{display:flex;flex-direction:column;gap:3px}
+  .roll{display:flex;align-items:center;gap:7px;font-size:12px} .roll.latest{font-weight:800}
+  .die{display:inline-block;min-width:15px;text-align:center;background:#f3ead2;color:#222;border-radius:3px;padding:0 2px;font-weight:700}
+  .rolemark{font-size:11px;color:var(--muted);margin-left:4px}
 </style>
 </head>
 <body>
@@ -51,10 +57,15 @@
     </div>
     <div id="scroll">
       <div class="pad">
-        <div id="status">—</div>
+        <div class="row" style="justify-content:space-between">
+          <div id="status">—</div>
+          <button id="help" title="Show build recipes" style="padding:3px 9px;border-radius:50%;font-weight:800">?</button>
+        </div>
+        <div id="recipes" style="display:none"></div>
         <div class="legal" id="legal"></div>
       </div>
       <div class="pad">
+        <div class="seclabel">Dice rolls</div><div id="rolls" class="muted">—</div>
         <div class="seclabel">Victory points</div><table id="vptable"></table>
         <div class="seclabel">Resource cards</div><div id="hands"></div>
       </div>
@@ -68,7 +79,11 @@
 const RES_COLOR={WOOD:"#2f7d32",BRICK:"#c4502a",SHEEP:"#9ed16f",WHEAT:"#e6c14b",ORE:"#8b97a6",DESERT:"#d8c79a"};
 const RES_ICON={WOOD:"🌲",BRICK:"🧱",SHEEP:"🐑",WHEAT:"🌾",ORE:"🪨",DEV:"🃏"};
 const RES5=["WOOD","BRICK","SHEEP","WHEAT","ORE"];
-const PCOL={RED:"#d83b3b",BLUE:"#2f74d0"};
+// The engine's two seats are RED and BLUE, but we DISPLAY the RED seat as ORANGE
+// (label + piece colour) — clearer on the blue board and matches Catan's orange.
+const PCOL={RED:"#e8821e",BLUE:"#2f74d0"};
+const DNAME={RED:"ORANGE",BLUE:"BLUE"};
+const dname=c=>DNAME[c]||c;
 // Catan build costs (Catanatron only ever offers AFFORDABLE build actions, so these
 // are purely informational — shown with the same icons as the inventory below).
 const COSTS={
@@ -144,7 +159,23 @@ function catBtn(label,cost,onclick){const b=document.createElement("button");b.c
 function backBtn(){const b=document.createElement("button");b.className="backbtn";b.textContent="← Back";b.onclick=backToMenu;return b;}
 function backToMenu(){MODE="menu";SEL=null;$("status").textContent="Your move — pick an action:";renderActions();draw();}
 const tradeFmt=a=>{const g=a.value.slice(0,4).filter(x=>x),get=a.value[4];return `Give ${g.length}× ${RES_ICON[g[0]]} → 1× ${RES_ICON[get]}`;};
-const victimFmt=a=>a.value[1]?`Steal from ${a.value[1]}`:"Move here (steal nobody)";
+const victimFmt=a=>a.value[1]?`Steal from ${dname(a.value[1])}`:"Move here (steal nobody)";
+
+// "?" helper: the build recipes, shown with the same icons as the inventory.
+const RECIPES=[
+  ["🏠 Settlement", COSTS.BUILD_SETTLEMENT],
+  ["🏙️ City",       COSTS.BUILD_CITY],
+  ["🛣️ Road",       COSTS.BUILD_ROAD],
+  ["🃏 Dev card",   COSTS.BUY_DEVELOPMENT_CARD],
+];
+function toggleRecipes(){
+  const box=$("recipes");
+  if(box.style.display!=="none"){ box.style.display="none"; return; }
+  box.innerHTML=`<div class="seclabel" style="margin-top:0">Build recipes</div>`+
+    RECIPES.map(([n,c])=>`<div class="rcp"><span>${n}</span><span class="costs">${costChips(c)}</span></div>`).join("")+
+    `<div class="rcp"><span>City upgrade</span><span class="muted">replaces a settlement</span></div>`;
+  box.style.display="block";
+}
 
 function enterSelect(kind,opts,prompt){MODE="select";SEL={kind,opts};$("status").textContent=prompt;
   const L=$("legal");L.innerHTML="";L.appendChild(backBtn());draw();}
@@ -174,16 +205,30 @@ function renderActions(){
   V.legal.filter(a=>!handled.has(a.type)).forEach(a=>add(catBtn(a.label,null,()=>move(a.i))));   // never leave an action unreachable
 }
 
+const roleOf=c=>c===V.human?'<span class="rolemark">(you)</span>':'<span class="rolemark">(model)</span>';
 function panel(){
-  $("gameinfo").innerHTML=`vs <b>${MODEL}</b> · seed ${SEED} · turn ${V.turn} · you are <span class="chip" style="background:${pcol(V.human)}">${V.human}</span>`;
-  if(V.winner){ $("status").innerHTML = V.winner===V.human?"🏆 You win!":`🤖 Model (${V.winner}) wins.`; $("legal").innerHTML=""; }
+  $("gameinfo").innerHTML=`vs <b>${MODEL}</b> · seed ${SEED} · turn ${V.turn}<br>`+
+    `You play <span class="chip" style="background:${pcol(V.human)}">${dname(V.human)}</span>`+
+    (V.model_color?` · model plays <span class="chip" style="background:${pcol(V.model_color)}">${dname(V.model_color)}</span>`:"");
+  if(V.winner){ $("status").innerHTML = V.winner===V.human?"🏆 You win!":`🤖 Model (${dname(V.winner)}) wins.`; $("legal").innerHTML=""; }
   else if(busy){ $("status").textContent="🤖 model thinking…"; $("legal").innerHTML=""; }
   else if(V.your_turn){ $("status").textContent="Your move — pick an action:"; renderActions(); }
   else { $("status").textContent="…"; $("legal").innerHTML=""; }
-  $("vptable").innerHTML=V.players.map(c=>{const v=(V.vp||{})[c]||0;return `<tr><td style="width:54px"><span class="chip" style="background:${pcol(c)}">${c}</span></td><td><div class="vpbar"><div class="vpfill" style="width:${Math.min(100,v/10*100)}%;background:${pcol(c)}"></div></div></td><td style="width:30px;text-align:right" class="muted">${v}</td></tr>`;}).join("");
+  renderRolls();
+  $("vptable").innerHTML=V.players.map(c=>{const v=(V.vp||{})[c]||0;return `<tr><td style="width:96px"><span class="chip" style="background:${pcol(c)}">${dname(c)}</span>${roleOf(c)}</td><td><div class="vpbar"><div class="vpfill" style="width:${Math.min(100,v/10*100)}%;background:${pcol(c)}"></div></div></td><td style="width:30px;text-align:right" class="muted">${v}</td></tr>`;}).join("");
   $("hands").innerHTML=V.players.map(c=>{const h=(V.hands||{})[c]||{};
     const cards=RES5.map(r=>{const n=h[r]||0;return `<span style="${n===0?'opacity:.3':''}">${RES_ICON[r]}&thinsp;${n}</span>`}).join("")+` <span style="${(h.DEV||0)===0?'opacity:.3':''}">${RES_ICON.DEV}&thinsp;${h.DEV||0}</span>`;
-    return `<div class="handrow"><span class="chip" style="background:${pcol(c)}">${c}</span><span class="cards">${cards}</span></div>`;}).join("");
+    return `<div class="handrow"><span class="chip" style="background:${pcol(c)}">${dname(c)}</span>${roleOf(c)}<span class="cards">${cards}</span></div>`;}).join("");
+}
+function renderRolls(){
+  const rolls=V.rolls||[]; const box=$("rolls");
+  if(!rolls.length){ box.className="muted"; box.textContent="— no rolls yet —"; return; }
+  box.className="";
+  const recent=rolls.slice(-10).reverse();   // newest first
+  box.innerHTML=recent.map((r,i)=>`<div class="roll ${i===0?'latest':''}">`+
+    `<span class="chip" style="background:${pcol(r.color)}">${dname(r.color)}</span>`+
+    `<span class="die">${r.dice[0]}</span><span class="die">${r.dice[1]}</span>`+
+    `<span>= <b>${r.total}</b></span>${i===0?' <span class="rolemark">latest</span>':''}</div>`).join("");
 }
 function logMoves(moves){ if(!moves||!moves.length)return; const box=$("log"); if(box.classList.contains("muted")){box.classList.remove("muted");box.innerHTML="";}
   for(const m of moves){const d=document.createElement("div");d.className="mv";d.innerHTML=`<b>${m.action}</b>${m.reasoning?`<br><span class="muted">${m.reasoning}</span>`:""}`;box.prepend(d);} }
@@ -200,6 +245,7 @@ async function loadGame(id){ busy=true;$("log").className="muted";$("log").textC
   const r=await fetch("/api/state",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({game_id:id})});
   apply(await r.json()); }
 $("new").onclick=newGame;
+$("help").onclick=toggleRecipes;
 // ?game=<id> resumes/loads a forked game (handed off from the replay viewer); else fresh game.
 const _gid=new URLSearchParams(location.search).get("game");
 if(_gid) loadGame(_gid); else newGame();

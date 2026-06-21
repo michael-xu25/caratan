@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import random
 import sys
 import threading
@@ -30,6 +31,7 @@ REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO))
 
 from catanatron.game import Game
+from catanatron.models.enums import ActionType
 from catanatron.models.player import Color, RandomPlayer
 from catanatron.json import GameEncoder
 from harness.agents import make_agent
@@ -105,6 +107,18 @@ def _jsonable(v):
     return str(v)
 
 
+def _rolls(game) -> list:
+    """Every dice roll so far (newest last): who rolled, the two dice, the total.
+    Read straight from the recorded ROLL actions (their value is the (d1, d2) pair)."""
+    out = []
+    for rec in game.state.action_records:
+        act = rec.action if hasattr(rec, "action") else rec[0]
+        if act.action_type == ActionType.ROLL and act.value:
+            d = list(act.value)
+            out.append({"color": act.color.value, "dice": d, "total": sum(d)})
+    return out
+
+
 def _view(s: dict) -> dict:
     game, human = s["game"], s["human"]
     over = game.winning_color()
@@ -113,9 +127,12 @@ def _view(s: dict) -> dict:
                "type": a.action_type.value, "value": _jsonable(a.value)}
               for i, a in enumerate(game.playable_actions)]
              if your_turn else [])
+    model_color = next((c.value for c in game.state.colors if c != human), None)
     return {"game_id": s["id"], "board": s["board"], "players": [c.value for c in game.state.colors],
-            "human": human.value, "turn": game.state.num_turns, "your_turn": your_turn,
-            "legal": legal, "winner": over.value if over else None, **_snapshot(game.state)}
+            "human": human.value, "model_color": model_color,
+            "turn": game.state.num_turns, "your_turn": your_turn,
+            "legal": legal, "rolls": _rolls(game),
+            "winner": over.value if over else None, **_snapshot(game.state)}
 
 
 def _new_game(data: dict) -> dict:
@@ -259,16 +276,27 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
 
+def _default_opponent() -> str:
+    """Opponent default: the live Fireworks deployment from the env (FIREWORKS_MODEL,
+    set by `.env`). Deployment ids ROTATE — reading them from .env keeps this in sync
+    instead of hardcoding a stale id. Falls back to the value bot (no API key needed)."""
+    fw = os.environ.get("FIREWORKS_MODEL")
+    if fw and os.environ.get("FIREWORKS_API_KEY"):
+        return f"fireworks:{fw}"
+    return "value"
+
+
 def main():
     global MODEL_SPEC
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--model", default="value",
+    p.add_argument("--model", default=None,
                    help="opponent spec (e.g. fireworks:accounts/.../deployments/<id>, "
-                        "claude:..., or a bot like 'value'). Default: value bot (no API key).")
+                        "claude:..., or a bot like 'value'). Default: fireworks:$FIREWORKS_MODEL "
+                        "from .env if set, else the value bot.")
     p.add_argument("--port", type=int, default=8000)
     args = p.parse_args()
-    MODEL_SPEC = args.model
+    MODEL_SPEC = args.model or _default_opponent()
     print(f"Play server on http://localhost:{args.port}/viewer/play.html")
     print(f"opponent model: {MODEL_SPEC}")
     ThreadingHTTPServer(("", args.port), Handler).serve_forever()
