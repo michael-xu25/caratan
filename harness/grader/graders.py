@@ -1,70 +1,68 @@
-"""Run a single LLM grader and parse its verdict into a normalized record.
-
-A grader is just an `LLMBackend` (claude:… / openai:…) plus the shared prompt.
-Optional self-consistency: sample N times and take the majority category (use it
-on the highest-regret decisions where robustness matters).
+"""Run a single LLM grader (claude:… / openai:…) over one decision and return a
+per-criterion verdict. Optional self-consistency: majority `failed` per criterion.
 """
 from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass, field
-from typing import Optional
 
 from goldilocks_eval.agents.factory import make_backend
-from harness.grader.prompts import SYSTEM, build_user_prompt, parse_verdict
-from harness.grader.taxonomy import normalize_label
+from harness.grader.prompts import SYSTEM, build_user_prompt, parse_criteria
+from harness.grader.taxonomy import CRITERIA_BY_TYPE
 
 
 @dataclass
 class Verdict:
-    grader: str                       # backend name, e.g. "claude:claude-opus-4-8"
-    category: str                     # normalized taxonomy label
-    reasoning_consistency: Optional[float]
-    confidence: Optional[float]
-    explanation: str
-    ok: bool = True                   # False if the call/parse failed
-    samples: list[str] = field(default_factory=list)  # categories if self-consistency
+    grader: str
+    criteria: dict           # name -> {"score": int, "failed": bool, "reason": str}
+    summary: str = ""
+    ok: bool = True
 
 
-def _clip01(x) -> Optional[float]:
-    try:
-        return max(0.0, min(1.0, float(x)))
-    except (TypeError, ValueError):
-        return None
+def _full_criteria(dtype: str, parsed: list) -> dict:
+    """Index parsed criteria by name; fill any the grader omitted as a pass (score 2),
+    so every criterion is present (the aggregator denominator needs all of them)."""
+    by_name = {c["name"]: c for c in parsed}
+    out = {}
+    for name in CRITERIA_BY_TYPE[dtype]:
+        c = by_name.get(name)
+        if c is None:
+            out[name] = {"score": 2, "failed": False, "reason": "(not returned)"}
+        else:
+            out[name] = {"score": int(c.get("score", 2)),
+                         "failed": bool(c.get("failed", False)),
+                         "reason": str(c.get("reason", ""))[:200]}
+    return out
 
 
 def grade_once(backend, regret, decision: dict | None) -> Verdict:
-    user = build_user_prompt(regret, decision)
+    dtype = regret.decision_type
     try:
-        raw = backend.complete(SYSTEM, user)
+        raw = backend.complete(SYSTEM, build_user_prompt(regret, decision))
     except Exception as e:
-        return Verdict(backend.name, "none", None, None, f"(grader error: {e})", ok=False)
-    obj = parse_verdict(raw)
+        return Verdict(backend.name, _full_criteria(dtype, []), f"(grader error: {e})", ok=False)
+    obj = parse_criteria(raw, dtype)
     if obj is None:
-        return Verdict(backend.name, "none", None, None, "(unparseable verdict)", ok=False)
-    return Verdict(
-        grader=backend.name,
-        category=normalize_label(obj.get("category")),
-        reasoning_consistency=_clip01(obj.get("reasoning_consistency")),
-        confidence=_clip01(obj.get("confidence")),
-        explanation=str(obj.get("explanation", "")).strip(),
-    )
+        return Verdict(backend.name, _full_criteria(dtype, []), "(unparseable)", ok=False)
+    return Verdict(backend.name, _full_criteria(dtype, obj["criteria"]), obj["summary"])
 
 
 def grade(backend, regret, decision: dict | None, samples: int = 1) -> Verdict:
-    """Grade a decision; with samples>1 take the majority category (self-consistency)."""
     if samples <= 1:
         return grade_once(backend, regret, decision)
-    verdicts = [grade_once(backend, regret, decision) for _ in range(samples)]
-    good = [v for v in verdicts if v.ok] or verdicts
-    cats = [v.category for v in good]
-    winner_cat = Counter(cats).most_common(1)[0][0]
-    rep = next(v for v in good if v.category == winner_cat)  # representative verdict
-    rep.samples = cats
-    return rep
+    vs = [grade_once(backend, regret, decision) for _ in range(samples)]
+    good = [v for v in vs if v.ok] or vs
+    # majority `failed` per criterion across samples
+    merged = {}
+    for name in CRITERIA_BY_TYPE[regret.decision_type]:
+        fails = sum(1 for v in good if v.criteria[name]["failed"])
+        failed = fails > len(good) / 2
+        rep = next((v.criteria[name] for v in good if v.criteria[name]["failed"] == failed),
+                   good[0].criteria[name])
+        merged[name] = {"score": rep["score"], "failed": failed, "reason": rep["reason"]}
+    return Verdict(good[0].grader + f"×{samples}", merged, good[0].summary)
 
 
 def make_grader(spec: str):
-    """Build a grader backend from a spec (claude:… / openai:…). Temperature is 0
-    in those backends by default — keep it deterministic for grading."""
+    """Build a grader backend (claude:… / openai:…); both default to temperature 0."""
     return make_backend(spec)

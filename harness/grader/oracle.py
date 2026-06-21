@@ -26,9 +26,7 @@ from catanatron.models.player import Color, RandomPlayer
 from catanatron.models.enums import Action, ActionType, ActionRecord
 from catanatron.players.value import base_fn, DEFAULT_WEIGHTS
 
-# Decisions that are not real choices to grade (rolls and bookkeeping); regret is
-# ill-defined or trivially zero on these. We also skip any ply with <2 legal moves.
-_SKIP_TYPES = {"ROLL"}
+from harness.grader.context import decision_type_of, derive_state_tags
 
 
 def _value_fn():
@@ -62,6 +60,8 @@ class DecisionRegret:
     color: str
     action: list                      # the chosen [color, type, value]
     action_type: str
+    decision_type: str                # placement | trade | build_spend (taxonomy)
+    state_tags: list                  # frozen STATE_TAGS that hold at this decision
     num_legal: int
     value_chosen: float
     value_best: float
@@ -90,9 +90,11 @@ def compute_regrets(transcript: dict) -> list[DecisionRegret]:
         chosen = _to_action(ra)
         legal = list(game.playable_actions)
 
-        gradeable = (ra[1] not in _SKIP_TYPES and len(legal) >= 2)
+        dtype = decision_type_of(ra[1])
+        gradeable = (dtype is not None and len(legal) >= 2)
         if gradeable:
             color = chosen.color
+            tags = derive_state_tags(game, color)
             scored: list[tuple[float, Action]] = []
             for a in legal:
                 gc = game.copy()
@@ -111,7 +113,8 @@ def compute_regrets(transcript: dict) -> list[DecisionRegret]:
                     raw = max(0.0, value_best - value_chosen)
                     out.append(DecisionRegret(
                         ply=i, turn=None, color=ra[0], action=ra,
-                        action_type=ra[1], num_legal=len(legal),
+                        action_type=ra[1], decision_type=dtype, state_tags=tags,
+                        num_legal=len(legal),
                         value_chosen=value_chosen, value_best=value_best,
                         regret=raw,
                         regret_vp=raw / DEFAULT_WEIGHTS["public_vps"],

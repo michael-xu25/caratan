@@ -1,73 +1,77 @@
-# harness/grader — dual-grader pipeline
+# harness/grader — dual-grader weakness-discovery pipeline
 
-Turns game transcripts into a **ranked list of failure modes** for env generation,
-implementing the recommended design from `grading-rubric-proposal.md`.
+Turns game transcripts into a **ranked `(decision_type, criterion, tag)` fail-rate
+table** — the generation target for Michael's env gen *and* the before/after
+measurement baseline. Implements the shared contract in `grader-spec.md` +
+`MICHAEL-HANDOFF.md`, with a dual-grader + regret-oracle layer on top.
 
 ```
-transcripts ─▶ regret oracle (gate) ─▶ Claude + OpenAI categorize ─▶ reconcile ─▶ ranked failure modes
+transcripts ─▶ derive (decision_type, state_tags) + regret
+            ─▶ Claude + OpenAI score each criterion ─▶ reconcile (consensus-fail)
+            ─▶ aggregator: Wilson-ranked fail-rate table ─▶ env gen / before-after demo
 ```
 
-## The idea
+## The contract (shared with Michael — do not drift)
 
-The hard part of dual grading is merging disagreements. We sidestep most of it:
-the **regret oracle** (Catanatron's value function) objectively answers *"was this
-a mistake, and how bad?"*, so the two LLMs never vote on that — they only
-**categorize why** into a fixed taxonomy. That shrinks the merge to categorical
-labels, which are measurable.
+- `taxonomy.py` — **single source of truth** for the vocab: `decision_type`
+  (placement / trade / build_spend) × `criterion` (per type) × `state_tags`
+  (frozen set). The grader, the aggregator, and Michael's env generator all import
+  it. A weakness we *measure* and one Michael *generates for* must be the same
+  string. Append IDs; never rename mid-run.
+- `grader-spec.md` — the grader rubric/prompt + output schema.
+- `aggregator.py` — verdicts → `(criterion, tag)` buckets → **fail-rate** (not
+  count), Wilson lower-bound ranked (small-n flukes sink), `MIN_SAMPLES` floor;
+  `compare()` does the held-out before/after scoreboard. Run it standalone for a
+  synthetic demo: `python harness/grader/aggregator.py`.
+- `MICHAEL-HANDOFF.md` — env JSON schema, ground-truth rules, train/held-out
+  disjointness, Goldilocks difficulty.
 
-## Modules
+## Our layer on top of the spec
 
-- `oracle.py` — replays a transcript (deterministic, recorded ActionRecords) and
-  computes per-decision `regret = value(best legal) − value(chosen)`, in raw
-  value-fn units and `regret_vp` (VP-equivalents = `regret / public_vps`). Gates
-  decisions at a regret percentile (default 75th).
-- `taxonomy.py` — the closed-set failure-mode labels (+ `other`/`none`). Both
-  graders pick from this so labels are comparable.
-- `prompts.py` — the shared grading prompt (board + decision + stated reasoning +
-  **oracle context**) and a robust JSON verdict parser.
-- `graders.py` — runs one LLM grader (`claude:…` / `openai:…`) into a normalized
-  `Verdict`; optional self-consistency (majority of N samples).
-- `reconcile.py` — merges two verdicts: **consensus → oracle-anchored tie-break →
-  optional judge → unresolved**; averages numeric fields, keeps the spread and both
-  raw verdicts. Reports **Cohen's κ** (chance-corrected) per batch.
-- `pipeline.py` — orchestrates gate → dual-grade → reconcile → aggregate; ranks
-  failure modes by total VP-regret (= ROI to fix).
+- `context.py` — derives `decision_type` from the action and `state_tags` from the
+  **live engine state** (buildable nodes, robber adjacency, awards, VP standing).
+  Objective tags mean both graders share identical tags, so aggregator buckets
+  never split on a tag disagreement.
+- `oracle.py` — Catanatron value-fn **regret** per decision (deterministic replay).
+  Kept as an *auxiliary* objective signal on every graded decision (and given to
+  the graders as evidence) — NOT a gate, because the fail-rate denominator must be
+  unbiased.
+- `graders.py` — runs one LLM grader; optional self-consistency (majority `failed`).
+- `reconcile.py` — merges the two graders per criterion: **a criterion is failed
+  only when BOTH agree** (consensus-fail → high-precision metric). Keeps both raw
+  verdicts + per-criterion agreement; reports **Cohen's κ** overall and per
+  criterion, plus union (recall) vs consensus (precision) counts.
+- `pipeline.py` + `scripts/grade_transcripts.py` — orchestrate and emit the table.
 
 ## Usage
 
 ```bash
-# preview gating only — no API calls, free:
+# free preview: what gets graded, counts by decision_type + tags
 python scripts/grade_transcripts.py transcripts/selfplay --dry-run
 
-# full dual grade over a run:
-export ANTHROPIC_API_KEY="$(scripts/anthropic_api_key.sh)"
-export OPENAI_API_KEY="$(scripts/openai_api_key.sh)"
-python scripts/grade_transcripts.py transcripts/selfplay \
-    --grader-a claude:claude-opus-4-8 --grader-b openai:gpt-4o \
-    --judge claude:claude-opus-4-8      # optional tie-breaker; off by default
+# full dual grade (set both keys first):
+python scripts/grade_transcripts.py transcripts/selfplay --max-per-game 40
 ```
 
-Outputs `<run>/grading/findings.jsonl` (one per graded decision, both raw verdicts
-kept) and `<run>/grading/report.json` (ranked failure modes + agreement/κ).
+Outputs `<run>/grading/findings.jsonl` (one aggregator-ready grader object per
+decision, both raw verdicts kept) + `report.json` (weakness table + agreement).
 
-## Recommended defaults (and how to tune)
+## Cost note
 
-- **Gate** at the 75th regret percentile (`--gate-pct`) + 10% low-regret sample
-  (`--low-regret-rate`) to catch "lucky-right" reasoning failures and audit the
-  oracle. Raise `--gate-pct` to cut cost (these 400-cap games have ~300 decisions
-  each, so the gate matters).
-- **Merge**: consensus first, then oracle-anchored tie-break (free), then judge.
-- **Report two numbers** when measuring before/after: consensus rate (precision)
-  and union coverage (recall). κ audits the taxonomy — low-κ labels are fuzzy and
-  should be merged/redefined.
+These 400-cap games have ~230 gradeable decisions each → ~470 grader calls/game.
+Use `--max-per-game N` (a **uniform** sample — keeps the denominator unbiased) to
+bound cost. `--gate-pct` exists for regret-gating but biases the denominator toward
+hard decisions; prefer `--max-per-game`.
 
-## Notes / caveats
+## Decisions made integrating the two designs
 
-- The value fn weights VP at `3e14` ("win at all costs"), so VP-changing mistakes
-  dominate raw regret. `regret_vp` makes it legible; finer per-decision-type
-  normalization is a tunable ([DECIDE] in the proposal).
-- No human gold labels exist yet (`data/examples` `gold_action` is empty), so the
-  oracle is the objective anchor; add a calibration pass vs gold when labels land.
-- Players are gemma/qwen and graders are claude/openai — no family overlap, so no
-  self-preference bias. Keep it that way.
+1. The handoff files are canonical — adopted their vocab, schema, and fail-rate
+   aggregator wholesale (loop-closing with Michael).
+2. Kept the dual grader + Cohen's κ (the spec was single-grader) — consensus-fail
+   for a precision metric, agreement retained as confidence/audit signal.
+3. Kept regret as evidence + auxiliary cross-check, not a gate.
+4. `state_tags` derived objectively from the engine, not asked of the grader, so
+   the two graders' buckets always align.
+5. No human gold yet (`data/examples` labels empty) → the oracle is the objective
+   anchor; add a calibration pass against gold when labels land.
 ```
