@@ -31,14 +31,21 @@ dataset/
   "board_fingerprint": "fb639cbc9f8e",  // matches harness.runner._board_fingerprint
   "robber_coordinate": [0, 2, -2],
   "tiles": [ {"id":0,"coordinate":[0,0,0],"type":"RESOURCE_TILE","resource":"SHEEP","number":11}, ... ],
-  "ports": [ {"id":0,"resource":"ORE","direction":"WEST","nodes":[25,26,...]}, ... ],
-  "initial_state": { ...full catanatron.json.GameEncoder dump of the fresh game... }
+  "ports": [ {"id":0,"resource":"ORE","direction":"WEST","nodes":[25,26,...]}, ... ]
 }
 ```
 
 - `seed` is canonical: `Game(players, seed=seed, number_placement=...)` regenerates
-  the identical board. `tiles`/`ports`/`robber_coordinate`/`initial_state` are
-  saved for convenience and verification.
+  the identical board. `tiles`/`ports`/`robber_coordinate` are saved for
+  convenience and verification.
+- **Full serialized initial state** (the `catanatron.json.GameEncoder` dump) is
+  NOT stored per file — it is ~98% identical board geometry across every board,
+  so persisting it 400× was wasteful. Reconstruct it on demand from the seed:
+
+  ```python
+  from scripts.generate_initial_boards import initial_state_for_seed
+  state = initial_state_for_seed(board["seed"], board["number_placement"], board["vps_to_win"])
+  ```
 - `board_fingerprint` is computed the same way as the match runner, so a dataset
   board and a runner game on the same seed **provably** share a layout.
 

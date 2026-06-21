@@ -104,11 +104,11 @@ def build_board_record(seed: int, number_placement: str, vps_to_win: int) -> dic
         })
     ports.sort(key=lambda p: p["id"])
 
-    # Full serialized fresh state (state_index 0): a ready-to-load starting point
-    # for example-mining, so downstream code need not re-run Catanatron from the
-    # seed. Regenerable from `seed` -- kept for convenience and verification.
-    initial_state = json.loads(json.dumps(game, cls=GameEncoder))
-
+    # NOTE: we deliberately do NOT store the full GameEncoder dump per file. It is
+    # ~98% identical board geometry (nodes/edges/adjacency) repeated across every
+    # board; the only board-specific parts are `tiles` and `robber_coordinate`,
+    # already captured above. The full serialized initial state is fully
+    # reconstructible from `seed` on demand -- see `initial_state_for_seed`.
     return {
         "schema_version": SCHEMA_VERSION,
         "seed": seed,
@@ -119,8 +119,21 @@ def build_board_record(seed: int, number_placement: str, vps_to_win: int) -> dic
         "robber_coordinate": _coord(board.robber_coordinate),
         "tiles": land,
         "ports": ports,
-        "initial_state": initial_state,
     }
+
+
+def initial_state_for_seed(seed: int, number_placement: str = "official_spiral",
+                           vps_to_win: int = 10) -> dict:
+    """Reconstruct the full serialized fresh game state for a board on demand.
+
+    This is the GameEncoder dump that used to be stored per file as
+    `initial_state` -- identical bytes, just computed from the seed instead of
+    persisted (the geometry is the same for every board). Use it when a consumer
+    wants a ready-to-load catanatron state rather than the compact layout.
+    """
+    game = Game(_PLAYERS(), seed=seed, vps_to_win=vps_to_win,
+                number_placement=number_placement)
+    return json.loads(json.dumps(game, cls=GameEncoder))
 
 
 def assign_splits(board_ids: list[str], n_grader: int, meta_seed: int) -> dict[str, str]:
