@@ -60,7 +60,7 @@ def _static_board(g: dict) -> dict:
 
 def _snapshot(state) -> dict:
     """Exact per-ply state read from the engine (no reconstruction)."""
-    buildings, roads, hands, vp = {}, {}, {}, {}
+    buildings, roads, hands, vp, awards = {}, {}, {}, {}, {}
     for color in state.colors:
         bc = state.buildings_by_color[color]
         for nid in bc.get(SETTLEMENT, []):
@@ -75,9 +75,16 @@ def _snapshot(state) -> dict:
         hand["DEV"] = sum(state.player_state.get(f"P{i}_{d}_IN_HAND", 0) for d in _DEV_KEYS)
         hands[color.value] = hand
         vp[color.value] = get_actual_victory_points(state, color)
+        awards[color.value] = {
+            "road_len": state.player_state.get(f"P{i}_LONGEST_ROAD_LENGTH", 0),
+            "knights": state.player_state.get(f"P{i}_PLAYED_KNIGHT", 0),
+            "has_road": bool(state.player_state.get(f"P{i}_HAS_ROAD", False)),   # Longest Road (+2 VP)
+            "has_army": bool(state.player_state.get(f"P{i}_HAS_ARMY", False)),   # Largest Army (+2 VP)
+        }
     robber = state.board.robber_coordinate
     return {"buildings": buildings, "roads": roads,
-            "robber": list(robber) if robber else None, "hands": hands, "vp": vp}
+            "robber": list(robber) if robber else None,
+            "hands": hands, "vp": vp, "awards": awards}
 
 
 def build_view(transcript_path: Path) -> dict:

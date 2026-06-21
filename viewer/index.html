@@ -45,9 +45,10 @@
   .files { font-size: 13px; color: var(--muted); }
   table { width: 100%; font-size: 12px; border-collapse: collapse; }
   td { padding: 2px 0; }
-  .handrow { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
-  .cards { display: flex; gap: 7px; font-size: 13px; }
+  .handrow { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
+  .cards { display: flex; gap: 6px; font-size: 13px; }
   .card { white-space: nowrap; }
+  .awards { display: flex; gap: 6px; font-size: 12px; }
 </style>
 </head>
 <body>
@@ -96,7 +97,7 @@
 <script>
 const RES_COLOR = { WOOD:"#2f7d32", BRICK:"#c4502a", SHEEP:"#9ed16f", WHEAT:"#e6c14b",
                     ORE:"#8b97a6", DESERT:"#d8c79a" };
-const RES_ICON = { WOOD:"🌲", BRICK:"🧱", SHEEP:"🐑", WHEAT:"🌾", ORE:"⛏️", DEV:"🃏" };
+const RES_ICON = { WOOD:"🌲", BRICK:"🧱", SHEEP:"🐑", WHEAT:"🌾", ORE:"🪨", DEV:"🃏" };
 const RES_ORDER = ["WOOD","BRICK","SHEEP","WHEAT","ORE","DEV"];
 const PLAYER_COLOR = { RED:"#d83b3b", BLUE:"#2f74d0", ORANGE:"#e8862e", WHITE:"#e9eef2" };
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -235,19 +236,25 @@ function updatePanel(step) {
       <td><div class="vpbar"><div class="vpfill" style="width:${pct}%;background:${pcolor(c)}"></div></div></td>
       <td style="width:64px;text-align:right" class="muted">${v} · fin ${fv[c]??"?"}</td></tr>`;
   }).join("");
-  // resource cards in hand, per player
-  const hands = step.hands || {};
+  // resource cards in hand + Longest Road / Largest Army awards, per player
+  const hands = step.hands || {}, awards = step.awards || {};
   $("hands").innerHTML = DATA.players.map(c => {
-    const h = hands[c] || {};
+    const h = hands[c] || {}, aw = awards[c] || {};
     const cards = RES_ORDER.map(r => {
       const n = h[r] || 0;
       const dim = n === 0 ? "opacity:.3" : "";
       return `<span class="card" style="${dim}" title="${r}">${RES_ICON[r]}&thinsp;${n}</span>`;
     }).join("");
     const total = ["WOOD","BRICK","SHEEP","WHEAT","ORE"].reduce((s,r)=>s+(h[r]||0),0);
+    // gold = currently HOLDS the +2 VP award; dim = just the count
+    const lr = `<span title="longest road (${aw.has_road?'HOLDS +2 VP':'length'})" `
+             + `style="${aw.has_road?'color:#ffd24d;font-weight:700':'opacity:.55'}">🛣️${aw.road_len||0}</span>`;
+    const la = `<span title="knights played (${aw.has_army?'LARGEST ARMY +2 VP':'count'})" `
+             + `style="${aw.has_army?'color:#ffd24d;font-weight:700':'opacity:.55'}">⚔️${aw.knights||0}</span>`;
     return `<div class="handrow"><span class="chip" style="background:${pcolor(c)}">${c}</span>`
+         + `<span class="awards">${lr}${la}</span>`
          + `<span class="cards">${cards}</span>`
-         + `<span class="muted" style="margin-left:auto">${total} cards</span></div>`;
+         + `<span class="muted" style="margin-left:auto">${total}</span></div>`;
   }).join("");
 
   $("slider").value = idx;
