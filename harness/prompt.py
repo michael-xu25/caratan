@@ -22,7 +22,7 @@ SYSTEM_PROMPT_WITH_REASONING = SYSTEM_PROMPT
 # With reasoning OFF the model returns only the index — cheaper/faster, for
 # training/production runs where we don't want (or pay for) model reasoning.
 SYSTEM_PROMPT_ACTION_ONLY = (
-    "You are an expert Settlers of Catan player in a 1v1 game (first to 10 "
+    "You are an expert Settlers of Catan player in a 1v1 game (first to 15 "
     "victory points wins). You will be given the current game state and a "
     "numbered list of legal actions. Choose the single best action.\n\n"
     "Reply with ONLY a JSON object on one line:\n"

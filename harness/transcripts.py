@@ -226,10 +226,13 @@ def render_pair_report(normal, swapped, width: int = 100) -> str:
     c.print(t)
     c.print()
 
+    if normal.truncated or swapped.truncated:
+        c.print("[dim]note: turn cap reached — winner decided by victory-point lead[/dim]")
+
     # Verdict: did the same agent win regardless of seat?
     winners = {normal.winner, swapped.winner}
     if normal.winner is None or swapped.winner is None:
-        verdict = "INCONCLUSIVE — at least one game hit the turn limit."
+        verdict = "INCONCLUSIVE — at least one game was a true VP tie at the cap."
     elif winners == {"A"}:
         verdict = "A won BOTH seats → real edge for A (seat-independent)."
     elif winners == {"B"}:
