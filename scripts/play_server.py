@@ -40,6 +40,32 @@ GAMES: dict = {}
 LOCK = threading.Lock()
 MODEL_SPEC = "value"          # default opponent; --model overrides (e.g. the Qwen spec)
 
+# Interactive demo games are persisted HERE — deliberately SEPARATE from the
+# recorded transcripts/ (which stay read-only). This is temp demo storage: the
+# full serialized state (the context the model needs to move) + the move history
+# (incl. the initial placements) per game, rewritten on every new/fork/move.
+DEMO_DIR = REPO / "demo_games"
+
+
+def _persist(s: dict) -> None:
+    """Best-effort: dump this demo game's state + history to demo_games/<id>.json.
+    Never raises — persistence must not break the live demo."""
+    try:
+        DEMO_DIR.mkdir(exist_ok=True)
+        game = s["game"]
+        won = game.winning_color()
+        data = {
+            "id": s["id"], "seed": s["seed"], "human": s["human"].value,
+            "model": s["model_spec"], "turn": game.state.num_turns,
+            "winner": won.value if won else None,
+            "forked_from": s.get("forked_from"), "fork_ply": s.get("fork_ply"),
+            "history": s.get("history", []),                 # human + model moves (incl. placements)
+            "state": json.loads(json.dumps(game, cls=GameEncoder)),  # full context the model sees
+        }
+        (DEMO_DIR / f"{s['id']}.json").write_text(json.dumps(data))
+    except Exception:
+        pass
+
 
 def _board(game) -> dict:
     g = json.loads(json.dumps(game, cls=GameEncoder))
@@ -50,6 +76,7 @@ def _advance(s: dict) -> list:
     """Play model turns + all forced moves until it's the human's real decision
     (or the game ends). Returns the model's moves taken (with reasoning)."""
     game, human, model = s["game"], s["human"], s["model"]
+    hist = s.setdefault("history", [])
     moves, steps = [], 0
     while game.winning_color() is None and steps < 3000:
         cur = game.state.current_color()
@@ -59,8 +86,9 @@ def _advance(s: dict) -> list:
         action = pa[0] if cur == human else model.decide(game, pa)
         game.play_tick(decide_fn=lambda p, g, a, act=action: act)
         if cur != human and len(pa) > 1:            # a real model decision
-            moves.append({"action": render_action(action),
-                          "reasoning": model.pop_reasoning() or ""})
+            entry = {"player": cur.value, "action": render_action(action),
+                     "reasoning": model.pop_reasoning() or ""}
+            moves.append(entry); hist.append(entry)
         steps += 1
     return moves
 
@@ -88,7 +116,64 @@ def _new_game(data: dict) -> dict:
          "model_spec": spec, "seed": seed, "board": _board(game)}
     GAMES[s["id"]] = s
     moves = _advance(s)                              # model may move first
+    _persist(s)                                      # store demo state (incl. placements)
     return {"view": _view(s), "model_moves": moves, "seed": seed, "model": spec}
+
+
+def _to_action(ra):
+    """Rebuild an Action from a serialized [color, type, value] record."""
+    from catanatron.models.enums import Action, ActionType
+    atype = ActionType(ra[1]); v = ra[2]
+    if v is None:
+        value = None
+    elif atype == ActionType.MOVE_ROBBER:
+        coord, victim = v; value = (tuple(coord), Color[victim] if victim else None)
+    elif isinstance(v, list):
+        value = tuple(v)
+    else:
+        value = v
+    return Action(Color[ra[0]], atype, value)
+
+
+def _fork(data: dict) -> dict:
+    """Start an interactive game from a recorded transcript at a given ply: replay
+    the recorded actions [0..ply) deterministically (recorded results -> no RNG),
+    then the HUMAN takes over whoever is on turn and the MODEL plays the other seat."""
+    import catanatron.game as _cg
+    from catanatron.models.enums import ActionRecord
+    rel = str(data.get("transcript", "")).lstrip("/").replace(".view.json", ".json")
+    path = (REPO / rel).resolve()
+    if not str(path).startswith(str(REPO)) or not path.is_file():
+        return {"error": f"transcript not found: {rel}"}
+    d = json.loads(path.read_text()); g = d["game"]; records = g["action_records"]
+    ply = max(0, min(int(data.get("ply", 0)), len(records)))
+    spec = data.get("model") or MODEL_SPEC
+    _cg.TURNS_LIMIT = max(g.get("num_turns_cap", 400), len(records) + 5)
+    game = Game([RandomPlayer(Color.RED), RandomPlayer(Color.BLUE)],
+                seed=d["seed"], vps_to_win=10)
+    for rec in records[:ply]:                       # replay up to the fork point
+        action = _to_action(rec[0])
+        result = tuple(rec[1]) if isinstance(rec[1], list) else rec[1]
+        game.execute(action, validate_action=False,
+                     action_record=ActionRecord(action=action, result=result))
+    human = game.state.current_color()              # you take over whoever's on turn
+    model_color = Color.BLUE if human == Color.RED else Color.RED
+    agent = make_agent(spec, model_color, capture_reasoning=True)
+    s = {"id": uuid.uuid4().hex[:8], "game": game, "human": human, "model": agent,
+         "model_spec": spec, "seed": d["seed"], "board": _board(game),
+         "forked_from": rel, "fork_ply": ply}
+    GAMES[s["id"]] = s
+    moves = _advance(s)                             # skip forced moves to your decision
+    _persist(s)
+    return {"view": _view(s), "model_moves": moves, "seed": d["seed"], "model": spec,
+            "forked_from": rel, "fork_ply": ply}
+
+
+def _state(data: dict) -> dict:
+    s = GAMES.get(data.get("game_id"))
+    if s is None:
+        return {"error": "unknown game_id"}
+    return {"view": _view(s), "model_moves": [], "seed": s["seed"], "model": s["model_spec"]}
 
 
 def _move(data: dict) -> dict:
@@ -103,8 +188,11 @@ def _move(data: dict) -> dict:
     if not (0 <= idx < len(pa)):
         return {"error": "illegal index", "view": _view(s)}
     action = pa[idx]
+    s.setdefault("history", []).append({"player": s["human"].value,
+                                        "action": render_action(action)})
     game.play_tick(decide_fn=lambda p, g, a, act=action: act)
     moves = _advance(s)
+    _persist(s)
     return {"view": _view(s), "model_moves": moves}
 
 
@@ -131,6 +219,10 @@ class Handler(BaseHTTPRequestHandler):
                     return self._json(_new_game(data))
                 if self.path == "/api/move":
                     return self._json(_move(data))
+                if self.path == "/api/fork":
+                    return self._json(_fork(data))
+                if self.path == "/api/state":
+                    return self._json(_state(data))
         except Exception as exc:  # never 500 the UI silently
             return self._json({"error": f"{type(exc).__name__}: {exc}"}, 200)
         return self._json({"error": "not found"}, 404)

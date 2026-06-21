@@ -110,7 +110,10 @@
         <button id="last">⏭</button>
       </div>
       <input id="slider" type="range" min="0" max="0" value="0" />
-      <div class="row" style="justify-content:center"><span id="steplbl" class="muted">—</span></div>
+      <div class="row" style="justify-content:space-between">
+        <span id="steplbl" class="muted">—</span>
+        <button id="takeover" title="Play on from this position vs the model (does not change the transcript)" style="background:#7a4ea0">🎮 Take over from here</button>
+      </div>
     </div>
   </div>
 
@@ -376,12 +379,28 @@ async function initPicker(){
   $("picker").style.display = "";
   return manifest;
 }
+let SRC = null;   // path of the currently-loaded .view.json (for "take over from here")
 function loadUrl(url){
   fetch(url).then(r=>r.json()).then(d=>{
-    load(d);
+    load(d); SRC = url;
     history.replaceState(null, "", `?data=${url}`);
     const sel = $("runsel"); if (sel) sel.value = url;
   }).catch(()=>{});
+}
+
+// "Take over from here" — fork an interactive game at the current ply (read-only
+// on the transcript; the server replays into a fresh in-memory game). Needs the
+// play server running (scripts/play_server.py); on a plain file server it 404s.
+async function takeOver(){
+  if (!SRC) return;
+  const btn = $("takeover"); btn.disabled = true; btn.textContent = "forking…";
+  try{
+    const r = await fetch("/api/fork", {method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({transcript: SRC, ply: idx})});
+    const j = await r.json();
+    if (j.error || !j.view){ btn.textContent = "needs play server"; return; }
+    location.href = `play.html?game=${j.view.game_id}`;
+  }catch(e){ btn.textContent = "needs play server"; }
 }
 
 // ---- startup: ?data wins; else first run in the manifest ----
@@ -389,13 +408,14 @@ function loadUrl(url){
   const manifest = await initPicker();
   const q = params.get("data");
   if (q){
-    fetch(q).then(r=>r.json()).then(d=>{ load(d);
+    fetch(q).then(r=>r.json()).then(d=>{ load(d); SRC = q;
       const sel = $("runsel"); if (sel) sel.value = q;
       const s = params.get("step"); if (s!=null) go(+s);
     }).catch(()=>{});
   } else if (manifest){
     loadUrl(manifest.runs[0].games[0].view);
   }
+  const t = $("takeover"); if (t) t.onclick = takeOver;
 })();
 </script>
 </body>

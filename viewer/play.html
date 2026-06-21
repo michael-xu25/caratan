@@ -126,8 +126,13 @@ async function newGame(){ busy=true;$("log").className="muted";$("log").textCont
 async function move(i){ busy=true;panel();
   const r=await fetch("/api/move",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({game_id:V.game_id,index:i})});
   apply(await r.json()); }
+async function loadGame(id){ busy=true;$("log").className="muted";$("log").textContent="—";
+  const r=await fetch("/api/state",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({game_id:id})});
+  apply(await r.json()); }
 $("new").onclick=newGame;
-newGame();   // auto-start a game on load
+// ?game=<id> resumes/loads a forked game (handed off from the replay viewer); else fresh game.
+const _gid=new URLSearchParams(location.search).get("game");
+if(_gid) loadGame(_gid); else newGame();
 </script>
 </body>
 </html>
