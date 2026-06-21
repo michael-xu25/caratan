@@ -31,6 +31,10 @@ def _player_line(game: Game, color: Color, label: str) -> str:
     )
 
 
+# Pip count = the dots printed under a number on the board = the number of ways
+# two dice can make it. Pure board fact; shown neutrally (no ranking implied).
+PIPS = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 0, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1}
+
 # Action types whose `value` is a board node id (so we can annotate production).
 from catanatron.models.enums import ActionType  # noqa: E402
 
@@ -70,7 +74,8 @@ def _node_ports(game: Game) -> dict:
 
 
 def _node_brief(node_id, prod: dict, ports: dict) -> str:
-    parts = [f"{res} on {num}" for res, num in prod.get(node_id, ())]
+    parts = [f"{res} on {num} ({PIPS.get(num, 0)} pips)"
+             for res, num in prod.get(node_id, ())]
     s = ", ".join(parts) if parts else "no production"
     if node_id in ports:
         s += f", {ports[node_id]} port"
@@ -88,10 +93,12 @@ def render_board_summary(game: Game) -> str:
             continue
         by_res[getattr(res, "value", res)].append(num)
     lines = ["Tiles (each produces its resource when the two dice add up to its "
-             "number; the robber, if on a tile, stops it producing):"]
+             "number; pips = dots on that number; the robber, if on a tile, stops "
+             "it producing):"]
     for res in sorted(by_res):
         nums = sorted(by_res[res])
-        lines.append(f"  {res}: produces on " + ", ".join(str(n) for n in nums))
+        lines.append(f"  {res}: produces on " +
+                     ", ".join(f"{n} ({PIPS.get(n, 0)} pips)" for n in nums))
     ports = defaultdict(list)
     for n, label in _node_ports(game).items():
         ports[label].append(n)
@@ -164,8 +171,10 @@ CATAN_RULES = (
     "(1 resource) or city (2 resources) on a corner of that tile. Because two "
     "dice are added, the totals are not equally likely: there are 5 ways to roll "
     "a 6 or an 8, 4 ways to roll a 5 or 9, 3 ways for a 4 or 10, 2 ways for a 3 "
-    "or 11, and 1 way for a 2 or 12. In the board and action descriptions, "
-    "'SHEEP on 9' means a sheep tile that produces when the two dice add up to 9.\n\n"
+    "or 11, and 1 way for a 2 or 12. This count is the number's pip count - the "
+    "dots printed under it on the board. The board and action lists write a tile "
+    "as e.g. 'SHEEP on 9 (4 pips)', meaning a sheep tile that produces when the "
+    "two dice add up to 9.\n\n"
 
     "ROLLING A 7 AND THE ROBBER: if the two dice add up to 7, no tile produces. "
     "Instead the player who rolled moves the robber onto any tile (while the "
@@ -182,11 +191,11 @@ CATAN_RULES = (
     "at most one development card per turn, and not on the same turn you bought "
     "it (victory-point cards are the exception).\n\n"
 
-    "TRADING: on your turn you may trade resources with the bank, giving 4 of one "
-    "resource for 1 of any other (a 4:1 trade). If you own a settlement or city "
-    "on a port you get a better rate there: a generic port lets you trade any "
-    "3 matching resources for 1 (3:1), and a specific port lets you trade 2 of "
-    "its resource for 1 of any other (2:1).\n\n"
+    "TRADING: on your turn you may trade resources with the bank at 4 of one "
+    "resource for 1 of any other (4:1). If you own a settlement or city on a "
+    "port, you may instead trade at that port's ratio: a generic port is 3:1 "
+    "(any 3 matching resources for 1), and a resource-specific port is 2:1 "
+    "(2 of that resource for 1 of any other).\n\n"
 
     "A TURN, STEP BY STEP: first you roll the two dice (this produces resources, "
     "or triggers the robber on a 7). After rolling you may take as many actions "

@@ -26,6 +26,9 @@ from functools import lru_cache
 from typing import Any, List, Mapping, Optional
 
 # Pip count (number of dot-probabilities) for each dice number.
+# Pip count = dots printed under a number = ways two dice can make it. Board fact.
+PIPS = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 0, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1}
+
 # Reuse the SAME 1v1 rules primer the model plays with (goldilocks_eval.prompt),
 # so placement grading and live play share game knowledge — then the placement-
 # specific task + answer format. NOTE: keep this mechanics-only — no hint about
@@ -78,7 +81,7 @@ def _node_summary(node_int: int, tiles_by_coord: dict) -> str:
         t = tiles_by_coord.get(coord, {})
         res, num = t.get("resource"), t.get("number")
         if res and num:  # skip desert / non-resource
-            parts.append(f"{res} on {num}")
+            parts.append(f"{res} on {num} ({PIPS.get(num, 0)} pips)")
     body = ", ".join(parts) if parts else "no production"
     return f"{node_id_str(node_int)}: {body}"
 
@@ -86,11 +89,12 @@ def _node_summary(node_int: int, tiles_by_coord: dict) -> str:
 def render_board(serialized_state: Mapping,
                  legal_actions: Optional[List[Any]] = None) -> str:
     tiles_by_coord = _tiles_by_coord(serialized_state)
-    lines = ["Tiles (resource and the dice total it produces on):"]
+    lines = ["Tiles (resource, the dice total it produces on, and that number's "
+             "pips = dots on the board):"]
     for coord, t in sorted(tiles_by_coord.items()):
         res, num = t.get("resource"), t.get("number")
         if res and num:
-            lines.append(f"  {coord} {res} on {num}")
+            lines.append(f"  {coord} {res} on {num} ({PIPS.get(num, 0)} pips)")
         elif t.get("type") == "RESOURCE_TILE":
             lines.append(f"  {coord} DESERT")
 
