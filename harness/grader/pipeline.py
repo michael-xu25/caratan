@@ -16,7 +16,10 @@ from harness.grader.aggregator import flatten_grader_object, aggregate
 
 
 def _decisions_by_ply(transcript: dict) -> dict:
-    return {d.get("i", d.get("ply", k)): d for k, d in enumerate(transcript.get("decisions", []))}
+    # Key by list index k, which matches the oracle's r.ply (= action_records index).
+    # decisions[] is 1:1 with action_records by position; the transcript's own `ply`
+    # field is 1-based, so keying on it would misalign the grader context by one.
+    return {k: d for k, d in enumerate(transcript.get("decisions", []))}
 
 
 def _sample(regrets, per_game: int):
