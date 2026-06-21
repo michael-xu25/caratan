@@ -20,8 +20,8 @@ placement. Running while Michael sleeps; no sign-offs ~3–4h.
 | env | metric | before | after | notes |
 |---|---|---|---|---|
 | placement | top-3 hit | 0.68 | **1.000** | DONE — perfect top-3 on all 16 boards by step 29 |
-| maritime | mean reward | −0.46 | climbing | started at −0.46 (over-trading baseline), ▲ to −0.30 by step 4 |
-| build | mean reward | — | — | queued after maritime |
+| maritime | mean reward | −0.46 | **+0.10** | DONE — crossed negative→positive (stopped churning); 25 steps |
+| build | mean reward | — | running | started 05:19 (pass −0.96 / build-city +1.5) |
 
 NOTE: the per-step log prints "top3 <x>" for ALL envs; for maritime/build that
 number is actually **mean reward** (can be negative), and "optimal N/128" is the
