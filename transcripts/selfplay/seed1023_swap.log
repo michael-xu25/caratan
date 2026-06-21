@@ -1,0 +1,1968 @@
+──────────────────────────────────────── GAME seed1023_swap ────────────────────────────────────────
+seats : 
+BLUE=fireworks:accounts/fireworks/models/qwen2p5-7b-instruct#accounts/brickedup25/deployments/blpxet
+wj vs 
+RED=fireworks:accounts/fireworks/models/qwen2p5-7b-instruct#accounts/brickedup25/deployments/blpxetw
+j
+result: DRAW (turn limit reached, tied on VP)
+meta  : 400 turns · 217.592s · seed=1023 · BLUE 4VP / RED 4VP
+
+Board                                   
+╭─────────┬────────────────────────────╮
+│resource │ numbers (probability order)│
+├─────────┼────────────────────────────┤
+│BRICK    │ 5  9  11                   │
+│ORE      │ 4  10  10                  │
+│SHEEP    │ 9  4  3  12                │
+│WHEAT    │ 6  6  8  2                 │
+│WOOD     │ 8  5  3  11                │
+╰─────────┴────────────────────────────╯
+
+Decisions  (routine rolls/end-turns collapsed)
+
+── turn 0 ──
+  #1    BLUE  BUILD_SETTLEMENT       45
+        ctx[early] VP[BLUE=0 RED=0] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 54
+        from: BUILD_SETTLEMENT 0, BUILD_SETTLEMENT 1, BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, 
+BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 5, BUILD_SETTLEMENT 6, BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, 
+BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 11 (+42 more)
+        ↳ The game starts with no pieces on the board. We need to place our first settlement. The 
+best option is to place a settlement on a node that produces multiple resources, specifically WHEAT 
+and BRICK, as these are the most versatile resources. Node 45 produces WHEAT on 6 (5 pips) and is 
+next to a WHEAT 2:1 port, making it a strategic choice.
+  #2    BLUE  BUILD_ROAD             (45, 46)
+        ctx[early] VP[BLUE=1 RED=0] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 2
+        from: BUILD_ROAD (45, 46), BUILD_ROAD (45, 47)
+        ↳ As the first player, I should secure a settlement and a road to start expanding. Both 
+options (45, 46) and (45, 47) are valid, but I need to choose one. Settlements and cities are more 
+valuable than roads, so I should build a settlement.
+
+── turn 1 ──
+  #3    RED   BUILD_SETTLEMENT       0
+        ctx[early] VP[BLUE=1 RED=0] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 51
+        from: BUILD_SETTLEMENT 0, BUILD_SETTLEMENT 1, BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, 
+BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 5, BUILD_SETTLEMENT 6, BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, 
+BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 11 (+39 more)
+        ↳ As the first player, I should secure a settlement to produce resources early. The BRICK on
+5 (4 pips) and ORE on 4 (3 pips) produce frequently. Building at node 0 is a good choice because it 
+gives access to both resources and is far from the opponent's settlement, satisfying the distance 
+rule.
+  #4    RED   BUILD_ROAD             (0, 1)
+        ctx[early] VP[BLUE=1 RED=1] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 3
+        from: BUILD_ROAD (0, 1), BUILD_ROAD (0, 20), BUILD_ROAD (0, 5)
+        ↳ The game just started, and I need to establish my initial road connections. The node at 0 
+is already occupied by my settlement, so I can connect to nodes 1, 20, or 5. Node 1 is the best 
+choice as it allows me to connect to more potential future placements and resources.
+  #5    RED   BUILD_SETTLEMENT       28
+        ctx[early] VP[BLUE=1 RED=1] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 47
+        from: BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 6, 
+BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 
+11, BUILD_SETTLEMENT 12, BUILD_SETTLEMENT 13, BUILD_SETTLEMENT 14 (+35 more)
+        ↳ Given the limited starting resources and the need to establish a strong foundation, the 
+best initial move is to place a settlement. The settlements at nodes 0 and 45 are already occupied, 
+so we should look for a node that provides the most resources. Node 28 offers a 3:1 port and 
+produces ore, which is a valuable resource. It is also two edges away from node 0, satisfying the 
+distance rule.
+  #6    RED   BUILD_ROAD             (28, 29)
+        ctx[early] VP[BLUE=1 RED=2] hand[WO0 BR0 SH0 WH0 OR1] chose 1 of 2
+        from: BUILD_ROAD (28, 29), BUILD_ROAD (27, 28)
+        ↳ Need to expand roads to connect to new settlements. The road at (28, 29) connects to an 
+empty intersection and is closer to the port, which is beneficial for resource trading. The road at 
+(27, 28) is blocked by a blue settlement.
+
+── turn 2 ──
+  #7    BLUE  BUILD_SETTLEMENT       43
+        ctx[early] VP[BLUE=1 RED=2] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 44
+        from: BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 6, 
+BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 
+11, BUILD_SETTLEMENT 12, BUILD_SETTLEMENT 13, BUILD_SETTLEMENT 14 (+32 more)
+        ↳ Blue needs to secure a settlement on a productive tile. The WHEAT on 6 (5 pips) tile at 
+node 45 is a strong option, producing frequently. Blue already has a settlement there, so building a
+city would be ideal. However, Blue has no resources for a city yet. The next best option is to build
+a settlement on a productive WHEAT tile, like node 30, 31, or 40. Node 40 is connected to the 
+existing road, so it's a straightforward build.
+  #8    BLUE  BUILD_ROAD             (43, 44)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO1 BR0 SH0 WH0 OR1] chose 1 of 3
+        from: BUILD_ROAD (21, 43), BUILD_ROAD (43, 44), BUILD_ROAD (43, 47)
+        ↳ Need to build a road to connect to my settlement at 43. The road options are (21, 43), 
+(43, 44), and (43, 47). The best option is (43, 44) as it connects to a port (node 44) and allows 
+for future development.
+
+── turn 5 ──
+  #16   RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR0 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The robber is on the BRICK-producing tile, so trading for BRICK is the most valuable. Red 
+has 3 OR, which can be traded for 1 BRICK. Red needs resources to build and can use BRICK for roads.
+Trading for WHEAT, WOOD, or SHEEP would not be as beneficial given the current situation.
+
+── turn 8 ──
+  #23   BLUE  MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO3 BR0 SH0 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber needs to be moved to a productive tile to block resources. The WHEAT tile at 
+(0, 0, 0) produces on 2, 6, and 8, which are common rolls. Moving the robber there will block a 
+significant amount of resources. The opponent's settlement at (0, 0, 0) is a good target for 
+stealing.
+
+── turn 9 ──
+  #26   RED   MOVE_ROBBER            ((-2, 0, 2), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR1 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK producing tile (5, 9, 11). Moving the robber to a 
+non-producing tile is the best option to avoid resource loss. The tile at (2, -2, 0) is a 
+non-producing tile, and moving there will not cause any resource to stop producing. This is a safe 
+move that doesn't require any resources and prevents the opponent from stealing resources.
+
+── turn 11 ──
+  #31   RED   MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR1 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a wheat-producing tile (6, 6, 8), which produces on a roll of 
+6. Since my hand has 1 ore and 1 brick, I can build a road. Building a road would connect my 
+settlements and help me reach the distance rule for future settlements. Moving the robber is not 
+beneficial as it would only affect my opponent’s production and I have no development cards to play.
+
+── turn 12 ──
+  #34   BLUE  MOVE_ROBBER            ((1, -2, 1), C.RED)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO3 BR0 SH0 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber must be moved to prevent the opponent from gaining resources. The opponent has 
+a settlement at (0, 0, 0) which produces BRICK on a roll of 5 and 9, and ORE on a roll of 10. Moving
+the robber to (0, -1, 1) will stop the production of BRICK and ORE for the opponent on these rolls. 
+This action is critical to preventing the opponent from gaining resources and closing the VP gap.
+  #35   BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')
+        ctx[early] VP[BLUE=2 RED=2] hand[WO3 BR0 SH0 WH0 OR4] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE',
+'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Need to build a settlement to get resources and VP. The opponent has a brick-producing 
+tile and only one road, so taking bricks is beneficial. Blue has 3 ore and can trade 4 ore for 1 
+brick, getting a resource that is currently scarce and useful for building.
+
+── turn 13 ──
+  #38   RED   MOVE_ROBBER            ((-1, 2, -1), C.BLUE)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR1 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a WHEAT tile, so moving it will stop wheat production. The 
+opponent has more bricks and ore, so targeting their brick-producing tile (43) or ore-producing tile
+(45) is a good strategy. Moving the robber to either of these tiles will disrupt the opponent's 
+resource collection.
+  #39   RED   BUILD_ROAD             (27, 28)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO1 BR1 SH0 WH0 OR0] chose 1 of 8
+        from: END_TURN, BUILD_ROAD (1, 2), BUILD_ROAD (0, 20), BUILD_ROAD (10, 29), BUILD_ROAD (0, 
+5), BUILD_ROAD (1, 6), BUILD_ROAD (27, 28), BUILD_ROAD (29, 30)
+        ↳ Need to build a road to connect to the sheep port at node 28, as it provides a 2:1 trade 
+rate for sheep. This will allow us to trade sheep for other resources, which can be useful for 
+future development.
+
+── turn 14 ──
+  #42   BLUE  MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO2 BR1 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on a BRICK-producing tile. Moving the robber away will prevent the
+opponent from stealing resources this turn. The opponent has no settlements or cities on the 
+BRICK-producing tiles, so moving the robber to any of those tiles won't prevent a resource theft. 
+The best option is to move the robber to a WHEAT-producing tile, as it has a high pip count (5 pips)
+and the opponent has a settlement on a WHEAT-producing tile. Moving to (1, -1, 0) will move the 
+robber to a WHEAT-producing tile.
+  #43   BLUE  BUILD_ROAD             (45, 47)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO2 BR1 SH0 WH0 OR0] chose 1 of 7
+        from: END_TURN, BUILD_ROAD (19, 46), BUILD_ROAD (46, 48), BUILD_ROAD (40, 44), BUILD_ROAD 
+(45, 47), BUILD_ROAD (21, 43), BUILD_ROAD (43, 47)
+        ↳ Blue needs to build a road to connect to their existing settlements. The best option is to
+build a road from node 43 to node 47, as it connects to the existing settlement at node 45 and helps
+form a longer road. This also prevents the opponent from potentially building a road that would 
+compete for the longest road bonus.
+
+── turn 20 ──
+  #56   BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP')
+        ctx[early] VP[BLUE=2 RED=2] hand[WO5 BR0 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ The robber is on the BRICK tile, so I should move it to a tile that produces resources for
+the opponent. The RED player has a settlement on the BRICK-producing tile at (0, -1, 0). Moving the 
+robber there will stop BRICK production and allow me to steal from the opponent. I also need to 
+discard resources if I roll a 7.
+
+── turn 21 ──
+  #59   RED   MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR0 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a wheat-producing tile (6, 6, 8), which produces on 6 (5 pips) 
+and 8 (5 pips). Moving the robber to a different tile is the best immediate action. The most 
+strategic move would be to move the robber to a tile that produces resources for both players, as 
+this will reduce the opponent's resource production and potentially increase my own. Moving the 
+robber to a brick-producing tile (0, 0, 0) would be ideal, as it produces on 5 (4 pips) and 9 (4 
+pips), which are common rolls. This move also blocks the opponent's access to brick resources.
+
+── turn 26 ──
+  #70   BLUE  MOVE_ROBBER            ((2, 0, -2), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO3 BR0 SH1 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber should be moved to the ORE tile (10, 3 pips) to prevent the opponent from 
+producing ore. The opponent has 1 ore and 1 brick, and with a city, they can produce 2 ore per turn.
+Moving the robber will also allow me to steal resources from the opponent.
+
+── turn 33 ──
+  #85   RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR3 SH0 WH0 OR2] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has more brick and ore than I do, and I need resources to build. Trading 3 
+bricks for sheep or wheat would be beneficial, as I have more sheep and wheat in my hand. Trading 
+for wood is not ideal as I have no wood-producing tiles. Trading for ore is also not ideal as I have
+no ore-producing tiles. Trading for sheep is better as I can use it to build settlements.
+
+── turn 34 ──
+  #88   BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[early] VP[BLUE=2 RED=2] hand[WO5 BR0 SH1 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ The opponent has more ore and needs to buy development cards. Trading 4 wood for ore is 
+beneficial. Blue has 5 wood and can trade for ore, which is scarce for the opponent.
+
+── turn 36 ──
+  #93   BLUE  MOVE_ROBBER            ((1, -2, 1), C.RED)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO1 BR0 SH1 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on a wheat-producing tile (2, 0, -2). Moving the robber to a 
+different tile is crucial to prevent resource theft. The most valuable tile to block is the one 
+producing wheat on a 6, which is at (2, -1, 1). Moving the robber there will block the opponent from
+stealing wheat, which is the most valuable resource. No other development cards or actions are 
+necessary at this moment.
+
+── turn 37 ──
+  #96   RED   MOVE_ROBBER            ((1, 1, -2), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR0 SH1 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a wheat-producing tile, and moving it off would allow wheat 
+production. The opponent has more ore and sheep, so targeting their settlements with the robber is a
+good strategy. Moving the robber to (1, 1, -2) would steal from the opponent without affecting any 
+of my own tiles.
+
+── turn 40 ──
+  #103  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO1 BR0 SH1 WH0 OR4] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ [fallback: ValueError: model returned no valid action index] played MOVE_ROBBER
+
+── turn 42 ──
+  #108  BLUE  MOVE_ROBBER            ((0, -1, 1), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO1 BR0 SH2 WH0 OR4] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Need to move the robber to block a resource. Red is on 0, 28, and has a settlement on 28. 
+Moving robber to (0, -1, 1) blocks BRICK production on 5 and 9, which are key numbers.
+  #109  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')
+        ctx[early] VP[BLUE=2 RED=2] hand[WO1 BR0 SH2 WH0 OR4] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE',
+'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Blue needs resources to build and advance. The opponent has no sheep or wheat, making them
+weak in trades. The robber is on the ORE tile, which produces on 4, 10, and 10. Trading ORE for 
+other resources is the best option given the opponent's hand.
+
+── turn 44 ──
+  #114  BLUE  BUILD_ROAD             (19, 46)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO3 BR1 SH2 WH0 OR0] chose 1 of 6
+        from: END_TURN, BUILD_ROAD (19, 46), BUILD_ROAD (46, 48), BUILD_ROAD (40, 44), BUILD_ROAD 
+(21, 43), BUILD_ROAD (43, 47)
+        ↳ Need resources to build. Can't build a settlement or city without wood and brick. Ports 
+are available for BRICK and ORE, but no immediate need. Best option is to build a road to connect to
+an existing settlement.
+
+── turn 47 ──
+  #121  RED   MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR1 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK-producing tile at (0, -1, 1). Moving the robber to a 
+non-producing tile will prevent the opponent from stealing resources. The opponent has 2 brick and 2
+ore, and their longest road is 3, so they could potentially use the robber to steal brick or ore. 
+Moving the robber to a non-producing tile will prevent this. The most strategic move is to move the 
+robber to a tile that doesn't produce any resources.
+
+── turn 50 ──
+  #128  BLUE  MOVE_ROBBER            ((0, 2, -2), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO2 BR0 SH2 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK producing tile (0, 0, 0), which produces on 5 and 9. 
+Moving the robber to a tile that produces more resources for me is key. The WHEAT tile (6, 6, 8) 
+produces on 6 and 8, and is a good target as it has a 5-pip count, meaning it's likely to produce 
+frequently. Blue has 2 wheat in hand, so moving the robber there will allow Blue to benefit from the
+WHEAT tile's production. No other immediate action can be taken without moving the robber.
+
+── turn 55 ──
+  #139  RED   MOVE_ROBBER            ((2, 0, -2), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR2 SH0 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on a brick-producing tile, which is valuable. Moving the robber to
+a tile that produces more resources would be beneficial. The tile at (2, -2, 0) produces wood (4 
+pips) and is a good target. No opponent has resources that can be stolen by moving the robber, so I 
+will move the robber there.
+  #140  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'WHEAT')
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR2 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The robber is on a brick-producing tile, and the opponent has more brick resources. 
+Trading ore for brick would benefit the opponent. Instead, I should focus on getting more resources 
+to build and improve my settlements. I have 3 settlements left and can build a road. Building a road
+will connect to my existing settlement at node 28, which is a good position to get more resources.
+
+── turn 59 ──
+  #149  RED   MOVE_ROBBER            ((-2, 2, 0), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR2 SH0 WH1 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK producing tile (2, 0, -2). Moving the robber will 
+prevent the opponent from stealing resources. The opponent has 4 brick resources and 2 settlements 
+near the BRICK producing tile. Moving the robber to a non-producing tile is the best option to 
+prevent resource theft. The closest non-producing tile is (2, -2, 0) which is a WOOD producing tile 
+(2 pips).
+
+── turn 60 ──
+  #152  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[early] VP[BLUE=2 RED=2] hand[WO4 BR0 SH2 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ The opponent has a strong position with 2 VP and a longest road of 2. I need to build a 
+settlement to get VP. The only BRICK producing tile is at node 28, which is also a port for 2:1 
+BRICK trade. I can trade 4 WOOD for 1 BRICK, which will allow me to build a settlement.
+
+── turn 62 ──
+  #157  BLUE  MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR0 SH2 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on a wheat-producing tile (tile at (-2, 2, 0)). Moving the robber 
+to a different tile will prevent the opponent from stealing resources. The opponent has 1 wheat and 
+1 ore, so moving the robber to a tile that produces ore will prevent the opponent from gaining ore. 
+The tile at (1, -1, 0) produces ore on a roll of 10, which can be rolled 3 ways. Moving the robber 
+to this tile will prevent the opponent from gaining ore, which is valuable for future development 
+card purchases.
+
+── turn 63 ──
+  #160  RED   MOVE_ROBBER            ((0, -1, 1), None)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR2 SH0 WH1 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a WHEAT-producing tile (6, 6, 8), which produces on 6 (5 pips).
+Moving the robber will stop this production and potentially allow us to steal resources. The 
+opponent has more ore and sheep, so targeting the ORE or SHEEP tiles would be beneficial. Moving to 
+(1, -1, 0) would target the ORE tile (4, 10, 10), which produces on 10 (3 pips). This is a good move
+as it stops production and potentially steals resources.
+
+── turn 64 ──
+  #163  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR0 SH2 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Need resources to build. The opponent has a settlement on the BRICK-producing tile (0, -1,
+1) and a settlement on the WHEAT-producing tile (28, 29). Moving the robber to these tiles would 
+prevent the opponent from collecting resources. Moving to the BRICK tile (0, -1, 1) is more 
+strategic as it blocks the opponent from collecting BRICKs, which are needed for building. No 
+development cards to play, so moving the robber is the best action.
+
+── turn 66 ──
+  #168  BLUE  MOVE_ROBBER            ((0, 1, -1), C.RED)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR1 SH2 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ I need to gain resources to reach 10 VP. Building a settlement or road is most efficient. 
+The BRICK port at node 32 is a good option for gaining BRICKs. The robber is currently on a 
+BRICK-producing tile, so moving it there would be beneficial.
+
+── turn 68 ──
+  #173  BLUE  BUY_DEVELOPMENT_CARD   
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR1 SH2 WH1 OR3] chose 1 of 2
+        from: END_TURN, BUY_DEVELOPMENT_CARD
+        ↳ The opponent has 2 VP and I have 2 VP, so I need to gain more VP to win. I have enough 
+resources to build a settlement or road but not a city. Building a settlement or road will help me 
+expand and potentially block the opponent's longest road. I also have enough resources to buy a 
+development card, which could be useful in the future. However, the opponent has only 2 VP, so I 
+should focus on expanding first to secure more VP.
+
+── turn 70 ──
+  #177  BLUE  PLAY_KNIGHT_CARD       
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR1 SH1 WH0 OR2] chose 1 of 2
+        from: PLAY_KNIGHT_CARD, ROLL
+        ↳ Needs resources to build and reach 10 VP. Can play a knight card to move the robber and 
+steal from the opponent, or roll to gain resources. Playing a knight card is more strategic as it 
+can disrupt the opponent's plans and gain an immediate advantage.
+  #178  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO0 BR1 SH1 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on (0, 1, -1), which is producing ore. Moving the robber will stop
+ore production and potentially steal resources from the opponent. The best option is to move the 
+robber to a tile that produces a resource I need and that the opponent has a settlement on. Moving 
+to (0, 0, 0) would steal from the opponent's ore-producing tile.
+
+── turn 72 ──
+  #184  BLUE  BUILD_ROAD             (19, 20)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO2 BR1 SH1 WH0 OR4] chose 1 of 11
+        from: END_TURN, BUILD_ROAD (19, 20), BUILD_ROAD (46, 48), BUILD_ROAD (40, 44), BUILD_ROAD 
+(21, 43), BUILD_ROAD (19, 21), BUILD_ROAD (43, 47), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 
+'BRICK'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE',
+'ORE', 'WOOD'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ I need to build a road to connect my settlements and expand my road network. The road at 
+(19, 20) is a good choice as it connects my existing road and settlement, and does not block any 
+potential future placements.
+  #185  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')
+        ctx[early] VP[BLUE=2 RED=2] hand[WO1 BR0 SH1 WH0 OR4] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE',
+'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Need to build a settlement to increase resource collection. The opponent has 2 brick, so a
+maritime trade for brick is the best option. The BRICK 2:1 port at node 32 or 33 is the best choice.
+  #186  BLUE  BUILD_ROAD             (43, 47)
+        ctx[early] VP[BLUE=2 RED=2] hand[WO1 BR1 SH1 WH0 OR0] chose 1 of 8
+        from: END_TURN, BUILD_ROAD (0, 20), BUILD_ROAD (46, 48), BUILD_ROAD (40, 44), BUILD_ROAD 
+(20, 22), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21), BUILD_ROAD (43, 47)
+        ↳ Blue needs to build roads to expand and potentially claim the longest road bonus. The road
+at (43, 47) is the most strategic as it connects two existing settlements and can help Blue claim 
+the longest road bonus.
+
+── turn 75 ──
+  #193  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'WHEAT')
+        ctx[mid] VP[BLUE=4 RED=2] hand[WO0 BR2 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a longer road and more VP, so I need to build a city to gain more VP. The
+robber is on a brick-producing tile, and I have 2 bricks in my hand, which can be used to build a 
+city. The opponent has no resources in hand, so they cannot play a development card to block me. 
+Building a city on node 28 will collect 2 wheat and 2 ore, which is valuable.
+
+── turn 80 ──
+  #204  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=2] hand[WO4 BR0 SH1 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ The opponent has 2 brick and 1 wheat, which are both scarce resources. Trading 4 wood for 
+1 brick would help balance my resource hand and get me closer to building a settlement or city. The 
+other trades are either for resources I have plenty of or are not as valuable.
+
+── turn 84 ──
+  #213  BLUE  MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=2] hand[WO0 BR1 SH1 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK-producing tile at (0, 0, 0). Moving the robber from 
+this tile will maximize the production for the next roll. The BRICK-producing tiles are on 5, 9, and
+11, and the most likely roll is 6, which produces BRICK. Moving the robber to a non-BRICK-producing 
+tile will prevent BRICK production and allow BLUE to collect BRICKs from the other producing tiles 
+on the next roll. Moving to (1, -1, 0) will move the robber to a non-BRICK-producing tile, 
+preventing BRICK production.
+
+── turn 85 ──
+  #216  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=2] hand[WO0 BR3 SH0 WH1 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a significant lead in VP and longest road. Trading for sheep is the best 
+option as it can help to build a settlement or city, and sheep is a versatile resource. The 2:1 
+trade at node 32 or 33 is the best option for sheep.
+
+── turn 88 ──
+  #223  BLUE  BUILD_ROAD             (46, 48)
+        ctx[mid] VP[BLUE=4 RED=2] hand[WO2 BR1 SH1 WH0 OR1] chose 1 of 7
+        from: END_TURN, BUILD_ROAD (0, 20), BUILD_ROAD (46, 48), BUILD_ROAD (40, 44), BUILD_ROAD 
+(20, 22), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21)
+        ↳ Blue needs to build a road to maintain a potential longest road and to improve resource 
+collection. Building road (46, 48) connects to the existing road at node 46 and extends to a new 
+node, potentially extending the longest road to 7 or more. This action also allows for better 
+resource collection from the nearby WHEAT and ORE tiles.
+
+── turn 89 ──
+  #226  RED   MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[mid] VP[BLUE=4 RED=2] hand[WO0 BR1 SH1 WH1 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a BRICK-producing tile (5, 9, 11), and moving it would not 
+benefit me since I don't have any BRICKs in my hand. My opponent has a longer road and more VP, so I
+need to take action to either gain resources or hinder my opponent. Building a settlement at node 28
+would give me access to WHEAT and WOOD, which I can trade at the port, and it's the only action that
+doesn't involve moving the robber.
+  #227  RED   BUY_DEVELOPMENT_CARD   
+        ctx[mid] VP[BLUE=4 RED=2] hand[WO0 BR1 SH1 WH1 OR1] chose 1 of 2
+        from: END_TURN, BUY_DEVELOPMENT_CARD
+        ↳ The opponent has a significant lead in VP and longest road. Buying a development card is 
+the only action available, which could help catch up.
+
+── turn 96 ──
+  #242  BLUE  MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO3 BR0 SH1 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber should be moved to the ORE tile at (0, 0, 0) to prevent the opponent from 
+producing ore. This tile produces ore on 4 (3 pips), 10 (3 pips), and 10 (3 pips). Moving the robber
+here will stop the opponent from gaining ore and potentially disrupt their longest road. No other 
+action is more beneficial given the current state.
+
+── turn 100 ──
+  #251  BLUE  MOVE_ROBBER            ((0, 1, -1), C.RED)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO5 BR0 SH1 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber must be moved to block a key resource tile, preferably WHEAT or ORE, as they 
+are most valuable. The opponent has a settlement on node 28, which is near a WHEAT tile (produces on
+6), so moving the robber there would be beneficial. Node 28 is also connected to the opponent's 
+road, so it's a strategic move.
+  #252  BLUE  BUILD_ROAD             (20, 22)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO5 BR1 SH1 WH0 OR1] chose 1 of 11
+        from: END_TURN, BUILD_ROAD (0, 20), BUILD_ROAD (48, 49), BUILD_ROAD (40, 44), BUILD_ROAD 
+(20, 22), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 
+'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 
+'WOOD', 'WOOD', 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ Blue needs to build roads to extend their longest road and gain more production. The road 
+between (20, 22) is a good option as it extends the longest road and connects to a new settlement. 
+Blue currently has 5 wheat, which can be used for future development cards or settlements.
+
+── turn 106 ──
+  #265  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO8 BR0 SH1 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ Blue needs to build a settlement to increase resource production and VP. The BRICK port at
+node 28 is a good option as it provides a 3:1 trade rate and is close to Blue's existing 
+settlements. Blue can afford the settlement cost and has the required resources in hand.
+  #266  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO4 BR0 SH2 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ Need resources to build. The opponent has an ore card and only 1 brick, so taking ore and 
+brick from them would be beneficial. The maritime trades offer 4 wood for 1 ore or 1 brick, which is
+a good deal. Blue has 4 wood and can afford to give up 4 wood to get 2 ore and 2 brick, gaining 2 VP
+and resources for building.
+
+── turn 113 ──
+  #281  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR1 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a significant longest road advantage and more VP. I need to play a knight
+to counter this. The robber is on a brick-producing tile, and I can trade ore for brick at a 3:1 
+rate, which is favorable. However, the opponent has a monopoly on sheep, so trading sheep is not 
+beneficial. Trading ore for brick is the best option.
+
+── turn 114 ──
+  #284  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR1 SH2 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a BRICK-producing tile, so moving it will stop BRICK 
+production. The opponent has a settlement on a BRICK-producing tile (node 28), so stealing from them
+is a good option. The opponent has 2 BRICKs, so taking 1 is beneficial.
+
+── turn 115 ──
+  #287  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR1 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber needs to be moved to block a key resource tile. The opponent has 3 brick and 3 
+ore, so blocking BRICK 5 or ORE 10 is critical. The opponent's longest road is 7, so we need to 
+disrupt it. Moving the robber to BRICK 5 (9, 4 pips) or ORE 10 (3 pips) would be beneficial. BRICK 5
+is more critical given the opponent's resources.
+
+── turn 116 ──
+  #290  BLUE  MOVE_ROBBER            ((0, -1, 1), None)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR2 SH2 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK tile (0, -1, 0), which produces BRICK when the dice 
+add up to 5 or 9. Moving the robber away from this tile will prevent the opponent from stealing 
+resources. The opponent has a settlement on node 28, which is connected to the BRICK tile. Moving 
+the robber to node (1, -1, 1) will prevent the opponent from stealing resources from the BRICK tile.
+This is the best immediate action to take.
+
+── turn 119 ──
+  #297  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'ORE')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR3 SH0 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a significant longest road advantage (7 vs 2). I need to extend my road 
+network to compete. The opponent has more ore, which is crucial for city upgrades. Trading ore for 
+brick is necessary to build roads. The 2:1 port for brick is available.
+
+── turn 122 ──
+  #304  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR2 SH2 WH0 OR5] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE',
+'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ The opponent has a development card and only 3 ore, making it likely they are playing a 
+monopoly. I should trade ore for brick, wood, or wheat to mitigate this risk. Trading ore for brick 
+or wood is less beneficial, so I should trade for wheat to gain a resource that is less likely to be
+monopolized.
+
+── turn 123 ──
+  #307  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR0 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a larger longest road (7 vs 2) and more VP (4 vs 3). I need to build to 
+increase my longest road and VP. The robber is on the ORE tile, which produces 3 pips. Building a 
+road to connect to my settlement at 0 would help me get the ORE production. The maritime trades are 
+not beneficial as I have no resources to give and need resources to build.
+
+── turn 124 ──
+  #310  BLUE  BUILD_ROAD             (22, 49)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO2 BR3 SH2 WH0 OR1] chose 1 of 8
+        from: END_TURN, BUILD_ROAD (0, 20), BUILD_ROAD (48, 49), BUILD_ROAD (22, 49), BUILD_ROAD 
+(22, 23), BUILD_ROAD (40, 44), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21)
+        ↳ Need to build a road to expand and potentially block the opponent. Building road (22, 49) 
+connects to the existing road network and blocks the opponent's settlement at 28.
+  #311  BLUE  BUILD_ROAD             (22, 23)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO1 BR2 SH2 WH0 OR1] chose 1 of 8
+        from: END_TURN, BUILD_ROAD (0, 20), BUILD_ROAD (48, 49), BUILD_ROAD (22, 23), BUILD_ROAD 
+(40, 44), BUILD_ROAD (49, 50), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21)
+        ↳ Blue needs to build roads to connect to new settlements or cities. Building road (22, 23) 
+connects to a potential new settlement or city and is the most strategic move.
+
+── turn 128 ──
+  #320  BLUE  BUILD_ROAD             (49, 50)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO2 BR1 SH2 WH0 OR1] chose 1 of 9
+        from: END_TURN, BUILD_ROAD (0, 20), BUILD_ROAD (23, 52), BUILD_ROAD (48, 49), BUILD_ROAD (6,
+23), BUILD_ROAD (40, 44), BUILD_ROAD (49, 50), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21)
+        ↳ Blue needs to build a road to connect to the next available settlement. The best option is
+to connect to settlement@45, which is at node 49. This will allow Blue to build a settlement or city
+in the next turn.
+
+── turn 133 ──
+  #331  RED   MOVE_ROBBER            ((-1, 2, -1), C.BLUE)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR2 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a brick-producing tile, so moving it will stop brick 
+production. The opponent has a large longest road and more VP, so I need to disrupt their road. 
+Moving the robber to a tile with a brick-producing tile (46) will stop it from producing and could 
+disrupt the opponent's road. There are no development cards to play, and no immediate need to build 
+as I lack resources for a settlement or city.
+  #332  RED   BUILD_ROAD             (0, 20)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO1 BR2 SH0 WH0 OR1] chose 1 of 9
+        from: END_TURN, BUILD_ROAD (1, 2), BUILD_ROAD (0, 20), BUILD_ROAD (8, 27), BUILD_ROAD (26, 
+27), BUILD_ROAD (10, 29), BUILD_ROAD (0, 5), BUILD_ROAD (1, 6), BUILD_ROAD (29, 30)
+        ↳ The opponent has a large longest road (9) and more VP. I need to build to gain VP and road
+length. The most strategic move is to build a road that connects to my existing settlement and 
+extends my road network, aiming to grow my longest road. Building road (0, 20) connects to my 
+settlement at 0 and extends my road network.
+
+── turn 134 ──
+  #335  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO4 BR0 SH2 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ Blue needs to build a settlement to increase VP and resource collection. The only open 
+port for Blue is the WOOD 2:1 port at node 38 or 39. Building at node 38 or 39 allows Blue to trade 
+2 wood for 1 of any resource, which is beneficial given the current resource counts.
+
+── turn 143 ──
+  #354  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR1 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a significant longest road (9 vs 2), and is likely to continue extending 
+it. I need to play a knight card to counter this, as it will move the robber and potentially disrupt
+their road. I have 3 ore, which is the only resource I can use to play a knight card. After playing 
+the knight, I can move the robber to block one of the opponent's road extensions.
+
+── turn 152 ──
+  #373  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR0 SH3 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The opponent has a 2 VP lead and 1 development card. Moving the robber to block the WHEAT 
+producing tiles (2, 6, 6, 8) is critical. The opponent's settlement at node 28 is on a WHEAT 
+producing tile, so moving the robber there will prevent the opponent from collecting WHEAT. The 
+opponent has 2 BRICK and 1 ORE, which are needed for development cards, so blocking WHEAT is more 
+valuable than BRICK or ORE.
+  #374  BLUE  MARITIME_TRADE         ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR0 SH4 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'), MARITIME_TRADE
+('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'), MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 
+'ORE'), MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD')
+        ↳ The opponent has a city on node 28, which is producing brick and wheat. I need resources 
+to build a settlement or road. Trading 4 sheep for 1 brick or wheat is the best option to get the 
+resources needed for building.
+
+── turn 155 ──
+  #381  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR2 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber should be moved to the BRICK-producing tile (5, 9, 11) to prevent the opponent 
+from collecting resources. The opponent has a settlement at 43 and a road connecting to the BRICK 
+tile, so moving the robber there will stop BRICK production and potentially steal resources from the
+opponent.
+
+── turn 157 ──
+  #386  RED   MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR2 SH0 WH0 OR2] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ [fallback: ValueError: model returned no valid action index] played MOVE_ROBBER
+
+── turn 160 ──
+  #393  BLUE  BUILD_ROAD             (23, 52)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO2 BR1 SH0 WH0 OR1] chose 1 of 8
+        from: END_TURN, BUILD_ROAD (23, 52), BUILD_ROAD (48, 49), BUILD_ROAD (50, 51), BUILD_ROAD 
+(6, 23), BUILD_ROAD (40, 44), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21)
+        ↳ I need to build a road to connect my settlements and expand my road network. Building road
+(23, 52) is the best option as it connects my settlement at 45 to a port, allowing me to trade at a 
+3:1 rate.
+
+── turn 161 ──
+  #396  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR2 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ Need to manage resources and prevent opponent from extending longest road. Blue has a long
+road and is close to extending it. Trading ore for brick or wood would not help much. Trading ore 
+for wheat could help, but the 3:1 port is better. Trading ore for sheep is not useful. Best to play 
+knight card to prevent opponent from extending longest road.
+  #397  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR3 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a large longest road and 2 ore, which could be used for a city. I need to
+build a road to expand my network and potentially claim the longest road. Trading is not beneficial 
+with my current hand. The robber is on a brick-producing tile, so trading for brick is not 
+advantageous. I should build a road to expand.
+
+── turn 165 ──
+  #406  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR0 SH1 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The opponent has a significant lead in VP and longest road. I need to take action to catch
+up. Moving the robber is my best option, as it can disrupt the opponent's resource production. The 
+(1, -1, 0) move targets the BRICK-producing tile (5, 4 pips), which is currently producing for the 
+opponent. This move also prevents the opponent from gaining BRICKs this turn.
+
+── turn 167 ──
+  #411  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR0 SH1 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a significant longest road advantage. Trading ore for brick or wheat 
+would not help much. Trading ore for wood or sheep would not be optimal either. The best option is 
+to trade ore for brick, as it might help in future road building.
+
+── turn 169 ──
+  #416  RED   MOVE_ROBBER            ((0, -1, 1), None)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR1 SH1 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on (1, -1, 0), which is a brick-producing tile. Moving the robber 
+away will prevent the opponent from stealing resources. The opponent has 3 ore cards, which are 
+valuable, so targeting a tile with ore production is crucial. Moving the robber to (0, -1, 1) will 
+stop the brick-producing tile (4 pips) and also block a potential ore-producing tile (3 pips).
+
+── turn 173 ──
+  #425  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR3 SH1 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a large longest road and many ore, which is a key resource for cities. I 
+need to extend my road network to avoid being cut off and to build more settlements and cities. The 
+3:1 sheep port is the best option for a trade, as I have 3 sheep and can get 1 wood, which I need 
+for future road and settlement building.
+
+── turn 174 ──
+  #428  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO1 BR0 SH0 WH0 OR4] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE',
+'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ The robber is on the BRICK tile, so I should move it to a tile that doesn't produce any 
+resources for the opponent. The opponent has 1 ore, so I should play a knight card to move the 
+robber to a tile that produces ore. The WHEAT tile produces on 6, 6, and 8, and has a 2:1 wheat 
+port, making it a good target for a monopoly. I don't have enough resources to play a monopoly now, 
+so I should play a knight card to move the robber.
+
+── turn 180 ──
+  #441  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO4 BR0 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ Blue needs to gain resources to build and advance. The opponent has a development card, so
+they might use it to their advantage. Trading 4 wood for ore is a good option since wood is more 
+abundant and ore is needed for cities. This will also help in gaining the necessary resources for 
+future builds.
+
+── turn 182 ──
+  #446  BLUE  MOVE_ROBBER            ((1, -2, 1), C.RED)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR0 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The opponent has a settlement on a sheep-producing tile (node 28) and has more VP (2) than
+me (4). Moving the robber to node 28 would steal from the opponent and disrupt their sheep 
+production. The 2:1 sheep port on node 48 could be useful but I don't have any sheep to trade. The 
+robber can only be moved to adjacent nodes, so the options are limited to the neighboring nodes of 
+the sheep-producing tile.
+
+── turn 185 ──
+  #453  RED   MOVE_ROBBER            ((-1, 2, -1), C.BLUE)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR0 SH2 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a wheat-producing tile, so moving it will stop wheat 
+production. The opponent has a larger longest road, so taking the robber from them is important. The
+only way to do this is by playing a knight card, which is the only available action that can move 
+the robber and steal from an opponent.
+  #454  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR0 SH2 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a longer road and more VP, so we need to focus on building. We have 3 
+settlements and 4 cities left to build, and can afford a settlement with 2 ore and 2 wheat. The 
+BRICK port offers the best trade rate for ORE.
+
+── turn 195 ──
+  #475  RED   MOVE_ROBBER            ((-2, 1, 1), None)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR1 SH2 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on a BRICK-producing tile (5, 9, 11), and moving it would not 
+benefit me as I have no BRICKs in my hand. My opponent has a larger longest road (9 vs 2), so I 
+should disrupt it by moving the robber to tile (-1, 1, 0) which produces ORE (4, 10, 10), a resource
+my opponent has plenty of (2 ORE cards). This could potentially disrupt my opponent's strategy and 
+reduce their VP from longest road.
+
+── turn 197 ──
+  #480  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR2 SH2 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a longer road and more VP. I need to play a knight card to gain 2 VP and 
+a road building card to extend my road network. The maritime trades do not offer a good deal for my 
+resources. I should play a knight card to move the robber and steal a resource.
+  #481  RED   MARITIME_TRADE         ('SHEEP', 'SHEEP', 'SHEEP', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR2 SH3 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', None, 'BRICK'), MARITIME_TRADE 
+('SHEEP', 'SHEEP', 'SHEEP', None, 'WHEAT'), MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', None, 'ORE'),
+MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', None, 'WOOD')
+        ↳ The opponent has a significant longest road advantage and more victory points. I need to 
+build a settlement or road to compete. The BRICK port is available, and I have 2 SHEEP in hand, 
+which can be traded for BRICK at 3:1. This trade will help me build a road or settlement.
+  #482  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR3 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a larger longest road and more victory points, so building to increase my
+longest road and VP is key. I have 3 settlements left to build and need to secure resources for 
+them. The BRICK port offers a good 2:1 trade, and I can use my roads to connect to a BRICK-producing
+tile. Building a settlement at node 29 will connect to the BRICK-producing tile at node 28 and allow
+me to trade BRICK for other resources.
+
+── turn 201 ──
+  #491  RED   MOVE_ROBBER            ((-2, 2, 0), None)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR1 SH1 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on a brick-producing tile. Moving the robber to a wheat-producing 
+tile would be beneficial as it is a high-probability roll. The most likely roll is 6, which would 
+produce wheat on two tiles. The tile at (-2, 1, 1) produces wheat on a 6, which has 5 pips, making 
+it a good choice. There are no development cards to play, and no immediate need to discard 
+resources. Therefore, moving the robber to a wheat-producing tile is the best action.
+
+── turn 204 ──
+  #498  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO6 BR0 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ The opponent has a port for 2:1 BRICK trade and is close to the blue roads. Trading wood 
+for brick is beneficial. I also need to build a settlement to increase my resource production and 
+VP. The opponent has a single development card and only 2 roads left to build, so they are likely 
+focused on road building. I should trade and then build a settlement to secure resources and VP.
+  #499  BLUE  BUILD_ROAD             (52, 53)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO2 BR1 SH0 WH0 OR3] chose 1 of 9
+        from: END_TURN, BUILD_ROAD (52, 53), BUILD_ROAD (48, 49), BUILD_ROAD (50, 51), BUILD_ROAD 
+(6, 23), BUILD_ROAD (40, 44), BUILD_ROAD (51, 52), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21)
+        ↳ Need to build a road to expand and potentially block the opponent's longest road. The road
+at (52, 53) is a strategic choice as it connects to a port and could disrupt the opponent's road.
+
+── turn 205 ──
+  #502  RED   MOVE_ROBBER            ((-1, 2, -1), C.BLUE)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR1 SH1 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber must be moved to a tile that produces resources, preferably a tile that 
+produces multiple resources. The opponent has a city on node 43, which produces on 4 (3 pips), 10 (3
+pips), and 10 (3 pips). Moving the robber there will stop these resources from producing and allow 
+us to steal from the opponent.
+
+── turn 219 ──
+  #531  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'WHEAT')
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR2 SH1 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ Need to increase resource production or VP. The opponent has a longer road, so securing a 
+longer road is crucial. The opponent has 3 brick, so trading for brick is not beneficial. Trading 
+ore for wheat or wood is better as the opponent has less of these resources. Trading ore for sheep 
+is not ideal as the opponent has more sheep. Ore for wheat is the best option as it will help 
+produce more resources.
+
+── turn 220 ──
+  #534  BLUE  MOVE_ROBBER            ((0, 1, -1), C.RED)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO3 BR0 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber should be moved to block a key tile for the opponent. The WHEAT tile producing 
+on 6 (5 pips) is a good target as it produces frequently. Moving the robber to (-1, 0, -1) will 
+block this tile, and since the opponent has a settlement on node 28, they will lose resources when 
+this tile produces.
+  #535  BLUE  BUILD_ROAD             (24, 53)
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO3 BR1 SH0 WH0 OR2] chose 1 of 9
+        from: END_TURN, BUILD_ROAD (24, 53), BUILD_ROAD (48, 49), BUILD_ROAD (50, 51), BUILD_ROAD 
+(6, 23), BUILD_ROAD (40, 44), BUILD_ROAD (51, 52), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21)
+        ↳ Need to build a road to expand and potentially block the opponent's longest road. Building
+road (24, 53) connects to an existing road and could help block the opponent's expansion.
+
+── turn 221 ──
+  #538  RED   BUY_DEVELOPMENT_CARD   
+        ctx[mid] VP[BLUE=4 RED=3] hand[WO0 BR1 SH1 WH1 OR1] chose 1 of 2
+        from: END_TURN, BUY_DEVELOPMENT_CARD
+        ↳ The opponent has a longer road and more VP. I need to build to increase my road length and
+VP. I have enough resources to build a road, which is cheaper and faster than building a settlement 
+or city. Building a road will also help connect my settlements.
+
+── turn 224 ──
+  #545  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO4 BR0 SH0 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a brick tile, which produces when the dice add up to 5 or 9. I 
+have 3 ore, which is useful for building cities. Moving the robber to a wheat tile (produces on 6 or
+8) would be more beneficial, but there are no wheat tiles nearby. The best option is to move the 
+robber to a brick tile to prevent the opponent from producing brick resources.
+  #546  BLUE  BUILD_ROAD             (21, 43)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO4 BR1 SH0 WH0 OR3] chose 1 of 14
+        from: END_TURN, BUILD_ROAD (48, 49), BUILD_ROAD (50, 51), BUILD_ROAD (6, 23), BUILD_ROAD 
+(24, 25), BUILD_ROAD (40, 44), BUILD_ROAD (51, 52), BUILD_ROAD (21, 43), BUILD_ROAD (19, 21), 
+BUILD_ROAD (7, 24), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE ('WOOD', 
+'WOOD', 'WOOD', 'WOOD', 'SHEEP') (+2 more)
+        ↳ Blue needs to build roads to expand their network and potentially place a settlement. The 
+road at (21, 43) is the best option as it connects to an existing settlement and can help in placing
+a new settlement.
+
+── turn 228 ──
+  #555  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO3 BR0 SH0 WH0 OR4] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE',
+'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ The opponent has a strong longest road and a development card, which could be a Road 
+Building or Year of Plenty. I need to secure resources to build and potentially upgrade settlements.
+The BRICK port offers a 2:1 trade, which is useful given my hand. I also need to prevent the 
+opponent from extending their longest road.
+
+── turn 233 ──
+  #566  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a longer road and more ore, which is my weakness. Trading ore for brick 
+can help improve my road building capacity. No other resource is as critical for my current needs.
+
+── turn 238 ──
+  #577  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO5 BR1 SH0 WH0 OR3] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE ORE
+        ↳ Need to discard to avoid exceeding 7 cards. Wood is the most abundant in hand and will not
+trigger discard requirement. Discarding brick or ore would be wasteful given their limited presence 
+in hand.
+  #578  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO4 BR1 SH0 WH0 OR3] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE ORE
+        ↳ The robber is currently on a BRICK-producing tile (produces on 5, 9, 11). Since I have 4 
+wood cards, discarding wood is beneficial as it avoids the 7 penalty and doesn't lose resources. The
+opponent has 2 brick, so discarding brick would be wasteful. Ore is also available but I have 3 ore,
+so discarding ore is not necessary.
+  #579  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO3 BR1 SH0 WH0 OR3] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE ORE
+        ↳ Must discard a resource due to rolling a 7. Wood is most abundant in hand and can be 
+replaced easily.
+  #580  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO2 BR1 SH0 WH0 OR3] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE ORE
+        ↳ Need to reduce hand size due to the 7 roll rule. Wood is the most abundant in hand and 
+will be easy to trade later.
+  #581  BLUE  MOVE_ROBBER            ((0, -2, 2), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR1 SH0 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK tile at (0, 0, 0), which produces BRICK when the dice
+add up to 5 or 9. Moving the robber to a tile that produces a resource I need, like WHEAT at (0, 0, 
+2), would be beneficial. Since I have 3 OR and no other resources, I should move the robber to a 
+WHEAT-producing tile and steal OR from the opponent.
+
+── turn 243 ──
+  #592  RED   MOVE_ROBBER            ((0, 2, -2), C.BLUE)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on (0, -2, 2), which is a wheat-producing tile. Moving the robber 
+away from this tile will prevent the opponent from stealing resources. Since the opponent has a 
+large longest road (11), they are likely to use the robber to disrupt my production. The best option
+is to move the robber to a tile that does not produce resources for either player, which is the 
+desert tile at (2, -2, 2).
+
+── turn 247 ──
+  #601  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'ORE')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR4 SH0 WH0 OR2] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a longer road and more ore, so focus on getting resources to build a city
+and potentially a longer road. The 2:1 ports for brick and ore are good opportunities to trade. The 
+opponent has 3 ore, so targeting ore with Monopoly could be effective.
+  #602  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a longer road and more ore. Trading ore for brick or wheat would be 
+beneficial. Trading ore for wood or sheep would not be as advantageous. The 3:1 port for brick is 
+the best option.
+
+── turn 249 ──
+  #607  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR3 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a strong longest road and more ore, which could be used for development 
+cards. Red needs to extend the longest road and get resources. Trading brick for sheep or wheat is a
+good option as it can help build settlements and cities. Trading for wood is less useful given the 
+current resource counts.
+
+── turn 250 ──
+  #610  BLUE  MOVE_ROBBER            ((2, 0, -2), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR0 SH0 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on (0, 2, -2), which is producing ORE. Moving the robber to a tile
+that produces more resources for me would be beneficial. The best option is to move the robber to 
+(2, -2, 0), which produces WHEAT (4 pips) and is far from the opponent's settlement. This will also 
+allow me to avoid stealing from the opponent.
+
+── turn 256 ──
+  #623  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO5 BR0 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ Blue needs resources to build and advance. The opponent has a brick port, so trading wood 
+for brick is beneficial. Blue has 5 wood cards and needs brick to build roads. The trade ratio is 
+4:1, which is favorable.
+
+── turn 258 ──
+  #628  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO3 BR1 SH0 WH0 OR4] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE',
+'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Blue needs to gain resources to reach 10 VP. The robber is on a WHEAT tile, so a 2 or 8 
+will steal resources. Blue has 3 WOOD and 4 ORE, which can be used for building. Building a 
+settlement at node 47 would give 1 WOOD and 1 ORE on a 3 or 11, which are unlikely. Building a city 
+at node 45 would give 2 WHEAT on a 6, which is likely. The maritime trades are not as efficient. 
+Therefore, building a city at node 45 is the best option.
+
+── turn 266 ──
+  #645  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO5 BR1 SH1 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ Blue needs to gain resources to build more settlements and cities. The best option is to 
+trade for ore, as it is needed for cities and roads. The 4:1 trade is better than the ports.
+
+── turn 275 ──
+  #664  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH1 WH0 OR4] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ Need to gain resources to increase VP. RED has excess ORE and can trade 3:1 at ports. 
+Trading ORE for BRICK is the best option as BRICK is scarce for RED and can be used to build roads.
+
+── turn 278 ──
+  #671  BLUE  MOVE_ROBBER            ((-1, 1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR1 SH1 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is on a BRICK tile producing on 5 and 9. Moving the robber away from this tile 
+will prevent the opponent from stealing resources. The opponent has 4 BRICKs, so moving the robber 
+to a BRICK tile producing on 5 or 9 is crucial. The most strategic move is to move the robber to 
+tile (1, -1, 0) which produces BRICK on 5 (4 pips).
+
+── turn 279 ──
+  #674  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'WHEAT')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR4 SH1 WH0 OR2] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a longer road and more resources, so focus on building to catch up. The 
+WOOD and ORE ports are available, but the WOOD port is more valuable. Building a road from 
+settlement@0 to node 29 would connect to the WOOD port and allow for future road building.
+  #675  RED   BUY_DEVELOPMENT_CARD   
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH1 WH1 OR2] chose 1 of 2
+        from: END_TURN, BUY_DEVELOPMENT_CARD
+        ↳ The opponent has a longer road and no development cards. I have enough resources to build 
+a road and extend my longest road. This action will help me secure the longest road bonus and 
+potentially block the opponent's road expansion.
+
+── turn 280 ──
+  #678  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR1 SH1 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a BRICK producing tile (5, 9, 11). Moving the robber to a 
+non-producing tile will prevent the opponent from stealing resources. The most strategic move is to 
+move the robber to a tile that produces BRICK, as the opponent has fewer BRICK resources and can 
+benefit from a 2:1 trade at a port. The tile (0, 0, 0) produces BRICK on 5 and 9, and moving the 
+robber there will prevent the opponent from stealing resources from the tile producing BRICK on 5.
+
+── turn 281 ──
+  #680  RED   PLAY_KNIGHT_CARD       
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH0 WH0 OR1] chose 1 of 2
+        from: PLAY_KNIGHT_CARD, ROLL
+        ↳ The opponent has a longer road and more ore, so playing a knight card could disrupt their 
+longest road. I have 1 ore in hand, which is needed for a city upgrade. Rolling the dice could give 
+me resources, but there's no immediate benefit. Playing a knight card now will move the robber and 
+potentially steal from the opponent.
+  #681  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on (0, 0, 0), which is a WOOD producing tile (produces on 3, 5, 8,
+11). Moving the robber to a tile that produces more resources would be beneficial. Moving to (1, -1,
+0) would move the robber to a BRICK producing tile (produces on 5, 9, 11), which has a higher pip 
+count. This action also does not target the opponent, which is safer.
+
+── turn 283 ──
+  #687  RED   MOVE_ROBBER            ((2, 0, -2), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on (1, -1, 0), producing nothing. Moving it to (1, 1, -2) would 
+affect the wheat-producing tile (6, 6, 8), which is a good strategic move as it can potentially 
+disrupt the opponent's resource flow. This move also does not target the opponent directly, which is
+better for maintaining resources.
+
+── turn 289 ──
+  #700  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a large longest road and no development cards, making it hard to catch 
+up. The RED player has 3 settlements left to build and needs to secure resources. Trading ore for 
+brick or wood would be beneficial, but the opponent has more ore. Trading ore for wheat could be 
+useful, but the opponent has more wheat. Trading ore for sheep could be the best option as the 
+opponent has less sheep and sheep can be used to build settlements.
+
+── turn 293 ──
+  #709  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR3 SH1 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a large longest road and more ore, which they can use to build cities. I 
+need to build a settlement to get resources and potentially block the opponent's road expansion. The
+2:1 brick port is the best option for trade. I also need to prevent the opponent from gaining too 
+many resources.
+
+── turn 294 ──
+  #712  BLUE  DISCARD_RESOURCE       ORE
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO5 BR2 SH1 WH0 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Discard an ORE as I have enough resources and need to reduce my hand size to avoid 
+discarding more later. The opponent has only 1 ore and no development cards, so playing a knight 
+card now would be risky and not beneficial.
+  #713  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO5 BR2 SH1 WH0 OR1] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ The robber is on a WHEAT-producing tile (2, 0, -2), and I have 5 wood cards. Discarding 
+wood is the best option as it's not a resource I need and I must discard due to the 7 roll.
+  #714  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO4 BR2 SH1 WH0 OR1] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Must discard a resource due to having more than 7 cards. Wood is the most abundant in hand
+and the bank, so discarding it will not impact resource balance significantly.
+  #715  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO3 BR2 SH1 WH0 OR1] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ The robber is on a WHEAT-producing tile, and I have 3 WOOD cards in hand. Discarding WOOD 
+is the best option to avoid the discard penalty. I also have enough resources to build a settlement 
+or road, but building a settlement is more valuable for VP in the long run.
+  #716  BLUE  DISCARD_RESOURCE       ORE
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO2 BR2 SH1 WH0 OR1] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ The robber is on the ORE tile (2, 0, -2), so rolling a 4 or 10 will steal resources. I 
+have 1 ore in hand and need to discard. Discarding ore is the best option as it will not help me and
+may be stolen.
+  #717  BLUE  MOVE_ROBBER            ((-1, 0, 1), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO2 BR2 SH1 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on (2, 0, -2), which is a wheat tile (produces on 6, 8, 12). 
+Moving the robber to a different tile is the most strategic action. Moving to (1, -1, 0) will 
+prevent the opponent from stealing resources from a wheat-producing tile.
+
+── turn 297 ──
+  #724  RED   MOVE_ROBBER            ((-1, 2, -1), C.BLUE)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH2 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a WHEAT-producing tile, and moving it off would allow the WHEAT
+to produce. The opponent has a settlement on 45, which is connected to a WHEAT-producing tile, so 
+stealing from them is beneficial. The opponent also has 2 WO and 2 BR, which are in my hand, so 
+taking them with Monopoly is another good option.
+
+── turn 307 ──
+  #745  RED   MOVE_ROBBER            ((0, 2, -2), C.BLUE)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH2 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK-producing tile (5, 9, 11), which is producing for the
+opponent. Moving the robber away from this tile will prevent the opponent from producing BRICKs. The
+opponent has a large longest road, so preventing them from producing BRICKs is crucial. The most 
+strategic move is to move the robber to the WHEAT-producing tile (6, 6, 8), as it has a high pip 
+count and prevents the opponent from producing WHEAT, which they might need for development cards.
+  #746  RED   BUILD_ROAD             (10, 29)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR1 SH2 WH0 OR2] chose 1 of 8
+        from: END_TURN, BUILD_ROAD (1, 2), BUILD_ROAD (8, 27), BUILD_ROAD (26, 27), BUILD_ROAD (10, 
+29), BUILD_ROAD (0, 5), BUILD_ROAD (1, 6), BUILD_ROAD (29, 30)
+        ↳ The robber is on a brick-producing tile, which produces when the dice add up to 5 or 9. My
+opponent has 3 brick cards and no other resources, so it's crucial to move the robber. I also need 
+to build roads to connect my settlements and expand my network.
+
+── turn 309 ──
+  #751  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH2 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ Need to gain resources and potentially play a development card. The opponent has a longer 
+road, so securing a longer road myself is important. The opponent has 3 brick, so trading ore for 
+brick could be beneficial. Ore is also needed to build cities. No immediate settlements or cities to
+build, and no immediate need to discard resources.
+
+── turn 310 ──
+  #754  BLUE  MOVE_ROBBER            ((1, -2, 1), C.RED)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO3 BR1 SH1 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on (0, 2, -2), producing nothing. Moving it to a tile that 
+produces resources for me or blocks the opponent is crucial. The WHEAT and ORE tiles are key, and 
+blocking the opponent on the ORE tile is more immediate as they have more pieces left. Moving to (0,
+-1, 1) blocks the ORE tile and steals from the opponent.
+
+── turn 312 ──
+  #759  BLUE  MOVE_ROBBER            ((2, -2, 0), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO3 BR1 SH2 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber must be moved to prevent the opponent from gaining resources. The opponent has 
+a settlement on (1, -2, 1) and another on (0, -1, 1), both producing resources. Moving the robber to
+(1, -2, 1) will stop the opponent from producing resources from both settlements.
+
+── turn 315 ──
+  #766  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH1 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ Need to gain resources to reach 10 VP. The opponent has a longer road, so focus on gaining
+resources. The opponent has more ore, so trading ore for other resources might be beneficial. The 
+ports offer good trading rates, especially 3:1 for brick and 2:1 for ore. Trading ore for brick or 
+wheat is a good option.
+
+── turn 316 ──
+  #769  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO5 BR1 SH2 WH0 OR2] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ The robber is on the BRICK-producing tile, which produces on 5, 9, and 11. I have 5 wood, 
+which could be useful for building roads or settlements. Trading wood for ore is a good option as it
+can help me build roads and potentially a settlement or city. I have 1 brick, which is not enough to
+build a road or a settlement, so I should focus on getting more wood and brick.
+
+── turn 318 ──
+  #774  BLUE  MOVE_ROBBER            ((0, -1, 1), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR2 SH2 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The opponent has a 3VP lead and more development cards. Moving the robber can disrupt 
+their production. The (1, -1, 0) tile produces brick on 5 and 9, and the opponent has a settlement 
+there. Moving the robber there will stop brick production and potentially steal a resource.
+
+── turn 321 ──
+  #781  RED   MOVE_ROBBER            ((0, 2, -2), C.BLUE)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH1 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on (0, -1, 1), which blocks the WHEAT-producing tile (6, 6, 8). 
+Moving the robber away will allow WHEAT production. The opponent has a strong longest road and more 
+resources, so playing a development card or building is risky. Moving the robber is the safest 
+option.
+  #782  RED   BUILD_ROAD             (1, 2)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR2 SH1 WH0 OR0] chose 1 of 9
+        from: END_TURN, BUILD_ROAD (9, 10), BUILD_ROAD (1, 2), BUILD_ROAD (10, 11), BUILD_ROAD (8, 
+27), BUILD_ROAD (26, 27), BUILD_ROAD (0, 5), BUILD_ROAD (1, 6), BUILD_ROAD (29, 30)
+        ↳ I need to build roads to connect my settlements and expand my road network. Building road 
+(1, 2) connects my settlement at node 0 to node 28, which is part of my existing road network and 
+helps me meet the distance rule for future settlements.
+
+── turn 325 ──
+  #791  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'ORE')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR3 SH1 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a longer road and more victory points, but I have more pieces left to 
+build. Trading for sheep or wood is not beneficial as I don't have enough of those resources. 
+Trading for brick is not ideal either as I already have enough. Trading for ore is the best option 
+as it can help me build more settlements and cities.
+
+── turn 326 ──
+  #794  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH2 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on (0, 2, -2), producing nothing for either player. Moving the 
+robber to a tile that produces resources for me is key. The BRICK tile at (0, 0, 0) produces on 5 
+and 9, which are common rolls. Moving the robber there will ensure I get BRICKs on these rolls, and 
+I can steal from the opponent if they have a settlement or city on that tile. The opponent has 2 
+development cards, so they might be planning something; moving the robber now gives me a strategic 
+advantage.
+
+── turn 328 ──
+  #799  BLUE  MOVE_ROBBER            ((0, -1, 1), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH2 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber can be moved to block a key resource tile for the opponent. The BRICK tile at 
+(0, 0, 0) produces on 5 and 9, which are common rolls. Moving the robber there will block BRICK 
+production for the opponent, as they have a settlement at (0, -1, 1).
+
+── turn 335 ──
+  #814  BLUE  DISCARD_RESOURCE       ORE
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO2 BR2 SH2 WH0 OR3] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Need to discard to avoid having more than 7 resources. Blue has 2 wood, 2 brick, 2 sheep, 
+and 3 ore, totaling 9 resources. Must discard 1 ore to meet the limit. Discarding ore also prevents 
+the opponent from using Monopoly on ore later.
+  #815  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO2 BR2 SH2 WH0 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ The opponent has 2 cities and 2 development cards, and is close to a longest road. I need 
+to discard to avoid excess resources and potentially gain VP. Wood is the most abundant in my hand 
+and doesn't help build or buy cards.
+  #816  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR2 SH2 WH0 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Must discard as 7 was rolled and must reduce hand size to 7. Wood is the most abundant 
+resource in hand and discarding it will not affect resource collection significantly. Ore is the 
+only resource that could potentially be useful for development cards, but we have none and cannot 
+buy them now.
+  #817  BLUE  DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH2 WH0 OR2] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Must discard a resource due to rolling a 7. BRICK is the most abundant resource in hand, 
+and discarding it will not hinder future actions as much as discarding SHEEP or ORE.
+  #818  RED   MOVE_ROBBER            ((1, 1, -2), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH1 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on (0, -1, 1), which is a wheat-producing tile. Moving the robber 
+away from this tile would prevent the opponent from stealing resources. The opponent has a large 
+longest road, so moving the robber to their road is not beneficial. Moving to a sheep-producing tile
+would also be beneficial as sheep is a scarce resource for the opponent. Moving to (1, 0, -1) would 
+be the best option as it is a sheep-producing tile and prevents the opponent from stealing.
+
+── turn 337 ──
+  #823  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'WHEAT')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR3 SH1 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a longer road and more VP, but I have more pieces left to build. I need 
+resources to build and close the gap. Trading for wood is the best option as it's needed for roads 
+and settlements. The 2:1 sheep port is available.
+  #824  RED   BUY_DEVELOPMENT_CARD   
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH1 WH1 OR1] chose 1 of 2
+        from: END_TURN, BUY_DEVELOPMENT_CARD
+        ↳ The opponent has a longer road and more ore. I should buy a development card to gain an 
+advantage. The road building card could help extend my road network, but I don't have enough road 
+pieces left. The knight card can help disrupt the opponent's strategy.
+
+── turn 339 ──
+  #828  RED   PLAY_KNIGHT_CARD       
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 2
+        from: PLAY_KNIGHT_CARD, ROLL
+        ↳ The opponent has a longer road and more resources, so building a road or settlement is 
+risky. Playing a knight card is the best option to disrupt the opponent's strategy and potentially 
+gain resources.
+  #829  RED   MOVE_ROBBER            ((-1, 2, -1), C.BLUE)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The opponent has a longer road and more resources, so I need to disrupt their road 
+network. Moving the robber to their longest road (node 45) will break it, which is crucial for their
+longest road length. There are no development cards to play, and no immediate need to build or trade
+resources.
+
+── turn 340 ──
+  #833  BLUE  MOVE_ROBBER            ((1, -2, 1), C.RED)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH2 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The robber is currently on a brick-producing tile, and moving it to a sheep-producing tile
+would be beneficial. The opponent has a settlement on node 28, which produces sheep, so moving the 
+robber there would steal a sheep resource. The opponent has only 1 ore, so playing a knight card is 
+not advantageous. Building a settlement or road is not possible with the current hand, and playing a
+development card is not necessary.
+
+── turn 341 ──
+  #836  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a BRICK-producing tile, which produces for both players. Moving
+the robber will stop BRICK production and potentially steal from the opponent. The opponent has 1 
+BRICK and 2 SHIP resources, so targeting the BRICK tile is advantageous. Moving the robber to (1, 
+-1, 0) will capture the BRICK-producing tile.
+
+── turn 344 ──
+  #843  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO2 BR1 SH2 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber should be moved to block the opponent's production. The opponent has a 
+settlement at (0, 0, 0) and produces on BRICK (5, 9, 11) and ORE (4, 10, 10). Moving the robber to 
+(0, 0, 0) will block both BRICK and ORE production for the opponent. This is the most effective use 
+of the robber.
+
+── turn 348 ──
+  #852  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO4 BR1 SH2 WH0 OR4] chose 1 of 9
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 
+'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('ORE', 'ORE', 
+'ORE', 'ORE', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ Need resources to build. Blue has 4 wheat and 4 ore in hand, which are critical for 
+building settlements and cities. Trading ore for wood or brick is less valuable. Trading wheat for 
+brick or ore is also less valuable. Trading ore for wheat is not beneficial. Ports are not available
+for wheat or wood. Trading ore for sheep or wood is not as valuable as ore for brick or ore for 
+brick. Ore for brick or ore for ore is the best option.
+  #853  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO4 BR2 SH2 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ Blue needs resources to build and gain VP. The opponent has 2 development cards, so they 
+might be planning to buy more pieces or development cards. Blue has enough wood and brick to build a
+settlement, but needs more resources for a city. Trading wood for ore is a good option to get the 
+resources needed for a city.
+
+── turn 351 ──
+  #860  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a strong longest road, and I need to prevent them from extending it. The 
+opponent has 3 brick, which can be useful for building roads. I should trade ore for brick to block 
+their road expansion. The 3:1 port at node 28 is the best option for this trade.
+
+── turn 352 ──
+  #863  BLUE  MOVE_ROBBER            ((-1, -1, 2), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR3 SH2 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on (0, 0, 0), which is producing ORE. Moving the robber to a tile 
+that produces more resources for me would be beneficial. The most promising options are moving to a 
+WHEAT or BRICK tile, as they produce more frequently. Moving to a WHEAT tile would be the best as it
+produces on 6 (5 pips) and 8 (5 pips), which are common rolls. The tile at (-1, 0, 1) produces 
+WHEAT, so moving the robber there would be the best choice.
+
+── turn 353 ──
+  #866  RED   MOVE_ROBBER            ((0, 2, -2), C.BLUE)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on tile (-1, -1, 2), which produces sheep when the dice add up to 
+3 or 4. Moving the robber to a tile that produces more resources for me would be beneficial. The 
+opponent has 3 brick and 2 sheep, so moving the robber to a brick-producing tile would be less 
+advantageous. Moving to a sheep-producing tile would also be risky since the opponent has sheep. The
+best option is to move the robber to a wheat-producing tile, which produces when the dice add up to 
+6 or 8, and the opponent does not have many wheat cards.
+
+── turn 354 ──
+  #869  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH2 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+C.RED), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ The opponent has a 3 VP lead and is building roads. Moving the robber to block a 
+productive tile for the opponent is crucial. The WHEAT tile at (0, 2, -2) produces on 2, 6, and 8, 
+which are common rolls. Moving the robber here will prevent the opponent from collecting wheat this 
+turn.
+
+── turn 355 ──
+  #872  RED   MOVE_ROBBER            ((0, -1, 1), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The opponent has a longer road and more settlements, but only 4 VP. Moving the robber can 
+disrupt the opponent's production. The opponent has a settlement on (0, -1, 1) producing brick, so 
+moving the robber there will stop brick production for the opponent.
+
+── turn 358 ──
+  #879  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR3 SH2 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a brick-producing tile. Moving the robber to a wheat-producing 
+tile would prevent the opponent from gaining resources. The best option is to move the robber to (0,
+-1, 1), which is a wheat-producing tile.
+
+── turn 365 ──
+  #894  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO4 BR3 SH2 WH0 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Discard wood to avoid the 7 rule. Blue has more wood (4) than other resources, and needs 
+to reduce hand size to avoid discarding wood in the future.
+  #895  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO3 BR3 SH2 WH0 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Need to reduce hand size due to the 7 roll rule. Wood is the most abundant in hand and not
+critical for immediate building plans.
+  #896  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO2 BR3 SH2 WH0 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Must discard a resource to comply with the rule that players holding more than 7 resources
+must discard half. The opponent has no resources, so discarding any of my resources will not give 
+them an advantage.
+  #897  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR3 SH2 WH0 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Need to discard as 7 was rolled and must discard half of resources (rounded down). Wood is
+in excess with 1 in hand and no urgent need.
+  #898  BLUE  DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR3 SH2 WH0 OR2] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Need to reduce hand size due to the 7 roll rule. BRICK is most abundant and removing it 
+will not impact resource collection significantly.
+  #899  RED   MOVE_ROBBER            ((0, -1, 1), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber can be moved to block the opponent's production. The opponent has a settlement 
+on (0, -1, 1) producing wood on a 5, which is likely to produce this turn. Moving the robber there 
+will block the wood production and allow stealing a resource card from the opponent.
+
+── turn 366 ──
+  #902  BLUE  MOVE_ROBBER            ((-1, 1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH2 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber should be moved to the BRICK-producing tile (5, 9, 11) to prevent the opponent 
+from collecting resources. The opponent has 2 development cards and is at 2 VP, so preventing them 
+from collecting resources is crucial. The best tile to move the robber to is (1, -1, 0) as it 
+produces BRICK (4 pips).
+
+── turn 378 ──
+  #927  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO4 BR2 SH2 WH0 OR2] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+        ↳ The opponent has a strong road network and a longer road, so I should build a settlement 
+to block their road and gain a longer road advantage. The WOOD port at node 38 is a good option for 
+trading, but I need to build a settlement first. Node 42 is a good spot to block the opponent's road
+and gain a longer road.
+
+── turn 379 ──
+  #930  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK-producing tile (0, 0, 0). Moving the robber to a tile
+that produces WHEAT would be beneficial. The tile at (1, -1, 1) produces WHEAT on a 6, which is a 
+common roll. Moving the robber there would also steal from the opponent, as they have a settlement 
+on tile 45, which is adjacent to (1, -1, 1).
+
+── turn 381 ──
+  #935  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR3 SH0 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a longer road and more resources, so I need to take action to catch up. 
+Building a road or settlement is the best option. The BRICK port at node 28 offers a 2:1 trade, and 
+building a road there would help me connect to more resources. I also need to discard an OR to 
+comply with the 7 roll rule.
+
+── turn 382 ──
+  #938  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO2 BR2 SH3 WH0 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Need to reduce hand size due to 7 roll. Wood is most abundant in hand. No immediate 
+development card to play, and no urgent building opportunities.
+  #939  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO1 BR2 SH3 WH0 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, 
+DISCARD_RESOURCE ORE
+        ↳ Must discard a resource due to rolling a 7. Wood is the most abundant in hand and can be 
+obtained from a port, so discarding wood is the best option.
+  #940  BLUE  DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR2 SH3 WH0 OR2] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ The robber is on the BRICK-producing tile (1, -1, 0), so rolling a 5 or 9 will prevent 
+BRICK production. My hand has 2 BRICKs, and discarding one is necessary to avoid being penalized for
+having more than 7 resources. This action also frees up resources for future turns.
+  #941  BLUE  DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH3 WH0 OR2] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ The robber is on the BRICK tile producing on 5 and 9. I have 1 brick and need to discard 
+to avoid discarding more than 7 cards. Discarding brick is necessary to comply with the rule.
+  #942  BLUE  MOVE_ROBBER            ((0, -1, 1), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH3 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on a BRICK-producing tile (5, 9, 11), and moving it to a tile that
+produces WHEAT or WOOD would be more beneficial. The opponent has 1 WHEAT and 1 OR, so targeting the
+WHEAT tile would be the best option to steal resources. The tile at (1, -1, 0) produces WHEAT on 6 
+and 8, and there are no settlements or cities on this tile, making it a valid move.
+
+── turn 383 ──
+  #945  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH1 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on (0, -1, 1), which blocks WHEAT production. Moving the robber to
+a tile that produces WHEAT would be beneficial. The WHEAT tiles are on (0, 0, 0), (1, -1, 0), and 
+(0, 1, -1). Moving to (1, -1, 0) is the best option as it's close to the current position and 
+produces WHEAT on a 6 roll, which is common.
+
+── turn 387 ──
+  #954  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'WHEAT')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH1 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ The opponent has a longer road and more ore, so trading ore for resources is not ideal. 
+Trading brick, wheat, or wood is more beneficial. The wheat port is available, and the opponent has 
+more wheat, making a 2:1 trade advantageous.
+
+── turn 388 ──
+  #957  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR0 SH3 WH0 OR4] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE',
+'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Need to build a settlement or road. Blue has excess ore and can trade ore for brick, 
+wheat, wood, or sheep. Trading ore for brick is most valuable as it helps build a road and supports 
+longest road victory point.
+
+── turn 390 ──
+  #962  BLUE  MOVE_ROBBER            ((-2, 2, 0), None)
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR1 SH3 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), C.RED), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ The robber is currently on the BRICK-producing tile (0, -1, 0). Moving the robber to a 
+WHEAT-producing tile would be beneficial, as it would allow me to trade at a 3:1 rate at a port. The
+WHEAT-producing tile at (2, -2, 0) is a good target as it has 5 pips, and the 3:1 port is available 
+at node 45. Moving the robber there would also help me get more WHEAT, which is currently in short 
+supply.
+
+── turn 395 ──
+  #973  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'WHEAT')
+        ctx[mid] VP[BLUE=4 RED=4] hand[WO0 BR4 SH1 WH1 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ The opponent has a longer road and more victory points, but I can close the gap with a 
+settlement or road. The opponent's settlements are producing sheep and wheat, so I should consider 
+blocking with a road. Trading for sheep or wheat would be useful but the opponent has more of those 
+resources. Building a road is the best option to extend my longest road and close the gap.
