@@ -27,6 +27,23 @@ active checkpoint **step-104**. https://hud.ai/models/7c330c53-bf45-45f5-94fa-26
 ## Timing
 Started ~02:30, chain done 05:42 (~3h, within the 3–4h window). 104 optim steps total.
 
+## HELD-OUT before/after (grader_games split, disjoint from training)
+Fair comparison: both models forced no-think (`/no_think`) so we measure PICK
+quality, not format (base Qwen3-8B otherwise reasons forever and never answers —
+its raw "as-deployed" score is ~0, an even bigger but less fair gap). Deterministic.
+`hud_training/eval_holdout.py`.
+
+| env (n) | BEFORE (base) → AFTER (trained) |
+|---|---|
+| placement (80) | top-1 29%→**49%**, top-3 41%→**78%**, regret 0.125→**0.044** |
+| build (90) | build-rate 78%→**97%**, mean reward 0.93→**1.38** |
+| maritime (90) | trade-rate 20%→**3%**, mean reward −0.03→**+0.004** |
+
+- **placement, build: clear generalization** to unseen boards.
+- **maritime: weak** — it learned to trade far less (the over-trading target), but the
+  mean-reward gain is marginal and 3% trade-rate may be over-corrected (skips good
+  trades too). Candidate for reward retuning (raise enable/progress vs churn).
+
 ## Honest caveats / follow-ups
 1. **Before/after is on the TRAINING boards** (step 0 vs final) — proof each env
    learned. A held-out generalization eval needs a small HUD-gateway eval backend
