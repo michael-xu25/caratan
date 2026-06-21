@@ -4,66 +4,11 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Caratan Replay Viewer</title>
-<style>
-  :root {
-    --bg: #2c5d86; --panel: #14304a; --panel2: #1c4060; --ink: #eaf1f8;
-    --muted: #9fb6cc; --line: #2f5778;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
-  body { background: var(--bg); color: var(--ink); display: flex; height: 100vh; overflow: hidden; }
-  #board { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
-  svg { width: 100%; height: 100%; }
-  #side { width: 380px; background: var(--panel); display: flex; flex-direction: column;
-          border-left: 1px solid var(--line); }
-  #side h1 { font-size: 15px; margin: 0; padding: 14px 16px; background: var(--panel2);
-             border-bottom: 1px solid var(--line); letter-spacing: .3px; }
-  .pad { padding: 12px 16px; }
-  .row { display: flex; align-items: center; gap: 8px; }
-  .muted { color: var(--muted); font-size: 12px; }
-  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 12px;
-          font-size: 12px; font-weight: 600; color: #fff; }
-  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,.35); }
-  #action { font-size: 16px; font-weight: 700; margin: 6px 0; }
-  #reason { background: var(--panel2); border-radius: 8px; padding: 10px 12px; font-size: 13px;
-            line-height: 1.45; color: #dce8f4; min-height: 46px; white-space: pre-wrap; }
-  .dice { display: inline-flex; gap: 6px; }
-  .die { width: 26px; height: 26px; background: #fff; color: #111; border-radius: 5px; font-weight: 700;
-         display: flex; align-items: center; justify-content: center; box-shadow: inset 0 -2px 0 #bbb; }
-  .vpbar { height: 14px; border-radius: 7px; background: var(--panel2); overflow: hidden; flex: 1; }
-  .vpfill { height: 100%; }
-  #scroll { flex: 1 1 auto; overflow-y: auto; min-height: 0; }   /* scrollable middle */
-  #controls { flex: 0 0 auto; padding: 12px 16px; background: var(--panel2);
-              border-top: 1px solid var(--line); }
-  #controls .row { gap: 6px; }
-  button { background: #2a5a86; color: #fff; border: 0; border-radius: 7px; padding: 7px 11px;
-           font-size: 14px; cursor: pointer; }
-  button:hover { background: #356da0; }
-  input[type=range] { width: 100%; }
-  #drop { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-          flex-direction: column; gap: 10px; background: rgba(10,25,40,.85); font-size: 16px; cursor: pointer; }
-  #drop.hidden { display: none; }
-  .files { font-size: 13px; color: var(--muted); }
-  table { width: 100%; font-size: 12px; border-collapse: collapse; }
-  td { padding: 2px 0; }
-  .handrow { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
-  .cards { display: flex; gap: 6px; font-size: 13px; }
-  .card { white-space: nowrap; cursor: default; }
-  .card.dev { cursor: pointer; text-decoration: underline dotted; }
-  .awardrow { display: flex; align-items: center; gap: 10px; margin: 4px 0; font-size: 12px; }
-  .seclabel { font-size: 12px; color: var(--muted); margin-bottom: 6px;
-              display: flex; justify-content: space-between; align-items: center; }
-  .pub, .priv { font-size: 9px; font-weight: 700; letter-spacing: .4px; opacity: .55; }
-  .pub { color: #7fa8c9; }
-  .priv { color: #e0b36a; }            /* subtle warm tint = hidden info */
-  .devdetail { font-size: 11px; color: #cfe0ef; margin: 2px 0 4px 70px; }
-  #picker { padding: 10px 16px 0; }
-  select { width: 100%; background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
-           border-radius: 7px; padding: 7px 9px; font-size: 13px; cursor: pointer; }
-</style>
+<link rel="stylesheet" href="catan-ui.css" />
 </head>
 <body>
   <div id="board">
+    <div id="dicebar" class="empty"></div>
     <svg id="svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg>
     <div id="drop">
       <div>Drop a <b>.view.json</b> here, or click to choose</div>
@@ -73,193 +18,76 @@
   </div>
 
   <div id="side">
-    <h1>🎲 Caratan Replay</h1>
-    <div id="picker" style="display:none">
-      <select id="runsel" title="Pick a sample run / game"></select>
+    <div class="top">
+      <div class="brand"><b>🎬 Caratan Replay</b><a href="play.html" title="Play vs the model">Play →</a></div>
+      <select id="runsel" title="Pick a sample run / game" style="width:100%;margin-bottom:12px;display:none"></select>
+      <div class="pills" id="seats"></div>
+      <div class="stats">
+        <div><span class="lbl">Turn</span><span class="val" id="sTurn">–</span></div>
+        <div><span class="lbl">Ply</span><span class="val" id="sPly">–</span></div>
+        <div><span class="lbl">Winner</span><span class="val" id="sWin">–</span></div>
+      </div>
     </div>
     <div id="scroll">
-    <div class="pad" id="hdr"><div class="muted">No game loaded.</div></div>
-    <div class="pad">
-      <div class="row" style="justify-content:space-between">
-        <span id="turnlbl" class="muted">—</span>
-        <span class="row" style="gap:6px">
-          <button id="gradetoggle" title="Show grading verdicts for this game"
-                  style="display:none;font-size:11px;padding:2px 8px;background:#5a6b3a">⚖️ Grading</button>
-          <span class="dice" id="dice"></span>
-        </span>
+      <div class="sec">
+        <div class="sechead"><span>Current move</span>
+          <button id="gradetoggle" class="iconbtn" title="Show grading verdicts" style="display:none;width:auto;border-radius:7px;padding:2px 8px">⚖️</button></div>
+        <div id="action" class="statusline">—</div>
+        <div id="note" class="muted" style="margin-bottom:8px"></div>
+        <div id="reason"></div>
       </div>
-      <div id="action">—</div>
-      <div id="note" class="muted"></div>
-      <div id="reason"></div>
+      <div class="sec" id="gradingpad" style="display:none">
+        <div class="sechead">⚖️ Grading <span id="gradewinner" class="muted"></span></div>
+        <div id="failuremodes" style="margin-bottom:8px"></div>
+        <div id="stepgrade" class="muted">—</div>
+      </div>
+      <div class="sec">
+        <div class="sechead">Victory points <span class="tagpub">public</span></div>
+        <div id="vptable"></div>
+      </div>
+      <div class="sec">
+        <div class="sechead">Awards <span class="tagpub">public</span></div>
+        <div id="awards"></div>
+      </div>
+      <div class="sec">
+        <div class="sechead">Resource cards <span class="tagpub">public</span> · dev <span class="tagpriv">🔒 click 🃏</span></div>
+        <div id="hands"></div>
+      </div>
     </div>
-    <div class="pad" id="gradingpad" style="display:none">
-      <div class="seclabel">⚖️ Grading <span id="gradewinner" class="muted"></span></div>
-      <div id="failuremodes" style="margin-bottom:8px"></div>
-      <div id="stepgrade" class="muted">—</div>
-    </div>
-    <div class="pad">
-      <div class="seclabel">Victory points <span class="pub">PUBLIC</span></div>
-      <table id="vptable"></table>
-    </div>
-    <div class="pad">
-      <div class="seclabel">Awards <span class="pub">PUBLIC</span></div>
-      <div id="awards"></div>
-    </div>
-    <div class="pad">
-      <div class="seclabel">Resource cards <span class="pub">PUBLIC</span> · dev <span class="priv">🔒 click 🃏</span></div>
-      <div id="hands"></div>
-    </div>
-    </div><!-- /#scroll -->
     <div id="controls">
-      <div class="row" style="justify-content:center; margin-bottom:8px">
-        <button id="first">⏮</button>
-        <button id="prev">◀</button>
-        <button id="play">▶ Play</button>
-        <button id="next">▶</button>
-        <button id="last">⏭</button>
+      <div class="ctlrow">
+        <button id="first">⏮</button><button id="prev">◀</button>
+        <button id="play">▶ Play</button><button id="next">▶</button><button id="last">⏭</button>
       </div>
       <input id="slider" type="range" min="0" max="0" value="0" />
-      <div class="row" style="justify-content:space-between">
+      <div class="row" style="justify-content:space-between;margin-top:8px">
         <span id="steplbl" class="muted">—</span>
-        <button id="takeover" title="Play on from this position vs the model (does not change the transcript)" style="background:#7a4ea0">🎮 Take over from here</button>
+        <button id="takeover" class="linkbtn" title="Play on from this position vs the model (does not change the transcript)">🎮 Take over from here</button>
       </div>
     </div>
   </div>
 
+<script src="catan-ui.js"></script>
 <script>
-const RES_COLOR = { WOOD:"#2f7d32", BRICK:"#c4502a", SHEEP:"#9ed16f", WHEAT:"#e6c14b",
-                    ORE:"#8b97a6", DESERT:"#d8c79a" };
-const RES_ICON = { WOOD:"🌲", BRICK:"🧱", SHEEP:"🐑", WHEAT:"🌾", ORE:"🪨", DEV:"🃏" };
-const RES_ORDER = ["WOOD","BRICK","SHEEP","WHEAT","ORE","DEV"];
-// The first 1v1 seat is Color.RED in the engine/transcripts but is shown as
-// ORANGE in this UI (display-only; data keys stay "RED"). dname() maps the label.
-const PLAYER_COLOR = { RED:"#e8862e", BLUE:"#2f74d0", ORANGE:"#e8862e", WHITE:"#e9eef2" };
-const DNAME = { RED: "ORANGE" };
-const dname = c => DNAME[c] || c;
-const SVG_NS = "http://www.w3.org/2000/svg";
-const NODE_DELTA = { NORTH:[0,-1], NORTHEAST:[Math.sqrt(3)/2,-0.5], SOUTHEAST:[Math.sqrt(3)/2,0.5],
-                     SOUTH:[0,1], SOUTHWEST:[-Math.sqrt(3)/2,0.5], NORTHWEST:[-Math.sqrt(3)/2,-0.5] };
-// Catanatron PORT_DIRECTION_TO_NODEREFS: the two coastal nodes a port connects to.
-const PORT_DIR = { WEST:["NORTHWEST","SOUTHWEST"], NORTHWEST:["NORTH","NORTHWEST"],
-                   NORTHEAST:["NORTHEAST","NORTH"], EAST:["SOUTHEAST","NORTHEAST"],
-                   SOUTHEAST:["SOUTH","SOUTHEAST"], SOUTHWEST:["SOUTHWEST","SOUTH"] };
-const PIPS = {2:1,3:2,4:3,5:4,6:5,8:5,9:4,10:3,11:2,12:1};  // probability dots
-
-let DATA = null, idx = 0, playing = null, T = null; // T = transform fn
-
+const {dname, pcol, RES_ICON, RES5} = CatanUI;
 const $ = id => document.getElementById(id);
-const el = (tag, attrs={}) => { const e = document.createElementNS(SVG_NS, tag);
-  for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
-const pcolor = c => PLAYER_COLOR[c] || "#bbb";
-
-function fit() {
-  // compute bounds over nodes (corners) and tiles, then a transform to the viewBox
-  const xs = [], ys = [];
-  for (const n of Object.values(DATA.board.nodes)) { xs.push(n.x); ys.push(n.y); }
-  const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
-  const pad = 1.2, W = (maxX-minX)+2*pad, H=(maxY-minY)+2*pad;
-  const box = $("svg"); box.setAttribute("viewBox", `0 0 ${W} ${H}`);
-  T = (x,y) => [ (x-minX)+pad, (y-minY)+pad ];
-}
-
-function hexPoints(cx, cy) {
-  return Object.values(NODE_DELTA).map(([dx,dy]) => { const [x,y]=T(cx+dx, cy+dy); return `${x},${y}`; }).join(" ");
-}
-
-function drawStatic(g) {
-  // tiles (water + ports both render as plain ocean; ports get docks in a 2nd pass)
-  for (const t of DATA.board.tiles) {
-    const water = (t.type === "WATER" || t.type === "PORT");
-    const fill = t.type === "DESERT" ? RES_COLOR.DESERT
-               : water ? "#3a79ab" : (RES_COLOR[t.resource] || "#777");
-    g.appendChild(el("polygon", { points: hexPoints(t.x, t.y), fill,
-      stroke:"#1c3d57", "stroke-width":0.06, "stroke-linejoin":"round",
-      opacity: water ? 0.92 : 1 }));
-    const [cx,cy] = T(t.x, t.y);
-    if (t.number != null) {
-      g.appendChild(el("circle", { cx, cy, r:0.36, fill:"#f3ead2", stroke:"#9c8a5e", "stroke-width":0.03 }));
-      const hot = (t.number===6||t.number===8);
-      const txt = el("text", { x:cx, y:cy+0.04, "text-anchor":"middle", "font-size":0.40,
-        "font-weight":700, fill: hot?"#c0392b":"#333" });
-      txt.textContent = t.number; g.appendChild(txt);
-      // probability pips (dots) under the number, like a real Catan token
-      const n = PIPS[t.number] || 0, dr = 0.035, gap = 0.085;
-      for (let k = 0; k < n; k++) {
-        g.appendChild(el("circle", { cx: cx + (k - (n-1)/2)*gap, cy: cy + 0.22, r: dr,
-          fill: hot?"#c0392b":"#555" }));
-      }
-    }
-  }
-  // ports (Catanatron-style): a badge offset toward the coast + two thin docks
-  // to the settleable corner nodes. 2:1 ports are colored by their resource so
-  // they read at a glance; 3:1 generic ports are neutral with an anchor.
-  for (const t of DATA.board.tiles) {
-    if (t.type !== "PORT" || !t.direction || !PORT_DIR[t.direction]) continue;
-    const [rA, rB] = PORT_DIR[t.direction];
-    const nA = [t.x + NODE_DELTA[rA][0], t.y + NODE_DELTA[rA][1]];
-    const nB = [t.x + NODE_DELTA[rB][0], t.y + NODE_DELTA[rB][1]];
-    const mid = [(nA[0]+nB[0])/2, (nA[1]+nB[1])/2];
-    const anchor = [mid[0] + (t.x-mid[0])*0.40, mid[1] + (t.y-mid[1])*0.40];
-    const [ax,ay] = T(...anchor);
-    // thin rope docks to the two coastal nodes
-    for (const nd of [nA, nB]) {
-      const [nx,ny] = T(...nd);
-      g.appendChild(el("line", { x1:ax, y1:ay, x2:nx, y2:ny, stroke:"#d9b98a",
-        "stroke-width":0.045, "stroke-linecap":"round", opacity:0.7,
-        "stroke-dasharray":"0.12 0.08" }));
-    }
-    const is3 = t.port === "3:1";
-    const w=0.78, h=0.46;
-    g.appendChild(el("rect", { x:ax-w/2, y:ay-h/2, width:w, height:h, rx:0.12,
-      fill: is3 ? "#15324a" : (RES_COLOR[t.port] || "#777"),
-      stroke:"#f3ead2", "stroke-width":0.045, opacity:0.97 }));
-    const lbl = el("text", { x:ax, y:ay+0.12, "text-anchor":"middle", "font-size":0.30,
-      "font-weight":800, fill: is3 ? "#dfe9f2" : "#11202c" });
-    lbl.textContent = is3 ? "⚓ 3:1" : `${t.port.slice(0,2)} 2:1`;
-    g.appendChild(lbl);
-  }
-}
+let DATA = null, idx = 0, playing = null, T = null;
 
 function render() {
   if (!DATA) return;
-  const svg = $("svg"); svg.innerHTML = "";
-  const g = el("g"); svg.appendChild(g);
-  drawStatic(g);
   const step = DATA.steps[idx];
-
-  // roads
-  for (const [key,color] of Object.entries(step.roads)) {
-    const [a,b] = key.split("-"); const na=DATA.board.nodes[a], nb=DATA.board.nodes[b];
-    if (!na||!nb) continue;
-    const [x1,y1]=T(na.x,na.y), [x2,y2]=T(nb.x,nb.y);
-    g.appendChild(el("line", { x1,y1,x2,y2, stroke:pcolor(color), "stroke-width":0.22, "stroke-linecap":"round" }));
-  }
-  // robber
-  if (step.robber) {
-    const t = DATA.board.tiles.find(t => t.coord.join()===step.robber.join());
-    if (t) { const [cx,cy]=T(t.x,t.y);
-      g.appendChild(el("circle", { cx, cy:cy-0.02, r:0.26, fill:"#1b1b1b", opacity:0.82 })); }
-  }
-  // buildings
-  for (const [nid,b] of Object.entries(step.buildings)) {
-    const n = DATA.board.nodes[nid]; if (!n) continue; const [x,y]=T(n.x,n.y);
-    const isCity = b.type==="CITY", s = isCity?0.30:0.22;
-    g.appendChild(el("rect", { x:x-s, y:y-s, width:2*s, height:2*s, rx:isCity?0.05:0.10,
-      fill:pcolor(b.color), stroke:"#10202e", "stroke-width":0.05,
-      transform:`rotate(45 ${x} ${y})` }));
-  }
-  // highlight the node/edge from THIS action
-  const st = step;
-  if (st.action_type==="BUILD_SETTLEMENT" || st.action_type==="BUILD_CITY") {
-    const n = DATA.board.nodes[String(st.value)]; if (n){ const [x,y]=T(n.x,n.y);
-      g.appendChild(el("circle", { cx:x, cy:y, r:0.5, fill:"none", stroke:"#ffe14d", "stroke-width":0.10 })); }
-  }
+  T = CatanUI.fit($("svg"), DATA.board);
+  CatanUI.drawBoard($("svg"),
+    { board: DATA.board, roads: step.roads, robber: step.robber, buildings: step.buildings },
+    T, { highlight: { node: step.value, type: step.action_type } });
+  // dice bar over the board: every roll up to this ply (latest big + recent)
+  const rolls = [];
+  for (let k = 0; k <= idx; k++) { const s = DATA.steps[k];
+    if (s.dice) rolls.push({ color: s.color, dice: s.dice, total: s.dice[0]+s.dice[1] }); }
+  CatanUI.renderDiceBar($("dicebar"), rolls);
   updatePanel(step);
 }
 
-function dieHTML(n){ return `<span class="die">${n}</span>`; }
-
-const RES5 = ["WOOD","BRICK","SHEEP","WHEAT","ORE"];
 const DEV_NAME = { KNIGHT:"Knight", YEAR_OF_PLENTY:"Year of Plenty", MONOPOLY:"Monopoly",
                    ROAD_BUILDING:"Road Building", VICTORY_POINT:"Victory Point" };
 const expandedDevs = new Set();
@@ -269,80 +97,56 @@ window.toggleDev = c => { expandedDevs.has(c) ? expandedDevs.delete(c) : expande
 
 function updatePanel(step) {
   curStep = step;
-  const handTotal = (c) => RES5.reduce((s,r)=>s+(((step.hands||{})[c]||{})[r]||0),0);
-  // turn header — richer: turn, ply, acting player's standing
+  const m = DATA.meta;
+  const handTotal = c => RES5.reduce((s,r)=>s+(((step.hands||{})[c]||{})[r]||0),0);
+  $("sTurn").textContent = step.turn ?? "—";
+  $("sPly").textContent = `${idx+1}/${m.num_steps}`;
+  $("sWin").textContent = m.winner ? dname(m.winner) : "draw";
+
+  // current move + reasoning
   const graded = GRADING && (GRADING.steps||{})[String(step.i)];
   const gradedFlag = graded ? (graded.failed && graded.failed.length ? " ⚖✗" : " ⚖") : "";
-  $("turnlbl").textContent = `Turn ${step.turn ?? "—"} · ply ${idx+1}/${DATA.meta.num_steps}${gradedFlag}`;
-  $("dice").innerHTML = step.dice ? step.dice.map(dieHTML).join("") : "";
   const valTxt = Array.isArray(step.value) ? `[${step.value}]` : (step.value ?? "");
   $("action").innerHTML =
-      `<span class="chip" style="background:${pcolor(step.color)}">${dname(step.color)}</span> `
-    + `<b>${step.action_type}</b> <span class="muted">${valTxt}</span>`
-    + `<span class="muted" style="float:right">${(step.vp||{})[step.color]??""} VP · ${handTotal(step.color)} cards</span>`;
+      `<span class="chip"><span class="dot" style="background:${pcol(step.color)}"></span>`
+    + `<span style="color:${pcol(step.color)}">${dname(step.color)}</span></span> `
+    + `<b>${step.action_type}</b> <span class="muted">${valTxt}${gradedFlag}</span>`;
   $("note").textContent = step.note || "";
   $("reason").textContent = step.reasoning
     || ((step.num_legal || 0) <= 1
         ? "(forced move — only one legal option; model not consulted)"
         : "(no reasoning recorded)");
 
-  // VP (public)
-  const fv = DATA.meta.final_vp || {};
-  $("vptable").innerHTML = DATA.players.map(c => {
-    const v = (step.vp||{})[c]||0, pct = Math.min(100, v/10*100);
-    return `<tr><td style="width:60px"><span class="chip" style="background:${pcolor(c)}">${dname(c)}</span></td>
-      <td><div class="vpbar"><div class="vpfill" style="width:${pct}%;background:${pcolor(c)}"></div></div></td>
-      <td style="width:64px;text-align:right" class="muted">${v} · fin ${fv[c]??"?"}</td></tr>`;
-  }).join("");
+  CatanUI.renderVP($("vptable"), DATA.players, step.vp, { finalVp: m.final_vp || {} });
 
-  // Awards (public) — separate section
+  // awards (public)
   $("awards").innerHTML = DATA.players.map(c => {
     const aw = (step.awards||{})[c] || {};
-    const lr = `<span style="${aw.has_road?'color:#ffd24d;font-weight:700':'opacity:.7'}">`
-             + `🛣️ ${aw.road_len||0}${aw.has_road?' · Longest Road +2':''}</span>`;
-    const la = `<span style="${aw.has_army?'color:#ffd24d;font-weight:700':'opacity:.7'}">`
-             + `⚔️ ${aw.knights||0}${aw.has_army?' · Largest Army +2':''}</span>`;
-    return `<div class="awardrow"><span class="chip" style="background:${pcolor(c)};width:46px;justify-content:center">${dname(c)}</span>${lr}${la}</div>`;
+    const lr = `<span style="${aw.has_road?'color:#f5c33b;font-weight:700':'opacity:.7'}">🛣️ ${aw.road_len||0}${aw.has_road?' · Longest Road +2':''}</span>`;
+    const la = `<span style="${aw.has_army?'color:#f5c33b;font-weight:700':'opacity:.7'}">⚔️ ${aw.knights||0}${aw.has_army?' · Largest Army +2':''}</span>`;
+    return `<div class="awardrow"><span class="chip" style="width:84px"><span class="dot" style="background:${pcol(c)}"></span><span style="color:${pcol(c)}">${dname(c)}</span></span>${lr}${la}</div>`;
   }).join("");
 
-  // Resource + dev cards (private; dev chip click reveals types)
-  $("hands").innerHTML = DATA.players.map(c => {
-    const h = (step.hands||{})[c] || {};
-    const cards = RES5.map(r => {
-      const n = h[r]||0;
-      return `<span class="card" style="${n===0?'opacity:.3':''}" title="${r}">${RES_ICON[r]}&thinsp;${n}</span>`;
-    }).join("");
-    const dn = h.DEV||0;
-    const devChip = `<span class="card dev" onclick="toggleDev('${c}')" title="click to reveal dev cards">${RES_ICON.DEV}&thinsp;${dn}</span>`;
-    let row = `<div class="handrow"><span class="chip" style="background:${pcolor(c)};width:46px;justify-content:center">${dname(c)}</span>`
-            + `<span class="cards">${cards}${devChip}</span>`
-            + `<span class="muted" style="margin-left:auto">${handTotal(c)}</span></div>`;
-    if (expandedDevs.has(c)) {
-      const dc = h.dev_cards || {};
-      const parts = Object.entries(dc).filter(([,v])=>v>0).map(([k,v])=>`${DEV_NAME[k]||k}×${v}`);
-      row += `<div class="devdetail">${parts.length ? parts.join(", ") : "(no dev cards)"}</div>`;
-    }
-    return row;
-  }).join("");
+  CatanUI.renderHands($("hands"), DATA.players, step.hands, { expanded: expandedDevs, onToggleDev: "toggleDev" });
 
   $("slider").value = idx;
-  $("steplbl").textContent = `Step ${idx+1} / ${DATA.meta.num_steps}`;
+  $("steplbl").textContent = `Step ${idx+1} / ${m.num_steps}`;
   renderStepGrade(step);
 }
 
-function setHeader() {
-  const m = DATA.meta, s = m.seats||{};
-  const seatStr = Object.entries(s).map(([c,a]) =>
-    `<span class="chip" style="background:${pcolor(c)}">${dname(c)}</span> ${a}`).join(" &nbsp;vs&nbsp; ");
-  $("hdr").innerHTML = `<div class="row" style="flex-wrap:wrap;gap:6px">${seatStr}</div>
-    <div class="muted" style="margin-top:6px">seed ${m.seed} · winner <b style="color:${pcolor(m.winner)}">${m.winner?dname(m.winner):"draw"}</b></div>`;
+function setSeats() {
+  const s = DATA.meta.seats || {};
+  $("seats").innerHTML = Object.entries(s).map(([c,a]) =>
+    `<div class="pill"><span class="dot" style="background:${pcol(c)}"></span>`+
+    `<span class="nm" style="color:${pcol(c)}">${dname(c)}</span>`+
+    `<span class="role">${String(a).split(":").pop().slice(0,16)}</span></div>`).join("");
 }
 
 function go(i){ idx = Math.max(0, Math.min(DATA.meta.num_steps-1, i)); render(); }
 function load(data){
-  DATA = data; idx = 0; fit();
+  DATA = data; idx = 0;
   $("slider").max = DATA.meta.num_steps-1;
-  $("drop").classList.add("hidden"); setHeader(); render();
+  $("drop").classList.add("hidden"); setSeats(); render();
 }
 
 // ---- wiring ----
@@ -369,11 +173,8 @@ function readFile(f){ if(!f) return; const r=new FileReader();
 
 // ---- run picker (populated from viewer/runs.json) ----
 const params = new URLSearchParams(location.search);
-
-function fmtGame(g){
-  const w = g.winner ? dname(g.winner) : "draw";
-  return `${g.label} — ${w}` + (g.num_steps ? ` · ${g.num_steps} plies` : "");
-}
+function fmtGame(g){ const w = g.winner ? dname(g.winner) : "draw";
+  return `${g.label} — ${w}` + (g.num_steps ? ` · ${g.num_steps} plies` : ""); }
 async function initPicker(){
   let manifest = null;
   try { manifest = await (await fetch("runs.json", {cache:"no-store"})).json(); } catch(e){}
@@ -382,16 +183,14 @@ async function initPicker(){
   for (const run of manifest.runs){
     const og = document.createElement("optgroup"); og.label = run.name;
     for (const g of run.games){
-      const o = document.createElement("option"); o.value = g.view; o.textContent = fmtGame(g);
-      og.appendChild(o);
-    }
+      const o = document.createElement("option"); o.value = g.view; o.textContent = fmtGame(g); og.appendChild(o); }
     sel.appendChild(og);
   }
   sel.onchange = () => loadUrl(sel.value);
-  $("picker").style.display = "";
+  sel.style.display = "";
   return manifest;
 }
-let SRC = null;   // path of the currently-loaded .view.json (for "take over from here")
+let SRC = null;
 function loadUrl(url){
   fetch(url).then(r=>r.json()).then(d=>{
     load(d); SRC = url; loadGrading(url);
@@ -400,9 +199,7 @@ function loadUrl(url){
   }).catch(()=>{});
 }
 
-// "Take over from here" — fork an interactive game at the current ply (read-only
-// on the transcript; the server replays into a fresh in-memory game). Needs the
-// play server running (scripts/play_server.py); on a plain file server it 404s.
+// "Take over from here" — fork an interactive game at the current ply (read-only).
 async function takeOver(){
   if (!SRC) return;
   const btn = $("takeover"); btn.disabled = true; btn.textContent = "forking…";
@@ -437,16 +234,15 @@ function renderFailureModes(){
 function renderStepGrade(step){
   if (!GRADING || !gradeShown) return;
   const s = (GRADING.steps||{})[String(step.i)];
-  const el = $("stepgrade");
-  if (!s){ el.innerHTML = `<span class="muted">this decision wasn't in the graded sample</span>`; return; }
+  const node = $("stepgrade");
+  if (!s){ node.innerHTML = `<span class="muted">this decision wasn't in the graded sample</span>`; return; }
   const reg = s.regret_vp!=null ? ` · regret ${(+s.regret_vp).toFixed(2)} VP` : "";
   if (!s.failed || !s.failed.length){
-    el.innerHTML = `<span style="color:#8fce8f">✓ no failed criteria</span> <span class="muted">(${s.decision_type}${reg})</span>`;
-    return;
+    node.innerHTML = `<span class="okbadge">✓ no failed criteria</span> <span class="muted">(${s.decision_type}${reg})</span>`; return;
   }
-  el.innerHTML = `<div class="muted">${s.decision_type}${reg}</div>`
+  node.innerHTML = `<div class="muted">${s.decision_type}${reg}</div>`
     + s.failed.map(f=>{
-        const badge = f.disputed ? `<span style="color:#e0b36a">⚠ disputed</span>` : `<span style="color:#e88">✗ failed</span>`;
+        const badge = f.disputed ? `<span class="dispbadge">⚠ disputed</span>` : `<span class="failbadge">✗ failed</span>`;
         const reasons = (f.claude?`<div class="muted" style="margin-left:8px">claude: ${f.claude}</div>`:"")
                       + (f.openai?`<div class="muted" style="margin-left:8px">openai: ${f.openai}</div>`:"");
         return `<div style="margin-top:5px"><b>${f.criterion}</b> ${badge}${reasons}</div>`;

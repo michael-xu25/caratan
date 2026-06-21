@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import os
 import random
 import sys
@@ -37,23 +36,41 @@ from catanatron.models.player import Color, RandomPlayer
 from catanatron.json import GameEncoder
 from catanatron.players.value import base_fn, DEFAULT_WEIGHTS
 
-# Heuristic position evaluator for the Model's-Analysis panel: the model-vs-human
-# value gap squashed to 0–1 ("how favorable is the position for the model").
-# We reuse Catanatron's value function but with DISPLAY weights: the default makes a
-# VP worth 3e14 (swamping production ~1e8), so the score would sit flat at 0.5 until
-# someone scores. Here a VP is worth ~6 production points, so production / expansion /
-# hand differences actually move the needle (spread ≈ 0.3–0.85, like a win-leaning %).
-_DISPLAY_WEIGHTS = {**DEFAULT_WEIGHTS, "public_vps": 6e8}
-_VALUE_FN = base_fn(_DISPLAY_WEIGHTS)
-_SCORE_K = 8e8
+# Regret oracle for the Model's-Analysis panel — the SAME mechanism the grader uses
+# (harness/grader/oracle.py): score every legal action with Catanatron's value
+# function, compare the model's pick to the best legal one.
+#   regret      = value(best legal) - value(chosen)        (>= 0)
+#   regret_vp   = regret / public_vps weight               (VP-equivalents)
+#   move score  = where the chosen action's value sits in [worst, best] legal -> 0..1
+#                 (1.0 = it played the oracle's best move; lower = left value behind)
+_VALUE_FN = base_fn(DEFAULT_WEIGHTS)
 
 
-def _position_score(game, model_color, human_color):
+def _oracle_eval(game, color, legal, chosen):
+    """Grade the model's decision against every legal alternative (1-ply value fn)."""
     try:
-        d = _VALUE_FN(game, model_color) - _VALUE_FN(game, human_color)
-        return round(1.0 / (1.0 + math.exp(-d / _SCORE_K)), 2)
+        scored = []
+        for a in legal:
+            gc = game.copy()
+            try:
+                gc.execute(a)
+            except Exception:
+                continue
+            scored.append((float(_VALUE_FN(gc, color)), a))
+        if not scored:
+            return {}
+        v_best = max(v for v, _ in scored)
+        v_worst = min(v for v, _ in scored)
+        best_a = max(scored, key=lambda t: t[0])[1]
+        v_chosen = next((v for v, a in scored
+                         if a.action_type == chosen.action_type and a.value == chosen.value), None)
+        out = {"num_options": len(legal), "oracle_best": render_action(best_a)}
+        if v_chosen is not None:
+            out["score"] = round((v_chosen - v_worst) / (v_best - v_worst), 2) if v_best > v_worst else 1.0
+            out["regret_vp"] = round(max(0.0, v_best - v_chosen) / DEFAULT_WEIGHTS["public_vps"], 2)
+        return out
     except Exception:
-        return None
+        return {}
 from harness.agents import make_agent
 from goldilocks_eval.prompt import render_action
 from scripts.build_viewer_data import _static_board, _snapshot
@@ -106,12 +123,12 @@ def _advance(s: dict) -> list:
         if cur == human and len(pa) > 1:
             break                                   # human's turn to choose
         action = pa[0] if cur == human else model.decide(game, pa)
+        real_model = cur != human and len(pa) > 1
+        ev = _oracle_eval(game, cur, pa, action) if real_model else {}   # before play_tick mutates game
         game.play_tick(decide_fn=lambda p, g, a, act=action: act)
-        if cur != human and len(pa) > 1:            # a real model decision
+        if real_model:                              # a real model decision
             entry = {"player": cur.value, "action": render_action(action),
-                     "reasoning": model.pop_reasoning() or "",
-                     "num_options": len(pa),
-                     "score": _position_score(game, cur, human)}
+                     "reasoning": model.pop_reasoning() or "", **ev}
             moves.append(entry); hist.append(entry)
         steps += 1
     return moves
@@ -294,6 +311,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
+        # never let the browser serve a stale viewer/play UI after we edit it
+        self.send_header("Cache-Control", "no-store, must-revalidate")
         self.end_headers()
         self.wfile.write(body)
 

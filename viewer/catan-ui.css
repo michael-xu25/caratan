@@ -1,0 +1,156 @@
+/* ============================================================================
+   Shared Caratan UI theme — loaded by BOTH play.html (interactive) and
+   index.html (replay). Edit here once; both UIs update. Page-specific bits
+   (action menu vs replay controls) live in each page but use these tokens.
+   ============================================================================ */
+:root{
+  --bg:#0c1320; --panel:#0e1521; --card:#151d2b; --card2:#1a2435; --line:#222d3f;
+  --ink:#e8eef6; --muted:#5e6b7d; --muted2:#8b98a9; --gold:#f5c33b; --water:#26384e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
+body{background:var(--bg);color:var(--ink);display:flex;height:100vh;overflow:hidden}
+#board{flex:1;display:flex;align-items:center;justify-content:center;padding:18px;position:relative}
+svg{width:100%;height:100%}
+#side{width:420px;background:var(--panel);display:flex;flex-direction:column;border-left:1px solid var(--line)}
+
+/* header block */
+.top{padding:16px 18px 14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.brand b{font-size:15px;font-weight:700;letter-spacing:.2px}
+.brand a,.linkbtn{color:var(--muted2);font-size:12px;font-weight:600;text-decoration:none;background:var(--card);
+         border:1px solid var(--line);padding:6px 10px;border-radius:8px;cursor:pointer}
+.brand a:hover,.linkbtn:hover{background:var(--card2);color:var(--ink)}
+.newrow{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+select,input{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px}
+input[type=number]{width:108px}
+.primary{flex:1;background:var(--gold);color:#241c00;font-weight:700;border:0;border-radius:8px;padding:8px 10px;cursor:pointer}
+.primary:hover{filter:brightness(1.06)}
+
+/* player pills */
+.pills{display:flex;gap:8px;margin-bottom:12px}
+.pill{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+      border-radius:10px;padding:9px 11px}
+.pill.you{border-color:#37445a;background:#172033}
+.pill .dot{width:11px;height:11px;border-radius:50%;flex:none}
+.pill .nm{font-weight:800;font-size:13px;letter-spacing:.3px}
+.pill .role{margin-left:auto;font-size:11px;color:var(--muted);font-weight:600}
+
+/* stat strip */
+.stats{display:flex;gap:10px}
+.stats>div{flex:1}
+.stats .lbl{display:block;font-size:10px;letter-spacing:.1em;color:var(--muted);font-weight:700;text-transform:uppercase}
+.stats .val{display:block;font-size:18px;font-weight:800;margin-top:2px}
+
+/* scroll body + sections */
+#scroll{flex:1 1 auto;overflow-y:auto;min-height:0}
+.sec{padding:15px 18px;border-bottom:1px solid var(--line)}
+.sechead{display:flex;justify-content:space-between;align-items:center;
+         font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
+.sechead .tagpub{color:#5f86b0} .sechead .tagpriv{color:#c79a4a}
+.iconbtn{width:22px;height:22px;padding:0;border-radius:50%;background:var(--card2);color:var(--muted2);
+      border:1px solid var(--line);font-weight:800;cursor:pointer;font-size:12px}
+.iconbtn:hover{color:var(--ink);border-color:#37445a}
+.statusline{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--ink)}
+.muted{color:var(--muted2);font-size:12px}
+
+/* action rows (play) + generic row buttons */
+.legal{display:flex;flex-direction:column;gap:7px}
+.legal button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+              background:var(--card);border:1px solid var(--line);border-radius:11px;
+              padding:11px 12px;color:var(--ink);font-size:13.5px;cursor:pointer}
+.legal button:hover{background:var(--card2);border-color:#37445a}
+.badge{width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;
+       background:var(--card2);border:1px solid var(--line);border-radius:7px;font-size:14px}
+.alabel{flex:1;line-height:1.25}
+.atag{font-size:10px;letter-spacing:.06em;color:var(--muted);font-weight:700;text-transform:uppercase;white-space:nowrap}
+.costs{display:inline-flex;gap:4px;white-space:nowrap}
+.cost{background:#0e1726;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:11.5px}
+.backbtn{justify-content:flex-start !important;color:var(--gold) !important;font-weight:700;background:#1b1733 !important;border-color:#332b54 !important}
+.backbtn:hover{background:#241e44 !important}
+
+/* recipes popover */
+.popover{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13px}
+.popover .rcp{display:flex;justify-content:space-between;gap:10px;padding:4px 0}
+
+/* reasoning / note (replay) */
+#reason{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13px;
+        line-height:1.45;color:#cdd9e8;min-height:42px;white-space:pre-wrap}
+
+/* dice */
+.dice{display:inline-flex;gap:6px}
+#rolls{display:flex;flex-direction:column;gap:5px}
+.roll{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.roll.latest .rt{font-weight:800}
+.die{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+     background:#f2ead0;color:#222;border-radius:5px;font-weight:800;font-size:12px}
+.rsum{color:var(--muted2)} .roll.latest .rsum{color:var(--ink)}
+.tag{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.05em}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:12.5px;letter-spacing:.3px}
+.chip .dot{width:10px;height:10px;border-radius:50%}
+
+/* victory points */
+.vprow{display:flex;align-items:center;gap:10px;margin:7px 0}
+.vprow .who{width:128px;display:flex;align-items:center;gap:7px;font-size:12.5px}
+.vpbar{flex:1;height:8px;border-radius:6px;background:var(--card2);overflow:hidden}
+.vpfill{height:100%;border-radius:6px}
+.vpval{width:54px;text-align:right;font-weight:800;font-size:13px}
+.role2{font-size:10px;color:var(--muted);font-weight:600;margin-left:2px}
+
+/* awards (replay) */
+.awardrow{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:12px}
+
+/* resource cards */
+.handblock{margin:6px 0 12px}
+.handhead{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px;color:var(--muted2)}
+.cards{display:flex;gap:7px;flex-wrap:wrap}
+.rcard{width:50px;border-radius:9px;background:var(--card);border:1px solid var(--line);
+       border-bottom:3px solid var(--rc);padding:8px 0 6px;text-align:center}
+.rcard.z{opacity:.34} .rcard.dev{cursor:pointer}
+.rcard .ic{font-size:18px;line-height:1}
+.rcard .ct{font-size:13px;font-weight:800;margin-top:4px}
+.devdetail{font-size:11px;color:#cfe0ef;margin:4px 0 0}
+
+/* replay transport controls */
+#controls{flex:0 0 auto;padding:12px 16px;background:var(--panel);border-top:1px solid var(--line)}
+#controls .ctlrow{display:flex;justify-content:center;gap:6px;margin-bottom:9px}
+#controls button{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;
+                 padding:7px 11px;font-size:14px;cursor:pointer}
+#controls button:hover{background:var(--card2);border-color:#37445a}
+input[type=range]{width:100%;accent-color:var(--gold)}
+
+/* grading overlay (replay) */
+.failbadge{color:#e88;font-weight:700} .dispbadge{color:#e0b36a;font-weight:700} .okbadge{color:#7ec98a}
+
+/* drop zone (replay) */
+#drop{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;
+      background:rgba(8,14,24,.9);font-size:15px;cursor:pointer}
+#drop.hidden{display:none}
+.files{font-size:13px;color:var(--muted)}
+
+/* dice bar OVER the board (big, easy to read) */
+#dicebar{position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;
+  background:rgba(14,21,33,.85);border:1px solid var(--line);border-radius:16px;padding:10px 18px;z-index:5}
+#dicebar.empty{display:none}
+#dicebar .bigdie{width:48px;height:48px;border-radius:11px;background:#f3ead0;color:#1b1b1b;font-weight:800;font-size:27px;
+  display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+#dicebar .dtot{font-size:26px;font-weight:800}
+#dicebar .dwho{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:800;letter-spacing:.3px}
+#dicebar .recent{display:flex;gap:6px;margin-left:4px}
+#dicebar .rchip{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted2);
+  background:var(--card);border:1px solid var(--line);border-radius:9px;padding:4px 9px}
+
+/* model analysis cards (play) — score per move via the regret oracle */
+.anrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 13px}
+.anrow .at{flex:1;min-width:0}
+.anrow .aa{font-size:13.5px;font-weight:600;color:var(--ink)}
+.anrow .as{font-size:11.5px;color:var(--muted);margin-top:2px}
+.anrow .best{font-size:11px;color:#d59b5b;margin-top:3px}
+.anrow .reason{font-size:11px;color:var(--muted2);margin-top:3px;line-height:1.3}
+.anrow .av{font-size:18px;font-weight:800;white-space:nowrap}
+.av.hi{color:#46c479} .av.mid{color:#e09b3b} .av.lo{color:#e0685f}
+
+/* model log fallback (kept minimal) */
+#log{display:flex;flex-direction:column;gap:7px}

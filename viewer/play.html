@@ -4,124 +4,20 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Caratan — Play vs the Model</title>
-<style>
-  :root{
-    --bg:#0c1320; --panel:#0e1521; --card:#151d2b; --card2:#1a2435; --line:#222d3f;
-    --ink:#e8eef6; --muted:#5e6b7d; --muted2:#8b98a9; --gold:#f5c33b;
-    --water:#26384e;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
-  body{background:var(--bg);color:var(--ink);display:flex;height:100vh;overflow:hidden}
-  #board{flex:1;display:flex;align-items:center;justify-content:center;padding:18px}
-  svg{width:100%;height:100%}
-  #side{width:420px;background:var(--panel);display:flex;flex-direction:column;border-left:1px solid var(--line)}
-
-  /* header block */
-  .top{padding:16px 18px 14px;border-bottom:1px solid var(--line)}
-  .brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-  .brand b{font-size:15px;font-weight:700;letter-spacing:.2px}
-  .brand a{color:var(--muted2);font-size:12px;font-weight:600;text-decoration:none;background:var(--card);
-           border:1px solid var(--line);padding:6px 10px;border-radius:8px}
-  .brand a:hover{background:var(--card2);color:var(--ink)}
-  .newrow{display:flex;gap:8px;align-items:center;margin-bottom:12px}
-  select,input{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px}
-  input{width:108px}
-  #new{flex:1;background:var(--gold);color:#241c00;font-weight:700;border:0;border-radius:8px;padding:8px 10px;cursor:pointer}
-  #new:hover{filter:brightness(1.06)}
-
-  /* player pills */
-  .pills{display:flex;gap:8px;margin-bottom:12px}
-  .pill{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
-        border-radius:10px;padding:9px 11px}
-  .pill.you{border-color:#37445a;background:#172033}
-  .pill .dot{width:11px;height:11px;border-radius:50%;flex:none}
-  .pill .nm{font-weight:800;font-size:13px;letter-spacing:.3px}
-  .pill .role{margin-left:auto;font-size:11px;color:var(--muted);font-weight:600}
-
-  /* stat strip */
-  .stats{display:flex;gap:10px}
-  .stats>div{flex:1}
-  .stats .lbl{display:block;font-size:10px;letter-spacing:.1em;color:var(--muted);font-weight:700;text-transform:uppercase}
-  .stats .val{display:block;font-size:18px;font-weight:800;margin-top:2px}
-
-  /* scroll body */
-  #scroll{flex:1 1 auto;overflow-y:auto;min-height:0}
-  .sec{padding:15px 18px;border-bottom:1px solid var(--line)}
-  .sechead{display:flex;justify-content:space-between;align-items:center;
-           font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
-  #help{width:22px;height:22px;padding:0;border-radius:50%;background:var(--card2);color:var(--muted2);
-        border:1px solid var(--line);font-weight:800;cursor:pointer;font-size:12px}
-  #help:hover{color:var(--ink);border-color:#37445a}
-  .statusline{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--ink)}
-  .muted{color:var(--muted2);font-size:12px}
-
-  /* action rows */
-  .legal{display:flex;flex-direction:column;gap:7px}
-  .legal button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
-                background:var(--card);border:1px solid var(--line);border-radius:11px;
-                padding:11px 12px;color:var(--ink);font-size:13.5px;cursor:pointer}
-  .legal button:hover{background:var(--card2);border-color:#37445a}
-  .badge{width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;
-         background:var(--card2);border:1px solid var(--line);border-radius:7px;font-size:14px}
-  .alabel{flex:1;line-height:1.25}
-  .atag{font-size:10px;letter-spacing:.06em;color:var(--muted);font-weight:700;text-transform:uppercase;white-space:nowrap}
-  .costs{display:inline-flex;gap:4px;white-space:nowrap}
-  .cost{background:#0e1726;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:11.5px}
-  .backbtn{justify-content:flex-start !important;color:var(--gold) !important;font-weight:700;background:#1b1733 !important;border-color:#332b54 !important}
-  .backbtn:hover{background:#241e44 !important}
-
-  /* recipes popover */
-  #recipes{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13px}
-  #recipes .rcp{display:flex;justify-content:space-between;gap:10px;padding:4px 0}
-
-  /* dice rolls */
-  #rolls{display:flex;flex-direction:column;gap:5px}
-  .roll{display:flex;align-items:center;gap:8px;font-size:12.5px}
-  .roll.latest .rt{font-weight:800}
-  .die{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;
-       background:#f2ead0;color:#222;border-radius:4px;font-weight:800;font-size:11px}
-  .rsum{color:var(--muted2)} .roll.latest .rsum{color:var(--ink)}
-  .tag{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.05em}
-
-  /* chips + vp + cards */
-  .chip{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:12.5px;letter-spacing:.3px}
-  .chip .dot{width:10px;height:10px;border-radius:50%}
-  .vprow{display:flex;align-items:center;gap:10px;margin:7px 0}
-  .vprow .who{width:120px;display:flex;align-items:center;gap:7px;font-size:12.5px}
-  .vpbar{flex:1;height:8px;border-radius:6px;background:var(--card2);overflow:hidden}
-  .vpfill{height:100%;border-radius:6px}
-  .vpval{width:24px;text-align:right;font-weight:800;font-size:13px}
-  .role2{font-size:10px;color:var(--muted);font-weight:600;margin-left:2px}
-  .handblock{margin:6px 0 12px}
-  .handhead{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px;color:var(--muted2)}
-  .cards{display:flex;gap:7px;flex-wrap:wrap}
-  .rcard{width:50px;border-radius:9px;background:var(--card);border:1px solid var(--line);
-         border-bottom:3px solid var(--rc);padding:8px 0 6px;text-align:center}
-  .rcard.z{opacity:.34}
-  .rcard .ic{font-size:18px;line-height:1}
-  .rcard .ct{font-size:13px;font-weight:800;margin-top:4px}
-
-  #log{display:flex;flex-direction:column;gap:7px}
-  .anrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
-         border-radius:11px;padding:11px 13px}
-  .anrow .at{flex:1;min-width:0}
-  .anrow .aa{font-size:13.5px;font-weight:600;color:var(--ink)}
-  .anrow .as{font-size:11.5px;color:var(--muted);margin-top:2px}
-  .anrow .av{font-size:17px;font-weight:800;white-space:nowrap}
-  .av.hi{color:#46c479} .av.mid{color:#e09b3b} .av.lo{color:var(--muted2)}
-  .anrow .reason{font-size:11px;color:var(--muted2);margin-top:3px;line-height:1.3}
-</style>
+<link rel="stylesheet" href="catan-ui.css" />
 </head>
 <body>
-  <div id="board"><svg id="svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div id="board">
+    <div id="dicebar" class="empty"></div>
+    <svg id="svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
   <div id="side">
     <div class="top">
       <div class="brand"><b>🎲 Play vs the Model</b><a href="index.html" title="Back to the transcript replay viewer">← Transcripts</a></div>
       <div class="newrow">
         <select id="seat"><option value="RED">You: 1st</option><option value="BLUE">You: 2nd</option></select>
         <input id="seed" type="number" placeholder="random seed">
-        <button id="new">New Game</button>
+        <button id="new" class="primary">New Game</button>
       </div>
       <div class="pills">
         <div class="pill you" id="pillYou"></div>
@@ -135,14 +31,10 @@
     </div>
     <div id="scroll">
       <div class="sec">
-        <div class="sechead"><span>Your move</span><button id="help" title="Build recipes">?</button></div>
+        <div class="sechead"><span>Your move</span><button id="help" class="iconbtn" title="Build recipes">?</button></div>
         <div id="status" class="statusline">—</div>
-        <div id="recipes" style="display:none"></div>
+        <div id="recipes" class="popover" style="display:none"></div>
         <div class="legal" id="legal"></div>
-      </div>
-      <div class="sec">
-        <div class="sechead">Dice rolls</div>
-        <div id="rolls" class="muted">—</div>
       </div>
       <div class="sec">
         <div class="sechead">Victory points</div>
@@ -153,84 +45,23 @@
         <div id="hands"></div>
       </div>
       <div class="sec">
-        <div class="sechead">Model's analysis</div>
+        <div class="sechead">Model's analysis <span class="tag">oracle score</span></div>
         <div id="log" class="muted">—</div>
       </div>
     </div>
   </div>
+<script src="catan-ui.js"></script>
 <script>
-// muted, modern resource palette (close to the dark colonist look)
-const RES_COLOR={WOOD:"#3f7d46",BRICK:"#b0543a",SHEEP:"#86a84e",WHEAT:"#c79f3c",ORE:"#647084",DESERT:"#c9b079"};
-const RES_ICON={WOOD:"🌲",BRICK:"🧱",SHEEP:"🐑",WHEAT:"🌾",ORE:"🪨",DEV:"🃏"};
-const RES_LABEL={WOOD:"WOOD",BRICK:"BRICK",SHEEP:"WOOL",WHEAT:"GRAIN",ORE:"ORE"};   // colonist-style names
-const RES5=["WOOD","BRICK","SHEEP","WHEAT","ORE"];
-// The engine seats are RED and BLUE; we DISPLAY the RED seat as ORANGE (clearer).
-const PCOL={RED:"#e8821e",BLUE:"#3b82f6"};
-const DNAME={RED:"ORANGE",BLUE:"BLUE"};
-const dname=c=>DNAME[c]||c;
-const COSTS={
-  BUILD_ROAD:{WOOD:1,BRICK:1},
-  BUILD_SETTLEMENT:{WOOD:1,BRICK:1,SHEEP:1,WHEAT:1},
-  BUILD_CITY:{WHEAT:2,ORE:3},
-  BUY_DEVELOPMENT_CARD:{SHEEP:1,WHEAT:1,ORE:1},
-};
-const ND={NORTH:[0,-1],NORTHEAST:[Math.sqrt(3)/2,-.5],SOUTHEAST:[Math.sqrt(3)/2,.5],SOUTH:[0,1],SOUTHWEST:[-Math.sqrt(3)/2,.5],NORTHWEST:[-Math.sqrt(3)/2,-.5]};
-const PORT_DIR={WEST:["NORTHWEST","SOUTHWEST"],NORTHWEST:["NORTH","NORTHWEST"],NORTHEAST:["NORTHEAST","NORTH"],EAST:["SOUTHEAST","NORTHEAST"],SOUTHEAST:["SOUTH","SOUTHEAST"],SOUTHWEST:["SOUTHWEST","SOUTH"]};
-const PIPS={2:1,3:2,4:3,5:4,6:5,8:5,9:4,10:3,11:2,12:1};
-const NS="http://www.w3.org/2000/svg", $=id=>document.getElementById(id);
-const el=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
-const pcol=c=>PCOL[c]||"#aab";
-let V=null,T=null,busy=false,MODE="menu",SEL=null,MODEL="?",SEED="?";
-
-function fit(){const xs=[],ys=[];for(const n of Object.values(V.board.nodes)){xs.push(n.x);ys.push(n.y);}
-  const a=Math.min(...xs),b=Math.max(...xs),c=Math.min(...ys),d=Math.max(...ys),p=1.25;
-  $("svg").setAttribute("viewBox",`0 0 ${(b-a)+2*p} ${(d-c)+2*p}`);T=(x,y)=>[(x-a)+p,(y-c)+p];}
-function hexPts(cx,cy,sc=1){return Object.values(ND).map(([dx,dy])=>{const[x,y]=T(cx+dx*sc,cy+dy*sc);return`${x},${y}`}).join(" ");}
-function txt(x,y,s,o={}){const t=el("text",{x,y,"text-anchor":"middle","dominant-baseline":"middle",...o});t.textContent=s;return t;}
+const {RES_ICON, RES_LABEL, dname, pcol, COSTS, costChips, el} = CatanUI;
+const $ = id => document.getElementById(id);
+let V=null, T=null, busy=false, MODE="menu", SEL=null, MODEL="?", SEED="?";
 
 function draw(){
-  const g=el("g");const svg=$("svg");svg.innerHTML="";svg.appendChild(g);
-  // tiles
-  for(const t of V.board.tiles){
-    const water=t.type==="WATER"||t.type==="PORT";
-    const land=!water;
-    const fill=t.type==="DESERT"?RES_COLOR.DESERT:water?"var(--water)":(RES_COLOR[t.resource]||"#556");
-    g.appendChild(el("polygon",{points:hexPts(t.x,t.y,.97),fill,stroke:"#0a111c","stroke-width":.05,"stroke-linejoin":"round"}));
-    const[cx,cy]=T(t.x,t.y);
-    // resource name label near the bottom of land hexes
-    if(land && t.type!=="DESERT" && t.resource)
-      g.appendChild(txt(cx,cy+.62,RES_LABEL[t.resource]||t.resource,{"font-size":.2,"font-weight":700,fill:"#ffffff",opacity:.5,"letter-spacing":.02}));
-    if(t.type==="DESERT") g.appendChild(txt(cx,cy,"DESERT",{"font-size":.24,"font-weight":700,fill:"#7c6f4e","letter-spacing":.04}));
-    // number token + pips
-    if(t.number!=null){const hot=t.number===6||t.number===8;
-      g.appendChild(el("circle",{cx,cy:cy-.05,r:.34,fill:"#f3ead2",stroke:"#cdbf9b","stroke-width":.025}));
-      g.appendChild(txt(cx,cy-.07,t.number,{"font-size":.4,"font-weight":800,fill:hot?"#c0392b":"#2c2c2c"}));
-      const n=PIPS[t.number]||0;for(let k=0;k<n;k++)g.appendChild(el("circle",{cx:cx+(k-(n-1)/2)*.075,cy:cy+.26,r:.03,fill:hot?"#c0392b":"#6a6a6a"}));}
-  }
-  // ports: label the water hex itself (RES 2:1 or 3:1)
-  for(const t of V.board.tiles){ if(t.type!=="PORT"||!t.port)continue; const[cx,cy]=T(t.x,t.y);
-    g.appendChild(el("circle",{cx,cy,r:.5,fill:"none"}));
-    if(t.port==="3:1"){ g.appendChild(txt(cx,cy,"3:1",{"font-size":.34,"font-weight":800,fill:"#cdd8e6"})); }
-    else { g.appendChild(txt(cx,cy-.1,RES_LABEL[t.port]||t.port,{"font-size":.24,"font-weight":800,fill:"#e7eef7"}));
-           g.appendChild(txt(cx,cy+.18,"2:1",{"font-size":.2,"font-weight":700,fill:"#9fb0c4"})); } }
-  // roads: dark casing under a bright colored bar so they pop on any tile
-  for(const[k,color]of Object.entries(V.roads)){const[a,b]=k.split("-"),na=V.board.nodes[a],nb=V.board.nodes[b];if(!na||!nb)continue;
-    const[x1,y1]=T(na.x,na.y),[x2,y2]=T(nb.x,nb.y);
-    g.appendChild(el("line",{x1,y1,x2,y2,stroke:"#0a0f17","stroke-width":.33,"stroke-linecap":"round"}));
-    g.appendChild(el("line",{x1,y1,x2,y2,stroke:pcol(color),"stroke-width":.22,"stroke-linecap":"round"}));}
-  // robber
-  if(V.robber){const t=V.board.tiles.find(t=>t.coord.join()===V.robber.join());if(t){const[cx,cy]=T(t.x,t.y);
-    g.appendChild(el("circle",{cx,cy:cy+.02,r:.22,fill:"#11161e",opacity:.85,stroke:"#000","stroke-width":.03}));}}
-  // settlements = small house; cities = bigger house with a second-storey line. White
-  // outline + dark edge so the player colour reads clearly against the tiles.
-  const house=(x,y,s)=>[[x-s,y+s],[x+s,y+s],[x+s,y-s*.25],[x,y-s*1.05],[x-s,y-s*.25]].map(p=>p.join(",")).join(" ");
-  for(const[nid,bd]of Object.entries(V.buildings)){const n=V.board.nodes[nid];if(!n)continue;const[x,y]=T(n.x,n.y);
-    const city=bd.type==="CITY",s=city?.26:.19;
-    g.appendChild(el("polygon",{points:house(x,y,s),fill:pcol(bd.color),stroke:"#fff","stroke-width":.06,"stroke-linejoin":"round","paint-order":"stroke"}));
-    if(city)g.appendChild(el("line",{x1:x-s*.78,y1:y+s*.3,x2:x+s*.78,y2:y+s*.3,stroke:"#fff","stroke-width":.05}));}
+  T = CatanUI.fit($("svg"), V.board);
+  const g = CatanUI.drawBoard($("svg"), V, T);
   drawOverlay(g);
+  CatanUI.renderDiceBar($("dicebar"), V.rolls);
 }
-
 function drawOverlay(g){
   if(MODE!=="select"||!SEL||busy) return;
   const click=(node,i)=>{node.style.cursor="pointer";node.addEventListener("click",()=>move(i));};
@@ -244,7 +75,7 @@ function drawOverlay(g){
   } else if(SEL.kind==="tile"){
     const byc={};for(const a of SEL.opts){const key=a.value[0].join();(byc[key]=byc[key]||[]).push(a);}
     for(const[key,as]of Object.entries(byc)){const t=V.board.tiles.find(t=>t.coord.join()===key);if(!t)continue;
-      const h=el("polygon",{points:hexPts(t.x,t.y,.97),fill:"#f5c33b",opacity:.38,stroke:"#7a5a08","stroke-width":.08});
+      const h=el("polygon",{points:CatanUI.hexPts(T,t.x,t.y,.97),fill:"#f5c33b",opacity:.38,stroke:"#7a5a08","stroke-width":.08});
       h.style.cursor="pointer";
       h.addEventListener("click",()=> as.length===1 ? move(as[0].i) : enterChoice("Steal from which player?",as,victimFmt));
       g.appendChild(h);}
@@ -252,7 +83,6 @@ function drawOverlay(g){
 }
 
 // ---- action menu ------------------------------------------------------------
-const costChips=cost=>`<span class="costs">${Object.entries(cost).map(([r,n])=>`<span class="cost">${RES_ICON[r]}${n}</span>`).join("")}</span>`;
 function row(icon,label,tag,onclick){const b=document.createElement("button");
   b.innerHTML=`<span class="badge">${icon}</span><span class="alabel">${label}</span>${tag?`<span class="atag">${tag}</span>`:""}`;
   b.onclick=onclick;return b;}
@@ -291,8 +121,8 @@ function renderActions(){
 }
 
 // ---- panels -----------------------------------------------------------------
-function pill(elm,color,role){elm.classList.toggle("you",role==="You");
-  elm.innerHTML=`<span class="dot" style="background:${pcol(color)}"></span><span class="nm" style="color:${pcol(color)}">${dname(color)}</span><span class="role">${role}</span>`;}
+function pill(node,color,role){node.classList.toggle("you",role==="You");
+  node.innerHTML=`<span class="dot" style="background:${pcol(color)}"></span><span class="nm" style="color:${pcol(color)}">${dname(color)}</span><span class="role">${role}</span>`;}
 function panel(){
   pill($("pillYou"),V.human,"You");
   if(V.model_color)pill($("pillModel"),V.model_color,"Model");
@@ -301,61 +131,56 @@ function panel(){
   else if(busy){ $("status").textContent="🤖 model thinking…"; $("legal").innerHTML=""; }
   else if(V.your_turn){ $("status").textContent="Your move — pick an action:"; renderActions(); }
   else { $("status").textContent="…"; $("legal").innerHTML=""; }
-  renderRolls();
-  // victory points
-  $("vptable").innerHTML=V.players.map(c=>{const v=(V.vp||{})[c]||0;const role=c===V.human?"(you)":"(model)";
-    return `<div class="vprow"><div class="who"><span class="dot" style="width:10px;height:10px;border-radius:50%;background:${pcol(c)}"></span>`+
-      `<b style="color:${pcol(c)}">${dname(c)}</b><span class="role2">${role}</span></div>`+
-      `<div class="vpbar"><div class="vpfill" style="width:${Math.min(100,v/10*100)}%;background:${pcol(c)}"></div></div>`+
-      `<div class="vpval">${v}</div></div>`;}).join("");
-  // resource cards (per player)
-  $("hands").innerHTML=V.players.map(c=>{const h=(V.hands||{})[c]||{};const total=RES5.reduce((s,r)=>s+(h[r]||0),0);
-    const cards=RES5.map(r=>{const n=h[r]||0;return `<div class="rcard ${n?'':'z'}" style="--rc:${RES_COLOR[r]}"><div class="ic">${RES_ICON[r]}</div><div class="ct">${n}</div></div>`}).join("")
-      +`<div class="rcard ${(h.DEV||0)?'':'z'}" style="--rc:#6b5bd1"><div class="ic">${RES_ICON.DEV}</div><div class="ct">${h.DEV||0}</div></div>`;
-    return `<div class="handblock"><div class="handhead"><span class="dot" style="width:10px;height:10px;border-radius:50%;background:${pcol(c)}"></span>`+
-      `<b style="color:${pcol(c)}">${dname(c)}</b> · ${total} cards</div><div class="cards">${cards}</div></div>`;}).join("");
+  CatanUI.renderVP($("vptable"), V.players, V.vp, {human:V.human});
+  CatanUI.renderHands($("hands"), V.players, V.hands, {});
 }
-function renderRolls(){
-  const rolls=V.rolls||[],box=$("rolls");
-  if(!rolls.length){box.className="muted";box.textContent="— no rolls yet —";return;}
-  box.className="";
-  box.innerHTML=rolls.slice(-10).reverse().map((r,i)=>`<div class="roll ${i===0?'latest':''}">`+
-    `<span class="chip"><span class="dot" style="background:${pcol(r.color)}"></span><span class="rt" style="color:${pcol(r.color)}">${dname(r.color)}</span></span>`+
-    `<span class="die">${r.dice[0]}</span><span class="die">${r.dice[1]}</span>`+
-    `<span class="rsum">= <b>${r.total}</b></span>${i===0?' <span class="tag">latest</span>':''}</div>`).join("");
+
+// model's analysis: each model move scored by the regret oracle (server-side)
+function prettyAction(s){
+  const m=String(s).match(/^([A-Z_]+)\s*(.*)$/); if(!m) return s;
+  let type=m[1].replace(/_CARD$/,""), rest=m[2];
+  const T2=type.split("_").map(w=>w[0]+w.slice(1).toLowerCase()).join(" ");
+  rest=rest.replace(/\((\d+),\s*(\d+)\)/,"($1 → $2)");
+  return (T2+" "+rest).trim();
 }
+const scoreCls=v=>v>=0.8?"hi":v>=0.5?"mid":"lo";
+function logMoves(moves){ if(!moves||!moves.length)return; const box=$("log");
+  if(box.classList.contains("muted")){box.classList.remove("muted");box.innerHTML="";}
+  for(const m of moves){
+    const d=document.createElement("div");d.className="anrow";
+    const sub=m.num_options?`choose among ${m.num_options} options`:"";
+    const sc=(m.score!=null)?`<div class="av ${scoreCls(m.score)}">${m.score.toFixed(2)}</div>`:"";
+    // when the model left value behind, show the oracle's better move + VP regret
+    const best=(m.regret_vp>0.01 && m.oracle_best)?`<div class="best">oracle best: ${prettyAction(m.oracle_best)} (−${m.regret_vp.toFixed(2)} VP)</div>`:"";
+    const rsn=(m.reasoning && !/chose among/i.test(m.reasoning))?`<div class="reason">${m.reasoning}</div>`:"";
+    d.innerHTML=`<div class="at"><div class="aa">${prettyAction(m.action)}</div>`+
+      `${sub?`<div class="as">${sub}</div>`:""}${best}${rsn}</div>${sc}`;
+    box.prepend(d);
+  } }
+
 const RECIPES=[["🏠 Settlement",COSTS.BUILD_SETTLEMENT],["🏙️ City",COSTS.BUILD_CITY],["🛣️ Road",COSTS.BUILD_ROAD],["🃏 Dev card",COSTS.BUY_DEVELOPMENT_CARD]];
 function toggleRecipes(){const box=$("recipes");
   if(box.style.display!=="none"){box.style.display="none";return;}
   box.innerHTML=RECIPES.map(([n,c])=>`<div class="rcp"><span>${n}</span>${costChips(c)}</div>`).join("")+
     `<div class="rcp"><span>City upgrade</span><span class="muted">replaces a settlement</span></div>`;
   box.style.display="block";}
-function prettyAction(s){
-  const m=String(s).match(/^([A-Z_]+)\s*(.*)$/); if(!m) return s;
-  let type=m[1].replace(/_CARD$/,""), rest=m[2];
-  const T=type.split("_").map(w=>w[0]+w.slice(1).toLowerCase()).join(" ");
-  rest=rest.replace(/\((\d+),\s*(\d+)\)/,"($1 → $2)");
-  return (T+" "+rest).trim();
-}
-const scoreCls=v=>v>=0.72?"hi":v>=0.58?"mid":"lo";
-function logMoves(moves){ if(!moves||!moves.length)return; const box=$("log");
-  if(box.classList.contains("muted")){box.classList.remove("muted");box.innerHTML="";}
-  for(const m of moves){
-    const d=document.createElement("div");d.className="anrow";
-    const sub=m.num_options?`choose among ${m.num_options} options`:"";
-    const rsn=(m.reasoning && !/chose among/i.test(m.reasoning))?`<div class="reason">${m.reasoning}</div>`:"";
-    const sc=(m.score!=null)?`<div class="av ${scoreCls(m.score)}">${m.score.toFixed(2)}</div>`:"";
-    d.innerHTML=`<div class="at"><div class="aa">${prettyAction(m.action)}</div>`+
-      `${sub?`<div class="as">${sub}</div>`:""}${rsn}</div>${sc}`;
-    box.prepend(d);
-  } }
 
 // ---- net --------------------------------------------------------------------
-function apply(resp){ if(resp.error){$("status").textContent="⚠️ "+resp.error;} V=resp.view||V; if(resp.seed)SEED=resp.seed; if(resp.model)MODEL=resp.model; busy=false; MODE="menu"; SEL=null; if(V){fit();draw();panel();} logMoves(resp.model_moves);}
+function apply(resp){ if(resp.error){$("status").textContent="⚠️ "+resp.error;} V=resp.view||V; if(resp.seed)SEED=resp.seed; if(resp.model)MODEL=resp.model; busy=false; MODE="menu"; SEL=null; if(V){draw();panel();} logMoves(resp.model_moves);}
 async function newGame(){ busy=true;MODE="menu";SEL=null;$("log").className="muted";$("log").textContent="—";$("status").textContent="starting…";
   const r=await fetch("/api/new",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({human:$("seat").value,seed:$("seed").value||null})});
   apply(await r.json()); }
-async function move(i){ busy=true;MODE="menu";SEL=null;panel();
+// Optimistically place the human's build on the board so it shows BEFORE the model
+// thinks (the server's authoritative view replaces it on response).
+function optimisticApply(a){
+  if(!a) return;
+  if(a.type==="BUILD_ROAD" && Array.isArray(a.value)) V.roads[`${a.value[0]}-${a.value[1]}`]=V.human;
+  else if(a.type==="BUILD_SETTLEMENT") V.buildings[a.value]={type:"SETTLEMENT",color:V.human};
+  else if(a.type==="BUILD_CITY") V.buildings[a.value]={type:"CITY",color:V.human};
+}
+async function move(i){ busy=true;MODE="menu";SEL=null;
+  optimisticApply((V.legal||[]).find(x=>x.i===i));
+  draw(); panel();                                   // redraw now: shows your piece, clears the gold pick
   const r=await fetch("/api/move",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({game_id:V.game_id,index:i})});
   apply(await r.json()); }
 async function loadGame(id){ busy=true;$("log").className="muted";$("log").textContent="—";$("status").textContent="loading…";
