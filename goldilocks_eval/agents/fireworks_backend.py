@@ -59,6 +59,16 @@ class FireworksBackend(LLMBackend):
         self.name = f"fireworks:{model}"
         # Base/templateless models reject /chat/completions; flip to /completions.
         self._use_completions = False
+        # Token accounting (Fireworks auto-caches the static prefix — cached
+        # tokens are billed at a discount, so we track them separately).
+        self.usage = {"calls": 0, "prompt": 0, "cached": 0, "completion": 0}
+
+    def _track(self, payload: dict) -> None:
+        u = payload.get("usage") or {}
+        self.usage["calls"] += 1
+        self.usage["prompt"] += u.get("prompt_tokens", 0)
+        self.usage["completion"] += u.get("completion_tokens", 0)
+        self.usage["cached"] += (u.get("prompt_tokens_details") or {}).get("cached_tokens", 0)
 
     def _post(self, url: str, body: dict) -> dict:
         req = urllib.request.Request(
@@ -86,10 +96,12 @@ class FireworksBackend(LLMBackend):
                     # Templateless/base model: one folded prompt, raw completion.
                     prompt = f"{system}\n\n{user}" if system else user
                     payload = self._post(COMPLETIONS_URL, {**self._common(), "prompt": prompt})
+                    self._track(payload)
                     return payload["choices"][0]["text"]
                 payload = self._post(CHAT_URL, {**self._common(), "messages": [
                     {"role": "system", "content": system},
                     {"role": "user", "content": user}]})
+                self._track(payload)
                 return payload["choices"][0]["message"]["content"]
             except urllib.error.HTTPError as exc:
                 detail = exc.read().decode()[:300] if hasattr(exc, "read") else ""

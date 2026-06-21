@@ -42,6 +42,7 @@ def _game_entry(view_path: Path) -> dict:
 
 def build_index(root: Path) -> dict:
     runs: dict[str, list] = {}
+    mtimes: dict[str, float] = {}
     for view_path in sorted(root.rglob("*.view.json")):
         # Skip internal/scratch dirs (any path component starting with "_").
         rel_parts = view_path.relative_to(REPO).parts
@@ -49,16 +50,19 @@ def build_index(root: Path) -> dict:
             continue
         run_dir = view_path.parent.relative_to(REPO).as_posix()
         runs.setdefault(run_dir, []).append(_game_entry(view_path))
+        mtimes[run_dir] = max(mtimes.get(run_dir, 0.0), view_path.stat().st_mtime)
 
     run_list = []
-    for run_dir in sorted(runs):
-        # norm before swap, then by seed/label for a stable, readable order.
+    # MOST RECENT run first (by newest built game) so the viewer opens the latest
+    # run by default; within a run, norm before swap then seed for stable nav.
+    for run_dir in sorted(runs, key=lambda d: mtimes[d], reverse=True):
         games = sorted(runs[run_dir],
                        key=lambda g: (g["seed"] if g["seed"] is not None else 0,
                                       "swap" in g["label"], g["label"]))
         run_list.append({
             "name": run_dir.split("/", 1)[1] if "/" in run_dir else run_dir,
             "path": run_dir,
+            "mtime": mtimes[run_dir],
             "games": games,
         })
     return {"runs": run_list, "count": sum(len(r["games"]) for r in run_list)}
