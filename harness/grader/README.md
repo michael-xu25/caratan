@@ -7,7 +7,7 @@ measurement baseline. Implements the shared contract in `grader-spec.md` +
 
 ```
 transcripts ─▶ derive (decision_type, state_tags) + regret
-            ─▶ Claude + OpenAI score each criterion ─▶ reconcile (consensus-fail)
+            ─▶ Claude + OpenAI score each criterion ─▶ reconcile (union-fail, default)
             ─▶ aggregator: Wilson-ranked fail-rate table ─▶ env gen / before-after demo
 ```
 
@@ -38,9 +38,10 @@ transcripts ─▶ derive (decision_type, state_tags) + regret
   unbiased.
 - `graders.py` — runs one LLM grader; optional self-consistency (majority `failed`).
 - `reconcile.py` — merges the two graders per criterion: **a criterion is failed
-  only when BOTH agree** (consensus-fail → high-precision metric). Keeps both raw
-  verdicts + per-criterion agreement; reports **Cohen's κ** overall and per
-  criterion, plus union (recall) vs consensus (precision) counts.
+  when EITHER grader fails it** (union → over-critical / high-recall, the default).
+  One-sided flags are marked `disputed` and record both graders' takes. Keeps both
+  raw verdicts + per-criterion agreement; reports **Cohen's κ** overall and per
+  criterion, plus union (recall) / consensus (precision) / disputed counts.
 - `pipeline.py` + `scripts/grade_transcripts.py` — orchestrate and emit the table.
 
 ## Grading granularity (hybrid, parallel)
@@ -72,6 +73,9 @@ python scripts/grade_transcripts.py transcripts/selfplay \
   wall-clock. Calls = decisions × 2 graders.
 - `--merge consensus|union` — weakness table counts a criterion failed when BOTH
   graders agree (consensus, precision) or EITHER does (union, recall/discovery).
+  **Default is `union`** (deliberately over-critical); switch to `consensus` for a
+  conservative high-precision headline. Disputed (one-sided) flags are tracked
+  either way.
 
 Outputs `<run>/grading/findings.jsonl` (one object per decision, both raw verdicts
 kept) + `report.json` (weakness table + agreement). Re-rank without re-grading via

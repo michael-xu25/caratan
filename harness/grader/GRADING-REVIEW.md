@@ -90,16 +90,18 @@ confidence signal (agreement) and let us separate "real mistake both caught" fro
 assumed.
 
 **Q: How do you merge disagreements?**
-Per criterion. Consensus (both fail) = the high-precision metric we headline.
-Disagreements are kept (both raw verdicts + a per-criterion agreement flag), so we
-can also report the union (recall) view. We never silently pick a winner — the
-strict default is "both must agree it failed."
+Per criterion, the **default is union** (either grader fails it → flagged). We
+deliberately bias over-critical: a missed weakness never gets targeted, whereas a
+flagged-but-defensible one only costs a second look. One-sided flags are marked
+`disputed` and record BOTH graders' takes (who failed, who passed, why), and we
+keep both raw verdicts + a per-criterion agreement flag — so the conservative
+consensus (both-agree) view is always recoverable. We never silently pick a winner.
 
 **Q: The fail-rates look low (a few %). Is the model actually fine?**
-That's the *consensus* (both-agree) view, which is deliberately conservative. The
-*union* (either grader) view surfaces the real signal — e.g. trade
-`enables_key_build` runs ~11–14% (boxed-in / robber-threat / endgame). Consensus is
-for a defensible headline; union is for discovery. Both come from the same data.
+The headline now uses the *union* (either-grader) view, which surfaces the real
+signal — e.g. trade `enables_key_build` runs ~11–14% (boxed-in / robber-threat /
+endgame). The *consensus* (both-agree) view is the conservative high-precision
+cross-check (`--merge consensus`). Both come from the same data.
 
 **Q: Isn't the denominator diluted by rolls / forced moves?**
 No — verified. Only decisions that map to a real `decision_type`

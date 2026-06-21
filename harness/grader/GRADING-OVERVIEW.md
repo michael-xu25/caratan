@@ -17,8 +17,9 @@ transcripts — the same table that targets env generation and measures before/a
    was given up," as evidence (not a gate).
 4. **Dual grade** — Claude + OpenAI each score every criterion for the decision,
    with whole-game context.
-5. **Reconcile** per criterion: consensus = both agree (precision); union = either
-   (recall). Both raw verdicts kept; **Cohen's κ** per criterion.
+5. **Reconcile** per criterion: **default union = either grader fails (over-critical
+   / recall)**; consensus = both agree (precision) via `--merge consensus`. One-sided
+   flags marked `disputed` (both takes kept); **Cohen's κ** per criterion.
 6. **Aggregate** by `(decision_type, criterion, tag)`, ranked by **fail-rate**
    (not count), **Wilson-discounted** so small-n flukes don't top the list.
 

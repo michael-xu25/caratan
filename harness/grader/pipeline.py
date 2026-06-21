@@ -145,19 +145,21 @@ def detailed_weakness_table(objects: list[dict], min_samples: int = 15) -> list[
 
 def _merged_object(o: dict, merge: str) -> dict:
     """Re-derive an object's criteria as consensus (both fail) or union (either fail)
-    from the two raw grader verdicts, for the aggregator."""
+    from the two raw grader verdicts, for the aggregator. `disputed` marks one-sided
+    flags so the disparity survives into the per-decision view even under union."""
     from harness.grader.taxonomy import CRITERIA_BY_TYPE
     graders = [g for g in o["graders"].values() if isinstance(g, dict) and "criteria" in g]
     crit = []
     for name in CRITERIA_BY_TYPE[o["decision_type"]]:
         fs = [bool(g["criteria"][name]["failed"]) for g in graders if name in g["criteria"]]
         failed = (any(fs) if merge == "union" else (all(fs) if fs else False))
-        crit.append({"name": name, "failed": failed})
+        crit.append({"name": name, "failed": failed,
+                     "disputed": any(fs) and not all(fs)})
     return {"decision_type": o["decision_type"], "state_tags": o["state_tags"],
             "criteria": crit, "decision_id": o.get("decision_id")}
 
 
-def report(objects: list[dict], min_samples: int = 15, merge: str = "consensus") -> dict:
+def report(objects: list[dict], min_samples: int = 15, merge: str = "union") -> dict:
     verdicts = []
     for o in objects:
         verdicts.extend(flatten_grader_object(_merged_object(o, merge)))
