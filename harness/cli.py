@@ -33,9 +33,11 @@ def main():
     p.add_argument("--n", type=int, default=5, help="number of seeds when --seeds omitted")
     p.add_argument("--seed-start", type=int, default=1)
     p.add_argument("--no-mirror", action="store_true", help="disable seat-swapped mirror games")
-    p.add_argument("--no-balanced-dice", action="store_true",
-                   help="fall back to Catanatron's global-RNG dice (dice will diverge "
-                        "across a mirrored pair); on by default for fair dice")
+    p.add_argument("--balanced-dice", action="store_true",
+                   help="opt into the colonist-style balanced dice deck (A/B only); "
+                        "default is seeded i.i.d. dice per the build-spec. Both are "
+                        "decoupled from the global RNG, so a mirrored pair always "
+                        "sees identical dice.")
     p.add_argument("--concurrency", type=int, default=8,
                    help="max concurrent games == max concurrent LLM calls")
     p.add_argument("--reasoning", action="store_true",
@@ -48,7 +50,7 @@ def main():
         normal, swapped = asyncio.run(
             run_mirror_pair(args.a, args.b, args.pair, run_dir=args.run_dir,
                             capture_reasoning=args.reasoning,
-                            balanced_dice=not args.no_balanced_dice))
+                            balanced_dice=args.balanced_dice))
         report = render_pair_report(normal, swapped)
         print(report)
         report_path = Path(args.run_dir) / f"pair_seed{args.pair}.txt"
@@ -63,7 +65,7 @@ def main():
         concurrency=args.concurrency,
         run_dir=args.run_dir,
         capture_reasoning=args.reasoning,
-        balanced_dice=not args.no_balanced_dice,
+        balanced_dice=args.balanced_dice,
     ))
 
     summary = render_summary_table(result)

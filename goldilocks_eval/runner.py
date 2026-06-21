@@ -20,6 +20,7 @@ from catanatron import Color, Game
 from catanatron.state_functions import get_actual_victory_points
 
 from goldilocks_eval.agents.factory import label_for, make_player
+from goldilocks_eval.dice import seeded_dice
 from goldilocks_eval.transcript import write_transcripts
 
 # 1v1 throughout (README): two fixed seats.
@@ -89,7 +90,12 @@ def _play_one(label_a: str, label_b: str, spec_a: str, spec_b: str,
 
     players = [make_player(seat_specs[c], c) for c in SEATS]
     game = Game(players, seed=seed)
-    winner = game.play()  # Color or None (turn-limit timeout)
+    # Seeded dice decoupled from the global RNG so a mirrored pair sees identical
+    # rolls (default i.i.d., per the build-spec). NOTE: board generation still
+    # draws from the global RNG, so for *concurrent* head-to-head use the
+    # process-isolated runner in `harness/` (canonical for multi-game runs).
+    with seeded_dice(seed):
+        winner = game.play()  # Color or None (turn-limit timeout)
 
     vps = {c.value: get_actual_victory_points(game.state, c) for c in SEATS}
     winner_color = winner.value if winner is not None else None

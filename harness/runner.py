@@ -26,10 +26,10 @@ Fairness:
   * `run_batch(..., mirror=True)` plays every seed twice with seats swapped.
     Verified property for 1v1: reusing a seed with the player list swapped
     yields an IDENTICAL board and cleanly swapped seating (RED<->BLUE). Dice
-    are identical too when both policies consume RNG identically; for policies
-    that draw from Python's RNG differently (or trigger different robber/dev
-    draws) the dice streams can diverge -- a decision-independent "balanced
-    dice deck" is the proper fix and is noted as future work.
+    are kept identical across the pair by `goldilocks_eval.dice` (a per-seed RNG
+    decoupled from the global stream) regardless of how each policy draws —
+    default seeded i.i.d. per the build-spec; `balanced_dice=True` for the
+    colonist deck (A/B only).
 """
 
 from __future__ import annotations
@@ -113,19 +113,20 @@ def _board_fingerprint(game) -> str:
 
 
 def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
-                     capture_reasoning=False, balanced_dice=True):
+                     capture_reasoning=False, balanced_dice=False):
     """Run one full game synchronously and return a MatchResult.
 
     Seat assignment: by default agent A is passed first (RED-ward), B second.
     `swap_seats` swaps the list order so A and B trade opening seats while the
     seed keeps the board fixed. `capture_reasoning` turns on model reasoning for
     LLM agents (testing / viewable transcripts); off keeps runs cheap.
-    `balanced_dice` deals dice from a per-seed deck decoupled from the global RNG
-    (the dice half of fairness) so a mirrored pair sees IDENTICAL dice; turn it
-    off to fall back to Catanatron's vanilla global-RNG dice.
+
+    Dice are always dealt from a per-seed RNG decoupled from the global stream
+    (the determinism fix), so a mirrored pair sees IDENTICAL dice. Default is
+    seeded **i.i.d.** (the build-spec decision); `balanced_dice=True` opts into
+    the colonist deck for A/B only.
     """
-    from contextlib import nullcontext
-    from harness.dice import balanced_dice as _balanced_dice
+    from harness.dice import seeded_dice as _seeded_dice
     a = make_agent(agent_a_spec, SEATS[0], capture_reasoning=capture_reasoning)
     b = make_agent(agent_b_spec, SEATS[1], capture_reasoning=capture_reasoning)
     # Give each agent its seat color, then order the list to set who seats first.
@@ -139,14 +140,14 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
 
     game = Game(players, seed=seed)
     fingerprint = _board_fingerprint(game)
-    # Deal dice from a per-seed deck (decoupled from the global RNG) so the
+    # Deal dice from a per-seed RNG (decoupled from the global stream) so the
     # mirrored pair sees identical dice; the deck records what it dealt so we can
-    # fingerprint it the same way we fingerprint the board.
-    dice_ctx = _balanced_dice(seed) if balanced_dice else nullcontext()
-    with dice_ctx as deck:
+    # fingerprint it the same way we fingerprint the board. Default i.i.d.;
+    # balanced (colonist deck) is opt-in.
+    with _seeded_dice(seed, balanced=balanced_dice) as deck:
         game.play(accumulators=[transcript])
-    dice_fingerprint = deck.fingerprint() if deck is not None else ""
-    dice_rolls = tuple(deck.dealt) if deck is not None else ()
+    dice_fingerprint = deck.fingerprint()
+    dice_rolls = tuple(deck.dealt)
     duration = transcript.duration
 
     color_a = a.color
@@ -182,7 +183,7 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
 
 async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
                     run_dir="transcripts/adhoc", executor=None,
-                    capture_reasoning=False, balanced_dice=True):
+                    capture_reasoning=False, balanced_dice=False):
     """Run a single match in a worker process (isolated global RNG).
 
     Pass a shared `executor` to run within a batch's process pool; otherwise a
@@ -199,7 +200,7 @@ async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
 
 async def run_mirror_pair(agent_a_spec, agent_b_spec, seed,
                           run_dir="transcripts/pair", capture_reasoning=False,
-                          balanced_dice=True):
+                          balanced_dice=False):
     """The fairness primitive: one board, two games with seats swapped.
 
     Game 1: A seats first (RED), B second (BLUE).

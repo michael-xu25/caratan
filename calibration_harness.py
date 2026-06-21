@@ -33,8 +33,10 @@ Usage:
 import argparse
 import asyncio
 import json
+import os
 import re
 import statistics
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 
 # ── WIRE 2: canonical prompt/parse/score (one source of truth) ──────────────
@@ -43,7 +45,9 @@ from dataclasses import dataclass
 # copies only if goldilocks_eval isn't importable (keeps this file standalone).
 try:
     from goldilocks_eval.prompting import build_prompt, parse_answer, score  # noqa: F401
+    from goldilocks_eval.prompting import SYSTEM as _SYSTEM
 except Exception:  # pragma: no cover - standalone fallback
+    _SYSTEM = "You are a Settlers of Catan world champion."
     def build_prompt(scenario: dict) -> str:
         legal = ", ".join(str(a) for a in scenario["legal_actions"])
         return (
@@ -71,9 +75,9 @@ except Exception:  # pragma: no cover - standalone fallback
 # ────────────────────────────────────────────────────────────────────────────
 
 
-# ── WIRE 1: replace with your goldilocks_eval LLMBackend ────────────────────
+# ── WIRE 1: backend (real LLM via goldilocks_eval; demo fallback) ───────────
 class _DemoBackend:
-    """Stand-in so this file runs without the repo. Returns a random legal node."""
+    """Stand-in so this file runs without a key/model. Returns a random legal node."""
     def __init__(self, model: str):
         self.model = model
 
@@ -83,6 +87,36 @@ class _DemoBackend:
         nodes = re.search(r"Legal settlement nodes: (.+)", prompt)
         pick = random.choice(nodes.group(1).split(", ")) if nodes else "node_0"
         return f"<reasoning>demo</reasoning>\n<answer>{pick}</answer>"
+
+
+class _LLMSamplingBackend:
+    """Adapt a goldilocks_eval LLMBackend (sync `complete(system, user)`) to the
+    sampler's async `generate(prompt, temperature)`. Temperature is fixed on the
+    backend at construction (constant across a calibration run); the blocking
+    HTTP call runs in the loop's thread pool so `--concurrency` calls fan out."""
+    def __init__(self, backend):
+        self._b = backend
+
+    async def generate(self, prompt: str, temperature: float) -> str:
+        return await asyncio.to_thread(self._b.complete, _SYSTEM, prompt)
+
+
+_LLM_PREFIXES = ("fireworks", "claude", "openai", "gemini")
+
+
+def _make_backend(model_spec: str, temperature: float):
+    """Build a sampler backend from a spec. `fireworks:…`/`claude:…`/… use the
+    real LLM via goldilocks_eval; anything else (e.g. "demo") uses the stub."""
+    head = model_spec.split(":", 1)[0].lower()
+    if head in _LLM_PREFIXES:
+        from goldilocks_eval.agents.factory import make_backend
+        backend = make_backend(model_spec)
+        # Calibration NEEDS temperature > 0: identical (greedy) rollouts have
+        # zero variance and get filtered out as "no GRPO gradient".
+        if hasattr(backend, "temperature"):
+            backend.temperature = temperature
+        return _LLMSamplingBackend(backend)
+    return _DemoBackend(model_spec)
 # ────────────────────────────────────────────────────────────────────────────
 
 
@@ -121,8 +155,16 @@ async def main_async(args):
         raise SystemExit("Some scenarios are unlabeled (gold_action=null). "
                          "Label them before calibrating.")
 
-    backend = _DemoBackend(args.model)  # WIRE 1
+    backend = _make_backend(args.model, args.temperature)  # WIRE 1
+    print(f"backend: {getattr(backend, 'model', None) or type(backend).__name__}  "
+          f"temp={args.temperature}  samples={args.samples}  concurrency={args.concurrency}")
     sem = asyncio.Semaphore(args.concurrency)
+
+    # asyncio.to_thread defaults to a ~32-thread pool — too small for 100-way
+    # sampling. Size the loop's executor to the requested concurrency so the
+    # semaphore (not the thread pool) is the real ceiling.
+    loop = asyncio.get_running_loop()
+    loop.set_default_executor(ThreadPoolExecutor(max_workers=max(args.concurrency, 4)))
 
     results = await asyncio.gather(*[
         calibrate_one(backend, s, args.samples, args.temperature, sem)
@@ -154,10 +196,16 @@ async def main_async(args):
 
 
 def main():
+    # Default to the deployed Fireworks model if FIREWORKS_MODEL is set, else the
+    # demo backend (so the harness still runs standalone with no key/model).
+    fw = os.environ.get("FIREWORKS_MODEL")
+    default_model = f"fireworks:{fw}" if fw else "demo"
     p = argparse.ArgumentParser()
     p.add_argument("input", help="labeled scenario JSONL")
     p.add_argument("--out", required=True)
-    p.add_argument("--model", default="accounts/fireworks/models/gemma-4-e4b")
+    p.add_argument("--model", default=default_model,
+                   help="backend spec, e.g. fireworks:accounts/<acct>/deployments/<id> "
+                        "(default: $FIREWORKS_MODEL if set, else 'demo')")
     p.add_argument("--samples", type=int, default=8)
     p.add_argument("--concurrency", type=int, default=100)
     p.add_argument("--temperature", type=float, default=0.8)
