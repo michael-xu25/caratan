@@ -32,6 +32,8 @@ HERE = Path(__file__).resolve().parent
 # env key -> (taskset jsonl, env module file, template factory name)
 ENVS = {
     "placement": ("../data/placement_opening_train.trl.jsonl", "catan_placement_env.py", "placement"),
+    "maritime": ("../data/maritime_trade_train.trl.jsonl", "catan_maritime_env.py", "maritime"),
+    "build": ("../data/build_train.trl.jsonl", "catan_build_env.py", "build"),
 }
 
 
@@ -65,6 +67,20 @@ def load_taskset(env_key, limit):
         tasks = [placement(prompt=_full_prompt(r["prompt"]),
                            spot_scores=r["ground_truth"]["spot_scores"],
                            gold=r["ground_truth"]["gold"]) for r in rows]
+    elif env_key == "maritime":
+        from catan_maritime_env import maritime
+        tasks = [maritime(prompt=_full_prompt(r["prompt"]),
+                          legal_actions=r["ground_truth"]["legal_actions"],
+                          trade_options=r["ground_truth"]["trade_options"],
+                          no_trade_reward=r["ground_truth"]["no_trade_reward"],
+                          weights=r["ground_truth"]["weights"]) for r in rows]
+    elif env_key == "build":
+        from catan_build_env import build
+        tasks = [build(prompt=_full_prompt(r["prompt"]),
+                       legal_actions=r["ground_truth"]["legal_actions"],
+                       build_options=r["ground_truth"]["build_options"],
+                       best_value=r["ground_truth"]["best_value"],
+                       weights=r["ground_truth"]["weights"]) for r in rows]
     else:
         raise ValueError(f"unknown env {env_key}")
     return Taskset(env_key, tasks)
