@@ -40,6 +40,23 @@ def _encode(value):
     return json.loads(json.dumps(value, cls=GameEncoder))
 
 
+def _resolve_winner(transcript: dict):
+    """Winner with the turn-cap tie-break (more VP wins; exact tie = draw).
+
+    Prefer the transcript's recorded `winning_color`; if it's null (older
+    transcripts left it null at the turn cap), fall back to the VP lead from
+    `final_victory_points`. Keeps the viewer consistent with the match result."""
+    wc = transcript.get("winning_color")
+    if wc:
+        return wc
+    vps = transcript.get("final_victory_points", {}) or {}
+    if not vps:
+        return None
+    top = max(vps.values())
+    leaders = [c for c, v in vps.items() if v == top]
+    return leaders[0] if len(leaders) == 1 else None
+
+
 def _static_board(g: dict) -> dict:
     """Geometry (unit-scaled) straight from the serialized board — unchanged."""
     tiles = []
@@ -103,57 +120,56 @@ def build_view(transcript_path: Path) -> dict:
     game = Game([RandomPlayer(Color.RED), RandomPlayer(Color.BLUE)],
                 seed=seed, vps_to_win=10)
 
-    cursor = {"i": 0}
+    from catanatron.models.enums import Action, ActionType, ActionRecord
 
-    def decider(player, gm, playable):
-        rec = records[cursor["i"]][0]          # [color, type, value]
-        rtype, rval = rec[1], rec[2]
-        if rtype == "ROLL":                    # dice injected from the record (below)
-            for a in playable:
-                if a.action_type.value == "ROLL":
-                    return a
-        for a in playable:                     # match type + value exactly
-            if a.action_type.value == rtype and _encode(a.value) == rval:
-                return a
-        for a in playable:                     # type-only fallback
-            if a.action_type.value == rtype:
-                return a
-        raise RuntimeError(f"replay mismatch at ply {cursor['i']}: "
-                           f"recorded {rec} not in playable {playable}")
+    def _to_action(ra):
+        """Rebuild an Action from the serialized [color, type, value] record."""
+        atype = ActionType(ra[1])
+        v = ra[2]
+        if v is None:
+            value = None
+        elif atype == ActionType.MOVE_ROBBER:           # ((coord), victim_color|None)
+            coord, victim = v
+            value = (tuple(coord), Color[victim] if victim else None)
+        elif isinstance(v, list):                       # edge / trade / dice / YoP
+            value = tuple(v)
+        else:
+            value = v                                   # node id / resource / depth
+        return Action(Color[ra[0]], atype, value)
 
-    # Faithful dice: replay the EXACT recorded dice (don't regenerate from a seed —
-    # that can drift if the RNG changes). Patch roll_dice to pop the recorded seq.
-    import catanatron.apply_action as _apply_action
-    recorded_dice = iter([tuple(r[0][2]) for r in records
-                          if r[0][1] == "ROLL" and r[0][2]])
-    _orig_roll = _apply_action.roll_dice
-    _apply_action.roll_dice = lambda: next(recorded_dice, (1, 1))
+    def _norm_result(res):
+        return tuple(res) if isinstance(res, list) else res
 
+    # Fully deterministic replay: execute each recorded action WITH its recorded
+    # result, so dice, robber steals, and dev-card draws all come from the record
+    # (apply_roll / apply_move_robber / apply_buy_development_card honor
+    # action_record.result). No RNG is consumed → it can never diverge.
     steps = []
-    try:
-        while (game.winning_color() is None
-               and game.state.num_turns < _cg.TURNS_LIMIT
-               and cursor["i"] < len(records)):
-            rec = records[cursor["i"]]
-            game.play_tick(decide_fn=decider)          # engine executes + validates
-            snap = _snapshot(game.state)               # exact state AFTER the move
-            action = rec[0]
-            dec = decisions[cursor["i"]] if cursor["i"] < len(decisions) else {}
-            steps.append({
-                "i": cursor["i"], "turn": dec.get("turn"),
-                "color": action[0], "action_type": action[1], "value": action[2],
-                "dice": action[2] if action[1] == "ROLL" else None,
-                "note": _trade_note(action),
-                "reasoning": dec.get("reasoning"),
-                **snap,
-            })
-            cursor["i"] += 1
-    finally:
-        _apply_action.roll_dice = _orig_roll
+    for cursor_i, rec in enumerate(records):
+        ra = rec[0]
+        action = _to_action(ra)
+        game.execute(action, validate_action=False,
+                     action_record=ActionRecord(action=action, result=_norm_result(rec[1])))
+        snap = _snapshot(game.state)                    # exact state AFTER the move
+        dec = decisions[cursor_i] if cursor_i < len(decisions) else {}
+        steps.append({
+            "i": cursor_i, "turn": dec.get("turn"), "phase": dec.get("phase"),
+            "color": ra[0], "action_type": ra[1], "value": ra[2],
+            "chosen": dec.get("chosen"),
+            # the full legal set the player chose among + how many — the
+            # counterfactual the grader needs ("it had N options, picked X")
+            "legal_actions": dec.get("legal_actions"),
+            "num_legal": dec.get("num_legal"),
+            "dice": ra[2] if ra[1] == "ROLL" else None,
+            "note": _trade_note(ra),
+            "reasoning": dec.get("reasoning"),
+            **snap,  # faithful engine state: buildings/roads/robber/hands/vp/awards
+        })
 
     return {
         "meta": {"label": d.get("label"), "seed": seed, "seats": d.get("seats", {}),
-                 "winner": d.get("winning_color"),
+                 "winner": _resolve_winner(d),
+                 "truncated": d.get("truncated", d.get("winning_color") is None),
                  "final_vp": d.get("final_victory_points", {}),
                  "num_steps": len(steps)},
         "board": _static_board(g),
