@@ -41,8 +41,8 @@ def main():
     p.add_argument("--max-turns", type=int, default=400,
                    help="turn cap; if neither side reaches --vps-to-win by then, "
                         "the player with the most VP wins (true tie -> draw)")
-    p.add_argument("--vps-to-win", type=int, default=15,
-                   help="victory points needed to win (15 for the 2-player setup)")
+    p.add_argument("--vps-to-win", type=int, default=10,
+                   help="victory points needed to win (10 = standard)")
     p.add_argument("--reasoning", action="store_true",
                    help="capture model reasoning (for viewable testing transcripts); "
                         "off by default to keep runs cheap")

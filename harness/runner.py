@@ -115,7 +115,7 @@ def _board_fingerprint(game) -> str:
 
 def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
                      capture_reasoning=False, balanced_dice=True,
-                     max_turns=400, vps_to_win=15):
+                     max_turns=400, vps_to_win=10):
     """Run one full game synchronously and return a MatchResult.
 
     Seat assignment: by default agent A is passed first (RED-ward), B second.
@@ -125,7 +125,7 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
     `balanced_dice` deals dice from a per-seed deck decoupled from the global RNG
     (the dice half of fairness) so a mirrored pair sees IDENTICAL dice; turn it
     off to fall back to Catanatron's vanilla global-RNG dice.
-    `vps_to_win` is the victory-point target (15 for our 2-player setup).
+    `vps_to_win` is the victory-point target (10, standard).
     `max_turns` caps the game; if neither side reaches `vps_to_win` by then the
     game is truncated and the winner is whoever has more VP (true tie -> draw).
     """
@@ -200,7 +200,7 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
 async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
                     run_dir="transcripts/adhoc", executor=None,
                     capture_reasoning=False, balanced_dice=True,
-                    max_turns=400, vps_to_win=15):
+                    max_turns=400, vps_to_win=10):
     """Run a single match in a worker process (isolated global RNG).
 
     Pass a shared `executor` to run within a batch's process pool; otherwise a
@@ -217,7 +217,7 @@ async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
 
 async def run_mirror_pair(agent_a_spec, agent_b_spec, seed,
                           run_dir="transcripts/pair", capture_reasoning=False,
-                          balanced_dice=True, max_turns=400, vps_to_win=15):
+                          balanced_dice=True, max_turns=400, vps_to_win=10):
     """The fairness primitive: one board, two games with seats swapped.
 
     Game 1: A seats first (RED), B second (BLUE).
@@ -246,7 +246,7 @@ async def run_batch(agent_a_spec, agent_b_spec, seeds: Sequence[int],
                     run_dir: str = "transcripts/batch",
                     capture_reasoning: bool = False,
                     balanced_dice: bool = True,
-                    max_turns: int = 400, vps_to_win: int = 15) -> BatchResult:
+                    max_turns: int = 400, vps_to_win: int = 10) -> BatchResult:
     """Run many matches concurrently, bounded by `concurrency`.
 
     With `mirror=True` each seed is played twice (seats swapped). `concurrency`
