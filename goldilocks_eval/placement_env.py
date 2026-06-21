@@ -191,23 +191,32 @@ def _eval_one(backend, seed: int, weights: dict, mode: str) -> list[dict]:
         scn = {"serialized_state": _serialize(game),
                "legal_actions": [prompting.node_id_str(n) for n in legal],
                "env": "placement_opening"}
+        chosen, status = None, "ok"
         try:
             text = backend.complete(prompting.SYSTEM, prompting.build_prompt(scn))
             ans = prompting.parse_answer(text)
-            chosen = prompting.node_id_int(ans) if ans is not None else best
-            if chosen not in scored:
-                chosen = legal[0]  # illegal pick -> deterministic fallback
+            if ans is None:
+                status = "unparseable"
+            elif prompting.node_id_int(ans) not in scored:
+                status = "illegal"
+            else:
+                chosen = prompting.node_id_int(ans)
         except Exception:
-            chosen = legal[0]
+            status = "error"
+        # A failed/invalid answer scores 0.0 (model did NOT pick a valid spot) and
+        # is counted — NEVER silently treated as best/first (that fakes the score).
+        # The trajectory advances on the optimal spot so later placements still run.
+        reward = round(placement_reward(chosen, scored, mode), 4) if chosen is not None else 0.0
         out.append({
             "placement": pick + 1,
-            "chosen": prompting.node_id_str(chosen),
+            "chosen": prompting.node_id_str(chosen) if chosen is not None else None,
             "gold": prompting.node_id_str(best),
-            "reward": round(placement_reward(chosen, scored, mode), 4),
-            "chosen_score": round(scored[chosen][0], 4),
+            "status": status,
+            "reward": reward,
+            "chosen_score": round(scored[chosen][0], 4) if chosen is not None else None,
             "best_score": round(scored[best][0], 4),
         })
-        game.execute(next(a for a in settle if a.value == chosen))  # model's own move
+        game.execute(next(a for a in settle if a.value == (chosen if chosen is not None else best)))
         pick += 1
     return out
 
@@ -227,12 +236,23 @@ def cmd_eval(args):
     seeds = _seeds_for_split(args.split, args.n)
     backend = make_backend(args.model)
     results = asyncio.run(_eval_model(backend, seeds, weights, args.reward, args.concurrency))
-    # per-placement average reward
+    # per-placement average reward + answer-validity (so a 404-storm or unparseable
+    # outputs can't masquerade as a real score)
     by_pos = {1: [], 2: [], 3: [], 4: []}
+    status_counts = {}
     for game in results:
         for d in game:
             by_pos[d["placement"]].append(d["reward"])
+            status_counts[d["status"]] = status_counts.get(d["status"], 0) + 1
+    total = sum(status_counts.values()) or 1
+    ok = status_counts.get("ok", 0)
     print(f"model: {args.model}   boards: {len(seeds)}   reward mode: {args.reward}")
+    print(f"valid-answer rate: {ok}/{total} = {ok/total:.1%}"
+          + (f"   FAILURES: {dict((k, v) for k, v in status_counts.items() if k != 'ok')}"
+             if ok < total else ""))
+    if ok == 0:
+        print("  ⚠️  0 valid answers — the model was never reached (check the deployment "
+              "id / that the model is deployed). The reward numbers below are MEANINGLESS.")
     print("per-placement mean reward (1.0 = optimal spot each time):")
     for p in (1, 2, 3, 4):
         xs = by_pos[p]
