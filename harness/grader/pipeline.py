@@ -1,84 +1,64 @@
-"""End-to-end: transcripts -> gated decisions -> dual grade -> reconcile ->
-ranked failure modes. The deliverable that feeds env generation.
+"""End-to-end: transcripts -> per-decision dual grading -> aggregator-ready grader
+objects -> ranked (criterion, tag) fail-rate weakness table.
+
+By default every decision that maps to a taxonomy decision_type is graded (the
+fail-rate denominator must be unbiased — see aggregator.py). The regret oracle is
+kept as an auxiliary signal on each object, NOT a gate. Optional budget controls
+(`gate_pct`, `max_per_game`) trade coverage for cost — `gate_pct` biases the
+denominator toward hard decisions, so prefer `max_per_game` (a uniform sample).
 """
 from __future__ import annotations
 
-from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 
 from harness.grader.oracle import compute_regrets, gate_threshold, apply_gate
 from harness.grader.graders import grade
-from harness.grader.reconcile import reconcile, agreement_report, Finding
+from harness.grader.reconcile import reconcile, agreement_report
+from harness.grader.aggregator import flatten_grader_object, aggregate
 
 
 def _decisions_by_ply(transcript: dict) -> dict:
     return {d.get("i", d.get("ply", k)): d for k, d in enumerate(transcript.get("decisions", []))}
 
 
-def select_decisions(regrets, gate_pct: float, low_regret_rate: float):
-    """Gated (high-regret) decisions + a deterministic low-regret sample (to catch
-    lucky-right reasoning failures and audit the oracle)."""
-    thr = gate_threshold(regrets, gate_pct)
-    apply_gate(regrets, thr)
-    gated = [r for r in regrets if r.gated]
-    chosen = list(gated)
-    if low_regret_rate > 0:
-        low = [r for r in regrets if not r.gated and r.regret > 0]
-        stride = max(1, int(round(1 / low_regret_rate)))
-        chosen += low[::stride]
-    return chosen, thr
+def _select(regrets, gate_pct: float, max_per_game: int):
+    sel = regrets
+    if gate_pct and gate_pct > 0:
+        thr = gate_threshold(regrets, gate_pct)
+        apply_gate(regrets, thr)
+        sel = [r for r in regrets if r.gated]
+    if max_per_game and len(sel) > max_per_game:        # uniform stride sample (unbiased)
+        stride = len(sel) / max_per_game
+        sel = [sel[int(i * stride)] for i in range(max_per_game)]
+    return sel
 
 
-def grade_transcript(transcript: dict, grader_a, grader_b, judge=None,
-                     gate_pct: float = 75.0, low_regret_rate: float = 0.1,
-                     samples: int = 1, max_workers: int = 8) -> list[Finding]:
+def grade_transcript(transcript: dict, grader_a, grader_b, gate_pct: float = 0.0,
+                     max_per_game: int = 0, samples: int = 1, max_workers: int = 8) -> list[dict]:
     regrets = compute_regrets(transcript)
     decisions = _decisions_by_ply(transcript)
-    todo, _ = select_decisions(regrets, gate_pct, low_regret_rate)
     game_id = transcript.get("label", "game")
+    todo = _select(regrets, gate_pct, max_per_game)
 
     def _one(r):
         dec = decisions.get(r.ply)
         va = grade(grader_a, r, dec, samples=samples)
         vb = grade(grader_b, r, dec, samples=samples)
-        f = reconcile(r, va, vb, judge_backend=judge, decision=dec)
-        f.game_id = game_id
-        return f
+        return reconcile(r, va, vb, decision_id=f"{game_id}:{r.ply}")
 
     with ThreadPoolExecutor(max_workers=max_workers) as ex:
         return list(ex.map(_one, todo))
 
 
-def aggregate(findings: list[Finding]) -> list[dict]:
-    """Bucket findings by category, rank by total VP-equivalent regret (= ROI to fix)."""
-    by_cat: dict[str, list[Finding]] = defaultdict(list)
-    for f in findings:
-        by_cat[f.category].append(f)
-
-    modes = []
-    for cat, fs in by_cat.items():
-        fs_sorted = sorted(fs, key=lambda x: -x.regret_vp)
-        rep = fs_sorted[0]
-        consensus = sum(1 for f in fs if f.agreement == "consensus")
-        modes.append({
-            "category": cat,
-            "frequency": len(fs),
-            "total_regret_vp": round(sum(f.regret_vp for f in fs), 4),
-            "mean_regret_vp": round(sum(f.regret_vp for f in fs) / len(fs), 4),
-            "consensus_rate": round(consensus / len(fs), 3),
-            "example_plies": [f"{f.game_id or '?'}:{f.ply}" for f in fs_sorted[:5]],
-            "representative_explanation": rep.explanation,
-        })
-    modes.sort(key=lambda m: -m["total_regret_vp"])
-    for i, m in enumerate(modes):
-        m["roi_rank"] = i + 1
-    return modes
-
-
-def report(findings: list[Finding]) -> dict:
-    """Full grading report: ranked modes + agreement headline + per-category kappa-ish."""
+def report(objects: list[dict], min_samples: int = 15) -> dict:
+    """Ranked weakness table (Wilson-ranked fail-rate) + dual-grader agreement."""
+    verdicts = []
+    for o in objects:
+        verdicts.extend(flatten_grader_object(o))
+    rows = aggregate(verdicts, min_samples=min_samples)
     return {
-        "agreement": agreement_report(findings),
-        "failure_modes": aggregate(findings),
-        "num_findings": len(findings),
+        "agreement": agreement_report(objects),
+        "weakness_table": rows,
+        "num_decisions": len(objects),
+        "num_verdicts": len(verdicts),
     }

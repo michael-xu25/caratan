@@ -1,42 +1,40 @@
-"""Grading prompt + verdict schema, shared verbatim by BOTH graders.
+"""Grading prompt + verdict parsing — the grader-spec.md system prompt, scoped to
+score the criteria for ONE decision's type.
 
-The graders never decide *whether* a move was a mistake (the regret oracle already
-did, objectively). They receive the oracle's verdict as context and only:
-  - classify the failure into the closed-set taxonomy,
-  - judge whether the model's stated reasoning justified the action,
-  - rate their own confidence,
-  - explain in one or two Catan sentences.
-
-Identical prompt + temperature 0 for both graders so their answers are comparable
-and merges are measurable.
+Both graders get this verbatim (temperature 0) so their per-criterion verdicts are
+comparable. We do NOT ask the grader to assign state_tags — those are derived
+objectively from the engine (harness/grader/context.py) so the two graders share
+identical tags and the aggregator's (criterion, tag) buckets never split on a tag
+disagreement. The grader scores criteria; we attach the derived tags + oracle
+context ourselves.
 """
 from __future__ import annotations
 
 import json
 
-from harness.grader.taxonomy import taxonomy_block, LABELS
+from harness.grader.taxonomy import criteria_block, CRITERIA_BY_TYPE
 
 SYSTEM = (
-    "You are an expert Settlers of Catan analyst grading ONE decision from a "
-    "1v1 game. An objective engine oracle has already determined this move gave "
-    "up value versus the best legal move — you do NOT decide whether it was a "
-    "mistake. Your job is to CATEGORIZE why, using only the fixed taxonomy.\n\n"
-    "Failure-mode taxonomy (choose exactly one label):\n"
-    f"{taxonomy_block()}\n\n"
-    "Reply with ONLY a JSON object, no prose outside it:\n"
-    '{"category": "<one taxonomy label>", '
-    '"reasoning_consistency": <0.0-1.0>, '
-    '"confidence": <0.0-1.0>, '
-    '"explanation": "<one or two sentences in Catan terms>"}\n'
-    "- category MUST be one of the listed labels exactly.\n"
-    "- reasoning_consistency: did the player's stated reasoning justify the action? "
-    "1.0 = fully justified, 0.0 = contradicts the action / absent. Use 'none' for "
-    "category if the oracle's regret looks like a value-function artifact, not a real error."
+    "You are a Settlers of Catan decision grader. You receive ONE decision: the game "
+    "state, the legal options available, the choice the player made (and its stated "
+    "reasoning), and an objective engine oracle's view of how much value the choice gave "
+    "up. You score the choice on each listed criterion.\n\n"
+    "Rules:\n"
+    "1. Score EVERY criterion listed for this decision, using ONLY those criterion IDs.\n"
+    "   Scale: 2 = good / no issue, 1 = suboptimal but defensible, 0 = clear mistake.\n"
+    "   Set failed=true ONLY on score 0. If a criterion is not relevant to this specific "
+    "decision, score 2, failed=false, reason \"n/a\".\n"
+    "2. Judge against the legal options actually available, not an ideal that wasn't on "
+    "the menu. The oracle's best legal move and the regret are given as evidence.\n"
+    "3. Keep every reason to one sentence.\n"
+    "4. Output ONLY a JSON object, no prose, no markdown:\n"
+    '{"criteria": [{"name": "<criterion id>", "score": 0|1|2, "failed": true|false, '
+    '"reason": "<= 1 sentence"}], "summary": "<= 1 sentence"}\n'
+    "Never invent criterion names. Score exactly the criteria you are given, all of them."
 )
 
 
 def _fmt_action(a) -> str:
-    """[color, type, value] or 'TYPE value' string -> readable."""
     if isinstance(a, str):
         return a
     if isinstance(a, (list, tuple)) and len(a) >= 3:
@@ -45,51 +43,50 @@ def _fmt_action(a) -> str:
 
 
 def build_user_prompt(regret, decision: dict | None) -> str:
-    """Assemble the decision context for the graders from the oracle result and
-    the matching transcript decision (reasoning, hand, VP, legal options)."""
     decision = decision or {}
     state = decision.get("state", {}) or {}
-    vp = state.get("vp", {})
-    hand = state.get("hand", {})
     legal = decision.get("legal_actions") or []
     reasoning = decision.get("reasoning") or "(no reasoning captured)"
-
-    legal_str = ", ".join(map(str, legal[:40]))
-    if len(legal) > 40:
-        legal_str += f", … (+{len(legal) - 40} more)"
+    legal_str = ", ".join(map(str, legal[:40])) + (
+        f", … (+{len(legal) - 40} more)" if len(legal) > 40 else "")
 
     return (
-        f"GAME CONTEXT\n"
-        f"- turn {regret.turn}, ply {regret.ply}, acting player: {regret.color}\n"
-        f"- victory points: {vp}\n"
-        f"- {regret.color} hand: {hand} | longest_road={state.get('longest_road')} "
+        f"DECISION TYPE: {regret.decision_type}\n"
+        f"Score these criteria (all of them):\n{criteria_block(regret.decision_type)}\n\n"
+        f"STATE (objective tags: {', '.join(regret.state_tags)})\n"
+        f"- turn {regret.turn}, acting player {regret.color} | VP {state.get('vp', {})}\n"
+        f"- hand {state.get('hand', {})} | longest_road={state.get('longest_road')} "
         f"dev_cards={state.get('dev_cards')} robber={state.get('robber')}\n\n"
         f"THE DECISION\n"
         f"- chose: {_fmt_action(regret.action)}\n"
         f"- legal options ({regret.num_legal}): {legal_str}\n"
-        f"- model's stated reasoning: \"{reasoning}\"\n\n"
+        f"- stated reasoning: \"{reasoning}\"\n\n"
         f"ORACLE (objective engine)\n"
-        f"- this move's regret: {regret.regret_vp:.3f} VP-equivalents "
-        f"(positive = value given up)\n"
+        f"- regret of this move: {regret.regret_vp:.3f} VP-equivalents (higher = more value given up)\n"
         f"- oracle's best legal move: {_fmt_action(regret.oracle_best)}\n\n"
-        f"Classify the failure into one taxonomy label and return the JSON verdict."
+        f"Return the JSON verdict scoring every listed criterion."
     )
 
 
-def parse_verdict(text: str) -> dict | None:
-    """Robustly pull the JSON verdict object out of a grader reply."""
+def parse_criteria(text: str, dtype: str) -> dict | None:
+    """Pull {criteria:[...], summary} out of a grader reply and keep only valid
+    criterion IDs for this decision_type."""
     if not text:
         return None
     s = text.strip()
-    # strip code fences
     if s.startswith("```"):
-        s = s.split("```", 2)[1] if "```" in s[3:] else s.strip("`")
+        s = s.strip("`")
         s = s[s.find("{"):] if "{" in s else s
     start, end = s.find("{"), s.rfind("}")
-    if start == -1 or end == -1 or end <= start:
+    if start == -1 or end <= start:
         return None
     try:
         obj = json.loads(s[start:end + 1])
     except json.JSONDecodeError:
         return None
-    return obj if isinstance(obj, dict) else None
+    if not isinstance(obj, dict) or "criteria" not in obj:
+        return None
+    valid = set(CRITERIA_BY_TYPE[dtype])
+    crit = [c for c in obj.get("criteria", [])
+            if isinstance(c, dict) and c.get("name") in valid]
+    return {"criteria": crit, "summary": str(obj.get("summary", "")).strip()} if crit else None
