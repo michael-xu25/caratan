@@ -132,8 +132,10 @@ def render_actions(playable_actions: List[Action], game: Game = None) -> str:
     return "\n".join(out)
 
 
-# 1v1 rules primer + action glossary — shared by both runners' system prompts.
-RULES_1V1 = (
+# Format-agnostic 1v1 Catan rules primer. Shared by the live-play prompt AND the
+# placement/grading prompt (goldilocks_eval.prompting) so the model is graded
+# with the same game knowledge it plays with.
+CATAN_RULES = (
     "You are an expert Settlers of Catan player in a 1-vs-1 game (exactly one "
     "opponent). Rules that matter:\n\n"
     "GOAL: first to 10 victory points (VP). VP come from: settlement = 1, "
@@ -157,7 +159,11 @@ RULES_1V1 = (
     "have settled.\n\n"
     "1v1 STRATEGY: tempo and denial decide games. Race Longest Road and Largest "
     "Army (each is a 2-VP swing), block the opponent's best tile with the robber, "
-    "and don't over-trade away scarce resources. No multiplayer politics.\n\n"
+    "and don't over-trade away scarce resources. No multiplayer politics."
+)
+
+# Live-play action glossary (index-based selection over the full legal set).
+_LIVE_ACTION_GLOSSARY = (
     "READING THE ACTIONS — you get the EXACT list of legal moves; pick one by "
     "index:\n"
     "- BUILD_SETTLEMENT N / BUILD_CITY N: N is a node id; its adjacent "
@@ -168,6 +174,8 @@ RULES_1V1 = (
     "- PLAY_KNIGHT/PLAY_*: play that dev card. ROLL / END_TURN / "
     "BUY_DEVELOPMENT_CARD as named."
 )
+
+RULES_1V1 = CATAN_RULES + "\n\n" + _LIVE_ACTION_GLOSSARY
 
 _OUTPUT_WITH_REASONING = (
     "\n\nReply with ONLY a JSON object on one line:\n"
