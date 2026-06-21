@@ -4,6 +4,6 @@
 
 | games | trained wins | base wins | draws | trained win-rate | avg VP (trained/base) | cap-stalls |
 |---|---|---|---|---|---|---|
-| 150 | 22 | 6 | 122 | 79% | 2.45/2.19 | 150 |
+| 24 | 12 | 11 | 1 | 52% | 7.17/6.88 | 4 |
 
 Win-rate is over decided games (draws excluded). Mirrored → seat-fair.
