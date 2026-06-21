@@ -26,6 +26,7 @@
       <div class="brand"><b>🎬 Caratan Replay</b></div>
       <select id="runsel" title="Pick a sample run / game" style="width:100%;margin-bottom:12px;display:none"></select>
       <div class="pills" id="seats"></div>
+      <div id="winnerbanner" class="winbanner" style="display:none"></div>
       <div class="stats">
         <div><span class="lbl">Turn</span><span class="val" id="sTurn">–</span></div>
         <div><span class="lbl">Ply</span><span class="val" id="sPly">–</span></div>
@@ -104,6 +105,16 @@ function updatePanel(step) {
   $("sTurn").textContent = step.turn ?? "—";
   $("sPly").textContent = `${idx+1}/${m.num_steps}`;
   $("sWin").textContent = m.winner ? dname(m.winner) : "draw";
+  // prominent winner banner — names the MODEL that won (color is secondary)
+  const wb = $("winnerbanner");
+  if (m.winner){ const wc = pcol(m.winner);
+    wb.style.display = ""; wb.style.borderLeftColor = wc;
+    wb.innerHTML = `<span class="wlabel">🏆 winner</span>`+
+      `<span class="wmodel" style="color:${wc}"><span class="swatch" style="background:${wc}"></span>`+
+      `${mshort((m.seats||{})[m.winner])}</span>`+
+      `<span class="wcolor">${dname(m.winner)} seat</span>`;
+  } else { wb.style.display = ""; wb.style.borderLeftColor = "var(--line)";
+    wb.innerHTML = `<span class="wlabel">result</span><span class="wmodel">draw</span>`; }
 
   // current move + reasoning
   const g = GRADING && (GRADING.steps||{})[String(step.i)];
@@ -137,12 +148,16 @@ function updatePanel(step) {
   renderStepGrade(step);
 }
 
+// short, human model name from a seat spec ("hud:catan-grpo-q8b" -> "catan-grpo-q8b",
+// "hud:Qwen/Qwen3-8B" -> "Qwen3-8B"). Model identity is what we care about, not the color.
+const mshort = a => String(a||"").split(":").pop().replace(/.*\//, "") || "—";
 function setSeats() {
   const s = DATA.meta.seats || {};
   $("seats").innerHTML = Object.entries(s).map(([c,a]) =>
-    `<div class="pill"><span class="dot" style="background:${pcol(c)}"></span>`+
-    `<span class="nm" style="color:${pcol(c)}">${dname(c)}</span>`+
-    `<span class="role">${String(a).split(":").pop().slice(0,16)}</span></div>`).join("");
+    `<div class="pill" style="border-color:${pcol(c)}">`+
+    `<span class="swatch" style="background:${pcol(c)}"></span>`+
+    `<span class="pmeta"><span class="pmodel" title="${a}">${mshort(a)}</span>`+
+    `<span class="pcolor" style="color:${pcol(c)}">${dname(c)} player</span></span></div>`).join("");
 }
 
 function go(i){ idx = Math.max(0, Math.min(DATA.meta.num_steps-1, i)); render(); }

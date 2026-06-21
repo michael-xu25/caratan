@@ -166,3 +166,21 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 
 /* model log fallback (kept minimal) */
 #log{display:flex;flex-direction:column;gap:7px}
+
+/* seat legend — make MODEL + its color obvious */
+.pill{gap:9px;padding:9px 11px;border-width:1.5px}
+.pill .swatch{width:18px;height:18px;border-radius:5px;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.14)}
+.pill .pmeta{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.pill .pmodel{font-weight:800;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill .pcolor{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+/* winner banner — leads with the MODEL, not the color */
+.winbanner{display:flex;align-items:center;gap:9px;margin:2px 0 12px;padding:9px 12px;
+  background:var(--card);border:1px solid var(--line);border-left-width:5px;border-radius:9px}
+.winbanner .wlabel{font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.winbanner .wmodel{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:15px}
+.winbanner .wmodel .swatch{width:14px;height:14px;border-radius:4px;box-shadow:0 0 0 2px rgba(255,255,255,.14)}
+.winbanner .wcolor{margin-left:auto;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+/* current move — bigger */
+.statusline{font-size:18px;font-weight:700;line-height:1.4;margin-bottom:10px;color:var(--ink)}
+.statusline .chip{font-size:15px}
+.statusline b{font-weight:800}
