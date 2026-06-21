@@ -5,87 +5,169 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Caratan — Play vs the Model</title>
 <style>
-  :root { --bg:#2c5d86; --panel:#14304a; --panel2:#1c4060; --ink:#eaf1f8; --muted:#9fb6cc; --line:#2f5778; --gold:#ffd54a; }
-  *{box-sizing:border-box} html,body{margin:0;height:100%;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+  :root{
+    --bg:#0c1320; --panel:#0e1521; --card:#151d2b; --card2:#1a2435; --line:#222d3f;
+    --ink:#e8eef6; --muted:#5e6b7d; --muted2:#8b98a9; --gold:#f5c33b;
+    --water:#26384e;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
   body{background:var(--bg);color:var(--ink);display:flex;height:100vh;overflow:hidden}
-  #board{flex:1;display:flex;align-items:center;justify-content:center} svg{width:100%;height:100%}
-  #side{width:400px;background:var(--panel);display:flex;flex-direction:column;border-left:1px solid var(--line)}
-  #side h1{font-size:15px;margin:0;padding:13px 16px;background:var(--panel2);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
-  #side h1 a{color:var(--muted);font-size:12px;font-weight:600;text-decoration:none;background:#23527c;padding:5px 9px;border-radius:6px}
-  #side h1 a:hover{background:#2f6ca6;color:#fff}
-  .pad{padding:11px 16px} .muted{color:var(--muted);font-size:12px} .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .chip{display:inline-flex;align-items:center;padding:2px 9px;border-radius:12px;font-size:12px;font-weight:700;color:#fff}
+  #board{flex:1;display:flex;align-items:center;justify-content:center;padding:18px}
+  svg{width:100%;height:100%}
+  #side{width:420px;background:var(--panel);display:flex;flex-direction:column;border-left:1px solid var(--line)}
+
+  /* header block */
+  .top{padding:16px 18px 14px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .brand b{font-size:15px;font-weight:700;letter-spacing:.2px}
+  .brand a{color:var(--muted2);font-size:12px;font-weight:600;text-decoration:none;background:var(--card);
+           border:1px solid var(--line);padding:6px 10px;border-radius:8px}
+  .brand a:hover{background:var(--card2);color:var(--ink)}
+  .newrow{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+  select,input{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px}
+  input{width:108px}
+  #new{flex:1;background:var(--gold);color:#241c00;font-weight:700;border:0;border-radius:8px;padding:8px 10px;cursor:pointer}
+  #new:hover{filter:brightness(1.06)}
+
+  /* player pills */
+  .pills{display:flex;gap:8px;margin-bottom:12px}
+  .pill{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+        border-radius:10px;padding:9px 11px}
+  .pill.you{border-color:#37445a;background:#172033}
+  .pill .dot{width:11px;height:11px;border-radius:50%;flex:none}
+  .pill .nm{font-weight:800;font-size:13px;letter-spacing:.3px}
+  .pill .role{margin-left:auto;font-size:11px;color:var(--muted);font-weight:600}
+
+  /* stat strip */
+  .stats{display:flex;gap:10px}
+  .stats>div{flex:1}
+  .stats .lbl{display:block;font-size:10px;letter-spacing:.1em;color:var(--muted);font-weight:700;text-transform:uppercase}
+  .stats .val{display:block;font-size:18px;font-weight:800;margin-top:2px}
+
+  /* scroll body */
   #scroll{flex:1 1 auto;overflow-y:auto;min-height:0}
-  button{background:#2a5a86;color:#fff;border:0;border-radius:7px;padding:7px 11px;font-size:13px;cursor:pointer}
-  button:hover{background:#356da0} button:disabled{opacity:.5;cursor:default}
-  .legal{display:flex;flex-direction:column;gap:5px;margin-top:6px}
-  .legal button{text-align:left;background:#23527c}
-  .legal button:hover{background:#2f6ca6}
-  .catbtn{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .costs{display:inline-flex;gap:4px;font-size:12px;opacity:.92;white-space:nowrap}
-  .cost{background:#11293e;border-radius:6px;padding:1px 5px}
-  .backbtn{background:#3a3050 !important;color:var(--gold);font-weight:700}
-  .backbtn:hover{background:#4a3f66 !important}
-  #status{font-size:14px;font-weight:700;margin:4px 0;min-height:20px}
-  #log{font-size:12px;line-height:1.4} .mv{border-left:2px solid var(--line);padding:3px 0 3px 8px;margin:5px 0}
-  .seclabel{font-size:12px;color:var(--muted);margin:8px 0 4px}
-  .cards{display:flex;gap:7px;font-size:13px;flex-wrap:wrap}
-  .handrow{display:flex;align-items:center;gap:8px;margin:4px 0}
-  select,input{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:13px}
-  table{width:100%;font-size:12px} td{padding:2px 0}
-  .vpbar{height:13px;border-radius:7px;background:var(--panel2);overflow:hidden;flex:1} .vpfill{height:100%}
-  #recipes{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin:6px 0;font-size:13px}
-  #recipes .rcp{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
-  #rolls{display:flex;flex-direction:column;gap:3px}
-  .roll{display:flex;align-items:center;gap:7px;font-size:12px} .roll.latest{font-weight:800}
-  .die{display:inline-block;min-width:15px;text-align:center;background:#f3ead2;color:#222;border-radius:3px;padding:0 2px;font-weight:700}
-  .rolemark{font-size:11px;color:var(--muted);margin-left:4px}
+  .sec{padding:15px 18px;border-bottom:1px solid var(--line)}
+  .sechead{display:flex;justify-content:space-between;align-items:center;
+           font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
+  #help{width:22px;height:22px;padding:0;border-radius:50%;background:var(--card2);color:var(--muted2);
+        border:1px solid var(--line);font-weight:800;cursor:pointer;font-size:12px}
+  #help:hover{color:var(--ink);border-color:#37445a}
+  .statusline{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--ink)}
+  .muted{color:var(--muted2);font-size:12px}
+
+  /* action rows */
+  .legal{display:flex;flex-direction:column;gap:7px}
+  .legal button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+                background:var(--card);border:1px solid var(--line);border-radius:11px;
+                padding:11px 12px;color:var(--ink);font-size:13.5px;cursor:pointer}
+  .legal button:hover{background:var(--card2);border-color:#37445a}
+  .badge{width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;
+         background:var(--card2);border:1px solid var(--line);border-radius:7px;font-size:14px}
+  .alabel{flex:1;line-height:1.25}
+  .atag{font-size:10px;letter-spacing:.06em;color:var(--muted);font-weight:700;text-transform:uppercase;white-space:nowrap}
+  .costs{display:inline-flex;gap:4px;white-space:nowrap}
+  .cost{background:#0e1726;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:11.5px}
+  .backbtn{justify-content:flex-start !important;color:var(--gold) !important;font-weight:700;background:#1b1733 !important;border-color:#332b54 !important}
+  .backbtn:hover{background:#241e44 !important}
+
+  /* recipes popover */
+  #recipes{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13px}
+  #recipes .rcp{display:flex;justify-content:space-between;gap:10px;padding:4px 0}
+
+  /* dice rolls */
+  #rolls{display:flex;flex-direction:column;gap:5px}
+  .roll{display:flex;align-items:center;gap:8px;font-size:12.5px}
+  .roll.latest .rt{font-weight:800}
+  .die{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;
+       background:#f2ead0;color:#222;border-radius:4px;font-weight:800;font-size:11px}
+  .rsum{color:var(--muted2)} .roll.latest .rsum{color:var(--ink)}
+  .tag{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.05em}
+
+  /* chips + vp + cards */
+  .chip{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:12.5px;letter-spacing:.3px}
+  .chip .dot{width:10px;height:10px;border-radius:50%}
+  .vprow{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .vprow .who{width:120px;display:flex;align-items:center;gap:7px;font-size:12.5px}
+  .vpbar{flex:1;height:8px;border-radius:6px;background:var(--card2);overflow:hidden}
+  .vpfill{height:100%;border-radius:6px}
+  .vpval{width:24px;text-align:right;font-weight:800;font-size:13px}
+  .role2{font-size:10px;color:var(--muted);font-weight:600;margin-left:2px}
+  .handblock{margin:6px 0 12px}
+  .handhead{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px;color:var(--muted2)}
+  .cards{display:flex;gap:7px;flex-wrap:wrap}
+  .rcard{width:50px;border-radius:9px;background:var(--card);border:1px solid var(--line);
+         border-bottom:3px solid var(--rc);padding:8px 0 6px;text-align:center}
+  .rcard.z{opacity:.34}
+  .rcard .ic{font-size:18px;line-height:1}
+  .rcard .ct{font-size:13px;font-weight:800;margin-top:4px}
+
+  #log{display:flex;flex-direction:column;gap:7px}
+  .anrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+         border-radius:11px;padding:11px 13px}
+  .anrow .at{flex:1;min-width:0}
+  .anrow .aa{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .anrow .as{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .anrow .av{font-size:17px;font-weight:800;white-space:nowrap}
+  .av.hi{color:#46c479} .av.mid{color:#e09b3b} .av.lo{color:var(--muted2)}
+  .anrow .reason{font-size:11px;color:var(--muted2);margin-top:3px;line-height:1.3}
 </style>
 </head>
 <body>
   <div id="board"><svg id="svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg></div>
   <div id="side">
-    <h1><span>🎲 Play vs the Model</span><a href="index.html" title="Back to the transcript replay viewer">← Transcripts</a></h1>
-    <div class="pad" style="border-bottom:1px solid var(--line)">
-      <div class="row">
-        <span class="muted">You play</span>
-        <select id="seat"><option value="RED">RED (first)</option><option value="BLUE">BLUE</option></select>
-        <input id="seed" type="number" placeholder="random seed" style="width:108px">
-        <button id="new">New game</button>
+    <div class="top">
+      <div class="brand"><b>🎲 Play vs the Model</b><a href="index.html" title="Back to the transcript replay viewer">← Transcripts</a></div>
+      <div class="newrow">
+        <select id="seat"><option value="RED">You: 1st</option><option value="BLUE">You: 2nd</option></select>
+        <input id="seed" type="number" placeholder="random seed">
+        <button id="new">New Game</button>
       </div>
-      <div class="muted" id="gameinfo" style="margin-top:6px">No game yet.</div>
+      <div class="pills">
+        <div class="pill you" id="pillYou"></div>
+        <div class="pill" id="pillModel"></div>
+      </div>
+      <div class="stats">
+        <div><span class="lbl">Turn</span><span class="val" id="sTurn">–</span></div>
+        <div><span class="lbl">Seed</span><span class="val" id="sSeed">–</span></div>
+        <div><span class="lbl">VP Goal</span><span class="val">10</span></div>
+      </div>
     </div>
     <div id="scroll">
-      <div class="pad">
-        <div class="row" style="justify-content:space-between">
-          <div id="status">—</div>
-          <button id="help" title="Show build recipes" style="padding:3px 9px;border-radius:50%;font-weight:800">?</button>
-        </div>
+      <div class="sec">
+        <div class="sechead"><span>Your move</span><button id="help" title="Build recipes">?</button></div>
+        <div id="status" class="statusline">—</div>
         <div id="recipes" style="display:none"></div>
         <div class="legal" id="legal"></div>
       </div>
-      <div class="pad">
-        <div class="seclabel">Dice rolls</div><div id="rolls" class="muted">—</div>
-        <div class="seclabel">Victory points</div><table id="vptable"></table>
-        <div class="seclabel">Resource cards</div><div id="hands"></div>
+      <div class="sec">
+        <div class="sechead">Dice rolls</div>
+        <div id="rolls" class="muted">—</div>
       </div>
-      <div class="pad">
-        <div class="seclabel">Model's moves</div>
+      <div class="sec">
+        <div class="sechead">Victory points</div>
+        <div id="vptable"></div>
+      </div>
+      <div class="sec">
+        <div class="sechead">Resource cards</div>
+        <div id="hands"></div>
+      </div>
+      <div class="sec">
+        <div class="sechead">Model's analysis</div>
         <div id="log" class="muted">—</div>
       </div>
     </div>
   </div>
 <script>
-const RES_COLOR={WOOD:"#2f7d32",BRICK:"#c4502a",SHEEP:"#9ed16f",WHEAT:"#e6c14b",ORE:"#8b97a6",DESERT:"#d8c79a"};
+// muted, modern resource palette (close to the dark colonist look)
+const RES_COLOR={WOOD:"#3f7d46",BRICK:"#b0543a",SHEEP:"#86a84e",WHEAT:"#c79f3c",ORE:"#647084",DESERT:"#c9b079"};
 const RES_ICON={WOOD:"🌲",BRICK:"🧱",SHEEP:"🐑",WHEAT:"🌾",ORE:"🪨",DEV:"🃏"};
+const RES_LABEL={WOOD:"WOOD",BRICK:"BRICK",SHEEP:"WOOL",WHEAT:"GRAIN",ORE:"ORE"};   // colonist-style names
 const RES5=["WOOD","BRICK","SHEEP","WHEAT","ORE"];
-// The engine's two seats are RED and BLUE, but we DISPLAY the RED seat as ORANGE
-// (label + piece colour) — clearer on the blue board and matches Catan's orange.
-const PCOL={RED:"#e8821e",BLUE:"#2f74d0"};
+// The engine seats are RED and BLUE; we DISPLAY the RED seat as ORANGE (clearer).
+const PCOL={RED:"#e8821e",BLUE:"#3b82f6"};
 const DNAME={RED:"ORANGE",BLUE:"BLUE"};
 const dname=c=>DNAME[c]||c;
-// Catan build costs (Catanatron only ever offers AFFORDABLE build actions, so these
-// are purely informational — shown with the same icons as the inventory below).
 const COSTS={
   BUILD_ROAD:{WOOD:1,BRICK:1},
   BUILD_SETTLEMENT:{WOOD:1,BRICK:1,SHEEP:1,WHEAT:1},
@@ -97,143 +179,178 @@ const PORT_DIR={WEST:["NORTHWEST","SOUTHWEST"],NORTHWEST:["NORTH","NORTHWEST"],N
 const PIPS={2:1,3:2,4:3,5:4,6:5,8:5,9:4,10:3,11:2,12:1};
 const NS="http://www.w3.org/2000/svg", $=id=>document.getElementById(id);
 const el=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
-const pcol=c=>PCOL[c]||"#bbb";
-let V=null,T=null,busy=false,MODE="menu",SEL=null;   // MODE: menu | select | choice ; SEL={kind,opts}
+const pcol=c=>PCOL[c]||"#aab";
+let V=null,T=null,busy=false,MODE="menu",SEL=null,MODEL="?",SEED="?";
 
 function fit(){const xs=[],ys=[];for(const n of Object.values(V.board.nodes)){xs.push(n.x);ys.push(n.y);}
-  const a=Math.min(...xs),b=Math.max(...xs),c=Math.min(...ys),d=Math.max(...ys),p=1.2;
+  const a=Math.min(...xs),b=Math.max(...xs),c=Math.min(...ys),d=Math.max(...ys),p=1.25;
   $("svg").setAttribute("viewBox",`0 0 ${(b-a)+2*p} ${(d-c)+2*p}`);T=(x,y)=>[(x-a)+p,(y-c)+p];}
-function hexPts(cx,cy){return Object.values(ND).map(([dx,dy])=>{const[x,y]=T(cx+dx,cy+dy);return`${x},${y}`}).join(" ");}
+function hexPts(cx,cy,sc=1){return Object.values(ND).map(([dx,dy])=>{const[x,y]=T(cx+dx*sc,cy+dy*sc);return`${x},${y}`}).join(" ");}
+function txt(x,y,s,o={}){const t=el("text",{x,y,"text-anchor":"middle","dominant-baseline":"middle",...o});t.textContent=s;return t;}
 
 function draw(){
   const g=el("g");const svg=$("svg");svg.innerHTML="";svg.appendChild(g);
+  // tiles
   for(const t of V.board.tiles){
     const water=t.type==="WATER"||t.type==="PORT";
-    const fill=t.type==="DESERT"?RES_COLOR.DESERT:water?"#3a79ab":(RES_COLOR[t.resource]||"#777");
-    g.appendChild(el("polygon",{points:hexPts(t.x,t.y),fill,stroke:"#1c3d57","stroke-width":.06,"stroke-linejoin":"round"}));
+    const land=!water;
+    const fill=t.type==="DESERT"?RES_COLOR.DESERT:water?"var(--water)":(RES_COLOR[t.resource]||"#556");
+    g.appendChild(el("polygon",{points:hexPts(t.x,t.y,.97),fill,stroke:"#0a111c","stroke-width":.05,"stroke-linejoin":"round"}));
     const[cx,cy]=T(t.x,t.y);
+    // resource name label near the bottom of land hexes
+    if(land && t.type!=="DESERT" && t.resource)
+      g.appendChild(txt(cx,cy+.62,RES_LABEL[t.resource]||t.resource,{"font-size":.2,"font-weight":700,fill:"#ffffff",opacity:.5,"letter-spacing":.02}));
+    if(t.type==="DESERT") g.appendChild(txt(cx,cy,"DESERT",{"font-size":.24,"font-weight":700,fill:"#7c6f4e","letter-spacing":.04}));
+    // number token + pips
     if(t.number!=null){const hot=t.number===6||t.number===8;
-      g.appendChild(el("circle",{cx,cy,r:.36,fill:"#f3ead2",stroke:"#9c8a5e","stroke-width":.03}));
-      const tx=el("text",{x:cx,y:cy+.04,"text-anchor":"middle","font-size":.4,"font-weight":700,fill:hot?"#c0392b":"#333"});tx.textContent=t.number;g.appendChild(tx);
-      const n=PIPS[t.number]||0;for(let k=0;k<n;k++)g.appendChild(el("circle",{cx:cx+(k-(n-1)/2)*.085,cy:cy+.22,r:.035,fill:hot?"#c0392b":"#555"}));}
+      g.appendChild(el("circle",{cx,cy:cy-.05,r:.34,fill:"#f3ead2",stroke:"#cdbf9b","stroke-width":.025}));
+      g.appendChild(txt(cx,cy-.07,t.number,{"font-size":.4,"font-weight":800,fill:hot?"#c0392b":"#2c2c2c"}));
+      const n=PIPS[t.number]||0;for(let k=0;k<n;k++)g.appendChild(el("circle",{cx:cx+(k-(n-1)/2)*.075,cy:cy+.26,r:.03,fill:hot?"#c0392b":"#6a6a6a"}));}
   }
-  for(const t of V.board.tiles){ if(t.type!=="PORT"||!t.direction||!PORT_DIR[t.direction])continue;
-    const[rA,rB]=PORT_DIR[t.direction],nA=[t.x+ND[rA][0],t.y+ND[rA][1]],nB=[t.x+ND[rB][0],t.y+ND[rB][1]];
-    const mid=[(nA[0]+nB[0])/2,(nA[1]+nB[1])/2],an=[mid[0]+(t.x-mid[0])*.4,mid[1]+(t.y-mid[1])*.4],[ax,ay]=T(...an);
-    for(const nd of[nA,nB]){const[nx,ny]=T(...nd);g.appendChild(el("line",{x1:ax,y1:ay,x2:nx,y2:ny,stroke:"#d9b98a","stroke-width":.045,opacity:.7,"stroke-dasharray":".12 .08"}));}
-    const is3=t.port==="3:1";g.appendChild(el("rect",{x:ax-.39,y:ay-.23,width:.78,height:.46,rx:.12,fill:is3?"#15324a":(RES_COLOR[t.port]||"#777"),stroke:"#f3ead2","stroke-width":.045}));
-    const lb=el("text",{x:ax,y:ay+.12,"text-anchor":"middle","font-size":.3,"font-weight":800,fill:is3?"#dfe9f2":"#11202c"});lb.textContent=is3?"⚓ 3:1":`${t.port.slice(0,2)} 2:1`;g.appendChild(lb);}
+  // ports: label the water hex itself (RES 2:1 or 3:1)
+  for(const t of V.board.tiles){ if(t.type!=="PORT"||!t.port)continue; const[cx,cy]=T(t.x,t.y);
+    g.appendChild(el("circle",{cx,cy,r:.5,fill:"none"}));
+    if(t.port==="3:1"){ g.appendChild(txt(cx,cy,"3:1",{"font-size":.34,"font-weight":800,fill:"#cdd8e6"})); }
+    else { g.appendChild(txt(cx,cy-.1,RES_LABEL[t.port]||t.port,{"font-size":.24,"font-weight":800,fill:"#e7eef7"}));
+           g.appendChild(txt(cx,cy+.18,"2:1",{"font-size":.2,"font-weight":700,fill:"#9fb0c4"})); } }
+  // roads: dark casing under a bright colored bar so they pop on any tile
   for(const[k,color]of Object.entries(V.roads)){const[a,b]=k.split("-"),na=V.board.nodes[a],nb=V.board.nodes[b];if(!na||!nb)continue;
-    const[x1,y1]=T(na.x,na.y),[x2,y2]=T(nb.x,nb.y);g.appendChild(el("line",{x1,y1,x2,y2,stroke:pcol(color),"stroke-width":.22,"stroke-linecap":"round"}));}
-  if(V.robber){const t=V.board.tiles.find(t=>t.coord.join()===V.robber.join());if(t){const[cx,cy]=T(t.x,t.y);g.appendChild(el("circle",{cx,cy,r:.26,fill:"#1b1b1b",opacity:.82}));}}
-  for(const[nid,bd]of Object.entries(V.buildings)){const n=V.board.nodes[nid];if(!n)continue;const[x,y]=T(n.x,n.y),s=bd.type==="CITY"?.3:.22;
-    g.appendChild(el("rect",{x:x-s,y:y-s,width:2*s,height:2*s,rx:bd.type==="CITY"?.05:.1,fill:pcol(bd.color),stroke:"#10202e","stroke-width":.05,transform:`rotate(45 ${x} ${y})`}));}
+    const[x1,y1]=T(na.x,na.y),[x2,y2]=T(nb.x,nb.y);
+    g.appendChild(el("line",{x1,y1,x2,y2,stroke:"#0a0f17","stroke-width":.33,"stroke-linecap":"round"}));
+    g.appendChild(el("line",{x1,y1,x2,y2,stroke:pcol(color),"stroke-width":.22,"stroke-linecap":"round"}));}
+  // robber
+  if(V.robber){const t=V.board.tiles.find(t=>t.coord.join()===V.robber.join());if(t){const[cx,cy]=T(t.x,t.y);
+    g.appendChild(el("circle",{cx,cy:cy+.02,r:.22,fill:"#11161e",opacity:.85,stroke:"#000","stroke-width":.03}));}}
+  // settlements = small house; cities = bigger house with a second-storey line. White
+  // outline + dark edge so the player colour reads clearly against the tiles.
+  const house=(x,y,s)=>[[x-s,y+s],[x+s,y+s],[x+s,y-s*.25],[x,y-s*1.05],[x-s,y-s*.25]].map(p=>p.join(",")).join(" ");
+  for(const[nid,bd]of Object.entries(V.buildings)){const n=V.board.nodes[nid];if(!n)continue;const[x,y]=T(n.x,n.y);
+    const city=bd.type==="CITY",s=city?.26:.19;
+    g.appendChild(el("polygon",{points:house(x,y,s),fill:pcol(bd.color),stroke:"#fff","stroke-width":.06,"stroke-linejoin":"round","paint-order":"stroke"}));
+    if(city)g.appendChild(el("line",{x1:x-s*.78,y1:y+s*.3,x2:x+s*.78,y2:y+s*.3,stroke:"#fff","stroke-width":.05}));}
   drawOverlay(g);
 }
 
-// When picking a build location / robber hex, paint the legal targets ON the board
-// (gold + clickable). Clicking one submits exactly that action.
 function drawOverlay(g){
   if(MODE!=="select"||!SEL||busy) return;
   const click=(node,i)=>{node.style.cursor="pointer";node.addEventListener("click",()=>move(i));};
   if(SEL.kind==="node"){
     for(const a of SEL.opts){const n=V.board.nodes[a.value];if(!n)continue;const[x,y]=T(n.x,n.y);
-      const c=el("circle",{cx:x,cy:y,r:.27,fill:"#ffd54a",stroke:"#9c6f10","stroke-width":.06,opacity:.92});click(c,a.i);g.appendChild(c);}
+      const c=el("circle",{cx:x,cy:y,r:.22,fill:"#f5c33b",stroke:"#7a5a08","stroke-width":.05,opacity:.95});click(c,a.i);g.appendChild(c);}
   } else if(SEL.kind==="edge"){
     for(const a of SEL.opts){const[p,q]=a.value,na=V.board.nodes[p],nb=V.board.nodes[q];if(!na||!nb)continue;
       const[x1,y1]=T(na.x,na.y),[x2,y2]=T(nb.x,nb.y);
-      const ln=el("line",{x1,y1,x2,y2,stroke:"#ffd54a","stroke-width":.26,"stroke-linecap":"round",opacity:.92});click(ln,a.i);g.appendChild(ln);}
+      const ln=el("line",{x1,y1,x2,y2,stroke:"#f5c33b","stroke-width":.24,"stroke-linecap":"round",opacity:.95});click(ln,a.i);g.appendChild(ln);}
   } else if(SEL.kind==="tile"){
     const byc={};for(const a of SEL.opts){const key=a.value[0].join();(byc[key]=byc[key]||[]).push(a);}
     for(const[key,as]of Object.entries(byc)){const t=V.board.tiles.find(t=>t.coord.join()===key);if(!t)continue;
-      const h=el("polygon",{points:hexPts(t.x,t.y),fill:"#ffd54a",opacity:.40,stroke:"#9c6f10","stroke-width":.1});
+      const h=el("polygon",{points:hexPts(t.x,t.y,.97),fill:"#f5c33b",opacity:.38,stroke:"#7a5a08","stroke-width":.08});
       h.style.cursor="pointer";
       h.addEventListener("click",()=> as.length===1 ? move(as[0].i) : enterChoice("Steal from which player?",as,victimFmt));
       g.appendChild(h);}
   }
 }
 
-const costChips=cost=>Object.entries(cost).map(([r,n])=>`<span class="cost">${RES_ICON[r]}${n}</span>`).join("");
-function catBtn(label,cost,onclick){const b=document.createElement("button");b.className="catbtn";
-  b.innerHTML=`<span>${label}</span>${cost?`<span class="costs">${costChips(cost)}</span>`:""}`;b.onclick=onclick;return b;}
-function backBtn(){const b=document.createElement("button");b.className="backbtn";b.textContent="← Back";b.onclick=backToMenu;return b;}
+// ---- action menu ------------------------------------------------------------
+const costChips=cost=>`<span class="costs">${Object.entries(cost).map(([r,n])=>`<span class="cost">${RES_ICON[r]}${n}</span>`).join("")}</span>`;
+function row(icon,label,tag,onclick){const b=document.createElement("button");
+  b.innerHTML=`<span class="badge">${icon}</span><span class="alabel">${label}</span>${tag?`<span class="atag">${tag}</span>`:""}`;
+  b.onclick=onclick;return b;}
+function backBtn(){const b=document.createElement("button");b.className="backbtn";
+  b.innerHTML=`<span class="badge">←</span><span class="alabel">Back</span>`;b.onclick=backToMenu;return b;}
 function backToMenu(){MODE="menu";SEL=null;$("status").textContent="Your move — pick an action:";renderActions();draw();}
-const tradeFmt=a=>{const g=a.value.slice(0,4).filter(x=>x),get=a.value[4];return `Give ${g.length}× ${RES_ICON[g[0]]} → 1× ${RES_ICON[get]}`;};
+const tradeFmt=a=>{const g=a.value.slice(0,4).filter(x=>x),get=a.value[4];return `Trade ${g.length}× ${RES_ICON[g[0]]} → 1× ${RES_ICON[get]}`;};
 const victimFmt=a=>a.value[1]?`Steal from ${dname(a.value[1])}`:"Move here (steal nobody)";
-
-// "?" helper: the build recipes, shown with the same icons as the inventory.
-const RECIPES=[
-  ["🏠 Settlement", COSTS.BUILD_SETTLEMENT],
-  ["🏙️ City",       COSTS.BUILD_CITY],
-  ["🛣️ Road",       COSTS.BUILD_ROAD],
-  ["🃏 Dev card",   COSTS.BUY_DEVELOPMENT_CARD],
-];
-function toggleRecipes(){
-  const box=$("recipes");
-  if(box.style.display!=="none"){ box.style.display="none"; return; }
-  box.innerHTML=`<div class="seclabel" style="margin-top:0">Build recipes</div>`+
-    RECIPES.map(([n,c])=>`<div class="rcp"><span>${n}</span><span class="costs">${costChips(c)}</span></div>`).join("")+
-    `<div class="rcp"><span>City upgrade</span><span class="muted">replaces a settlement</span></div>`;
-  box.style.display="block";
-}
 
 function enterSelect(kind,opts,prompt){MODE="select";SEL={kind,opts};$("status").textContent=prompt;
   const L=$("legal");L.innerHTML="";L.appendChild(backBtn());draw();}
 function enterChoice(title,opts,fmt){MODE="choice";SEL=null;$("status").textContent=title;
   const L=$("legal");L.innerHTML="";L.appendChild(backBtn());
-  opts.forEach(a=>{const b=document.createElement("button");b.className="catbtn";b.innerHTML=`<span>${fmt(a)}</span>`;b.onclick=()=>move(a.i);L.appendChild(b);});draw();}
+  opts.forEach(a=>L.appendChild(row("•",fmt(a),"",()=>move(a.i))));draw();}
 
 function renderActions(){
   const L=$("legal");L.innerHTML="";
   if(V.winner||busy||!V.your_turn) return;
   MODE="menu";SEL=null;
   const G={};V.legal.forEach(a=>(G[a.type]=G[a.type]||[]).push(a));const add=b=>L.appendChild(b);
-  if(G.ROLL)                add(catBtn("🎲 Roll dice",null,()=>move(G.ROLL[0].i)));
-  if(G.BUILD_SETTLEMENT)    add(catBtn("🏠 Build settlement",COSTS.BUILD_SETTLEMENT,()=>enterSelect("node",G.BUILD_SETTLEMENT,"Click a highlighted corner to place your settlement.")));
-  if(G.BUILD_CITY)          add(catBtn("🏙️ Upgrade to city",COSTS.BUILD_CITY,()=>enterSelect("node",G.BUILD_CITY,"Click one of your settlements to upgrade it to a city.")));
-  if(G.BUILD_ROAD)          add(catBtn("🛣️ Build road",COSTS.BUILD_ROAD,()=>enterSelect("edge",G.BUILD_ROAD,"Click a highlighted edge to build a road.")));
-  if(G.BUY_DEVELOPMENT_CARD)add(catBtn("🃏 Buy dev card",COSTS.BUY_DEVELOPMENT_CARD,()=>move(G.BUY_DEVELOPMENT_CARD[0].i)));
-  if(G.MARITIME_TRADE)      add(catBtn("🔄 Maritime trade (bank)",null,()=>enterChoice("Choose a bank trade:",G.MARITIME_TRADE,tradeFmt)));
-  if(G.MOVE_ROBBER)         add(catBtn("🦹 Move robber",null,()=>enterSelect("tile",G.MOVE_ROBBER,"Click a hex to move the robber onto.")));
-  if(G.PLAY_KNIGHT_CARD)    add(catBtn("⚔️ Play knight",null,()=>move(G.PLAY_KNIGHT_CARD[0].i)));
-  if(G.PLAY_MONOPOLY)       add(catBtn("💰 Play monopoly",null,()=>enterChoice("Monopolize which resource?",G.PLAY_MONOPOLY,a=>`${RES_ICON[a.value]} ${a.value}`)));
-  if(G.PLAY_YEAR_OF_PLENTY) add(catBtn("🎁 Year of plenty",null,()=>enterChoice("Take two resources:",G.PLAY_YEAR_OF_PLENTY,a=>a.value.map(r=>`${RES_ICON[r]}`).join("  "))));
-  if(G.PLAY_ROAD_BUILDING)  add(catBtn("🛤️ Road building (2 free roads)",null,()=>move(G.PLAY_ROAD_BUILDING[0].i)));
-  if(G.DISCARD)             G.DISCARD.forEach(a=>add(catBtn("🗑️ "+a.label,null,()=>move(a.i))));
-  if(G.END_TURN)            add(catBtn("✓ End turn",null,()=>move(G.END_TURN[0].i)));
+  if(G.ROLL)                add(row("🎲","Roll dice","ROLL",()=>move(G.ROLL[0].i)));
+  if(G.BUILD_SETTLEMENT)    add(row("🏠","Build settlement",costChips(COSTS.BUILD_SETTLEMENT),()=>enterSelect("node",G.BUILD_SETTLEMENT,"Click a highlighted corner to place your settlement.")));
+  if(G.BUILD_CITY)          add(row("🏙️","Upgrade to city",costChips(COSTS.BUILD_CITY),()=>enterSelect("node",G.BUILD_CITY,"Click one of your settlements to upgrade it.")));
+  if(G.BUILD_ROAD)          add(row("🛣️","Build road",costChips(COSTS.BUILD_ROAD),()=>enterSelect("edge",G.BUILD_ROAD,"Click a highlighted edge to build a road.")));
+  if(G.BUY_DEVELOPMENT_CARD)add(row("🃏","Buy dev card",costChips(COSTS.BUY_DEVELOPMENT_CARD),()=>move(G.BUY_DEVELOPMENT_CARD[0].i)));
+  if(G.MARITIME_TRADE)      add(row("🔄","Maritime trade","TRADE",()=>enterChoice("Choose a bank trade:",G.MARITIME_TRADE,tradeFmt)));
+  if(G.MOVE_ROBBER)         add(row("🦹","Move robber","ROBBER",()=>enterSelect("tile",G.MOVE_ROBBER,"Click a hex to move the robber onto.")));
+  if(G.PLAY_KNIGHT_CARD)    add(row("⚔️","Play knight","DEV",()=>move(G.PLAY_KNIGHT_CARD[0].i)));
+  if(G.PLAY_MONOPOLY)       add(row("💰","Play monopoly","DEV",()=>enterChoice("Monopolize which resource?",G.PLAY_MONOPOLY,a=>`${RES_ICON[a.value]} ${RES_LABEL[a.value]||a.value}`)));
+  if(G.PLAY_YEAR_OF_PLENTY) add(row("🎁","Year of plenty","DEV",()=>enterChoice("Take two resources:",G.PLAY_YEAR_OF_PLENTY,a=>a.value.map(r=>RES_ICON[r]).join("  "))));
+  if(G.PLAY_ROAD_BUILDING)  add(row("🛤️","Road building","DEV",()=>move(G.PLAY_ROAD_BUILDING[0].i)));
+  if(G.DISCARD)             G.DISCARD.forEach(a=>add(row("🗑️",a.label,"DISCARD",()=>move(a.i))));
+  if(G.END_TURN)            add(row("✓","End turn","END TURN",()=>move(G.END_TURN[0].i)));
   const handled=new Set(["ROLL","BUILD_SETTLEMENT","BUILD_CITY","BUILD_ROAD","BUY_DEVELOPMENT_CARD","MARITIME_TRADE","MOVE_ROBBER","PLAY_KNIGHT_CARD","PLAY_MONOPOLY","PLAY_YEAR_OF_PLENTY","PLAY_ROAD_BUILDING","DISCARD","END_TURN"]);
-  V.legal.filter(a=>!handled.has(a.type)).forEach(a=>add(catBtn(a.label,null,()=>move(a.i))));   // never leave an action unreachable
+  V.legal.filter(a=>!handled.has(a.type)).forEach(a=>add(row("•",a.label,a.type,()=>move(a.i))));
 }
 
-const roleOf=c=>c===V.human?'<span class="rolemark">(you)</span>':'<span class="rolemark">(model)</span>';
+// ---- panels -----------------------------------------------------------------
+function pill(elm,color,role){elm.classList.toggle("you",role==="You");
+  elm.innerHTML=`<span class="dot" style="background:${pcol(color)}"></span><span class="nm" style="color:${pcol(color)}">${dname(color)}</span><span class="role">${role}</span>`;}
 function panel(){
-  $("gameinfo").innerHTML=`vs <b>${MODEL}</b> · seed ${SEED} · turn ${V.turn}<br>`+
-    `You play <span class="chip" style="background:${pcol(V.human)}">${dname(V.human)}</span>`+
-    (V.model_color?` · model plays <span class="chip" style="background:${pcol(V.model_color)}">${dname(V.model_color)}</span>`:"");
+  pill($("pillYou"),V.human,"You");
+  if(V.model_color)pill($("pillModel"),V.model_color,"Model");
+  $("sTurn").textContent=V.turn; $("sSeed").textContent=SEED;
   if(V.winner){ $("status").innerHTML = V.winner===V.human?"🏆 You win!":`🤖 Model (${dname(V.winner)}) wins.`; $("legal").innerHTML=""; }
   else if(busy){ $("status").textContent="🤖 model thinking…"; $("legal").innerHTML=""; }
   else if(V.your_turn){ $("status").textContent="Your move — pick an action:"; renderActions(); }
   else { $("status").textContent="…"; $("legal").innerHTML=""; }
   renderRolls();
-  $("vptable").innerHTML=V.players.map(c=>{const v=(V.vp||{})[c]||0;return `<tr><td style="width:96px"><span class="chip" style="background:${pcol(c)}">${dname(c)}</span>${roleOf(c)}</td><td><div class="vpbar"><div class="vpfill" style="width:${Math.min(100,v/10*100)}%;background:${pcol(c)}"></div></div></td><td style="width:30px;text-align:right" class="muted">${v}</td></tr>`;}).join("");
-  $("hands").innerHTML=V.players.map(c=>{const h=(V.hands||{})[c]||{};
-    const cards=RES5.map(r=>{const n=h[r]||0;return `<span style="${n===0?'opacity:.3':''}">${RES_ICON[r]}&thinsp;${n}</span>`}).join("")+` <span style="${(h.DEV||0)===0?'opacity:.3':''}">${RES_ICON.DEV}&thinsp;${h.DEV||0}</span>`;
-    return `<div class="handrow"><span class="chip" style="background:${pcol(c)}">${dname(c)}</span>${roleOf(c)}<span class="cards">${cards}</span></div>`;}).join("");
+  // victory points
+  $("vptable").innerHTML=V.players.map(c=>{const v=(V.vp||{})[c]||0;const role=c===V.human?"(you)":"(model)";
+    return `<div class="vprow"><div class="who"><span class="dot" style="width:10px;height:10px;border-radius:50%;background:${pcol(c)}"></span>`+
+      `<b style="color:${pcol(c)}">${dname(c)}</b><span class="role2">${role}</span></div>`+
+      `<div class="vpbar"><div class="vpfill" style="width:${Math.min(100,v/10*100)}%;background:${pcol(c)}"></div></div>`+
+      `<div class="vpval">${v}</div></div>`;}).join("");
+  // resource cards (per player)
+  $("hands").innerHTML=V.players.map(c=>{const h=(V.hands||{})[c]||{};const total=RES5.reduce((s,r)=>s+(h[r]||0),0);
+    const cards=RES5.map(r=>{const n=h[r]||0;return `<div class="rcard ${n?'':'z'}" style="--rc:${RES_COLOR[r]}"><div class="ic">${RES_ICON[r]}</div><div class="ct">${n}</div></div>`}).join("")
+      +`<div class="rcard ${(h.DEV||0)?'':'z'}" style="--rc:#6b5bd1"><div class="ic">${RES_ICON.DEV}</div><div class="ct">${h.DEV||0}</div></div>`;
+    return `<div class="handblock"><div class="handhead"><span class="dot" style="width:10px;height:10px;border-radius:50%;background:${pcol(c)}"></span>`+
+      `<b style="color:${pcol(c)}">${dname(c)}</b> · ${total} cards</div><div class="cards">${cards}</div></div>`;}).join("");
 }
 function renderRolls(){
-  const rolls=V.rolls||[]; const box=$("rolls");
-  if(!rolls.length){ box.className="muted"; box.textContent="— no rolls yet —"; return; }
+  const rolls=V.rolls||[],box=$("rolls");
+  if(!rolls.length){box.className="muted";box.textContent="— no rolls yet —";return;}
   box.className="";
-  const recent=rolls.slice(-10).reverse();   // newest first
-  box.innerHTML=recent.map((r,i)=>`<div class="roll ${i===0?'latest':''}">`+
-    `<span class="chip" style="background:${pcol(r.color)}">${dname(r.color)}</span>`+
+  box.innerHTML=rolls.slice(-10).reverse().map((r,i)=>`<div class="roll ${i===0?'latest':''}">`+
+    `<span class="chip"><span class="dot" style="background:${pcol(r.color)}"></span><span class="rt" style="color:${pcol(r.color)}">${dname(r.color)}</span></span>`+
     `<span class="die">${r.dice[0]}</span><span class="die">${r.dice[1]}</span>`+
-    `<span>= <b>${r.total}</b></span>${i===0?' <span class="rolemark">latest</span>':''}</div>`).join("");
+    `<span class="rsum">= <b>${r.total}</b></span>${i===0?' <span class="tag">latest</span>':''}</div>`).join("");
 }
-function logMoves(moves){ if(!moves||!moves.length)return; const box=$("log"); if(box.classList.contains("muted")){box.classList.remove("muted");box.innerHTML="";}
-  for(const m of moves){const d=document.createElement("div");d.className="mv";d.innerHTML=`<b>${m.action}</b>${m.reasoning?`<br><span class="muted">${m.reasoning}</span>`:""}`;box.prepend(d);} }
+const RECIPES=[["🏠 Settlement",COSTS.BUILD_SETTLEMENT],["🏙️ City",COSTS.BUILD_CITY],["🛣️ Road",COSTS.BUILD_ROAD],["🃏 Dev card",COSTS.BUY_DEVELOPMENT_CARD]];
+function toggleRecipes(){const box=$("recipes");
+  if(box.style.display!=="none"){box.style.display="none";return;}
+  box.innerHTML=RECIPES.map(([n,c])=>`<div class="rcp"><span>${n}</span>${costChips(c)}</div>`).join("")+
+    `<div class="rcp"><span>City upgrade</span><span class="muted">replaces a settlement</span></div>`;
+  box.style.display="block";}
+function prettyAction(s){
+  const m=String(s).match(/^([A-Z_]+)\s*(.*)$/); if(!m) return s;
+  let type=m[1].replace(/_CARD$/,""), rest=m[2];
+  const T=type.split("_").map(w=>w[0]+w.slice(1).toLowerCase()).join(" ");
+  rest=rest.replace(/\((\d+),\s*(\d+)\)/,"($1 → $2)");
+  return (T+" "+rest).trim();
+}
+const scoreCls=v=>v>=0.72?"hi":v>=0.58?"mid":"lo";
+function logMoves(moves){ if(!moves||!moves.length)return; const box=$("log");
+  if(box.classList.contains("muted")){box.classList.remove("muted");box.innerHTML="";}
+  for(const m of moves){
+    const d=document.createElement("div");d.className="anrow";
+    const sub=m.num_options?`choose among ${m.num_options} options`:"";
+    const rsn=(m.reasoning && !/chose among/i.test(m.reasoning))?`<div class="reason">${m.reasoning}</div>`:"";
+    const sc=(m.score!=null)?`<div class="av ${scoreCls(m.score)}">${m.score.toFixed(2)}</div>`:"";
+    d.innerHTML=`<div class="at"><div class="aa">${prettyAction(m.action)}</div>`+
+      `${sub?`<div class="as">${sub}</div>`:""}${rsn}</div>${sc}`;
+    box.prepend(d);
+  } }
 
-let MODEL="?",SEED="?";
+// ---- net --------------------------------------------------------------------
 function apply(resp){ if(resp.error){$("status").textContent="⚠️ "+resp.error;} V=resp.view||V; if(resp.seed)SEED=resp.seed; if(resp.model)MODEL=resp.model; busy=false; MODE="menu"; SEL=null; if(V){fit();draw();panel();} logMoves(resp.model_moves);}
 async function newGame(){ busy=true;MODE="menu";SEL=null;$("log").className="muted";$("log").textContent="—";$("status").textContent="starting…";
   const r=await fetch("/api/new",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({human:$("seat").value,seed:$("seed").value||null})});
@@ -246,7 +363,6 @@ async function loadGame(id){ busy=true;$("log").className="muted";$("log").textC
   apply(await r.json()); }
 $("new").onclick=newGame;
 $("help").onclick=toggleRecipes;
-// ?game=<id> resumes/loads a forked game (handed off from the replay viewer); else fresh game.
 const _gid=new URLSearchParams(location.search).get("game");
 if(_gid) loadGame(_gid); else newGame();
 </script>

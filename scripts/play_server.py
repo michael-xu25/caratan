@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import random
 import sys
@@ -34,6 +35,25 @@ from catanatron.game import Game
 from catanatron.models.enums import ActionType
 from catanatron.models.player import Color, RandomPlayer
 from catanatron.json import GameEncoder
+from catanatron.players.value import base_fn, DEFAULT_WEIGHTS
+
+# Heuristic position evaluator for the Model's-Analysis panel: the model-vs-human
+# value gap squashed to 0–1 ("how favorable is the position for the model").
+# We reuse Catanatron's value function but with DISPLAY weights: the default makes a
+# VP worth 3e14 (swamping production ~1e8), so the score would sit flat at 0.5 until
+# someone scores. Here a VP is worth ~6 production points, so production / expansion /
+# hand differences actually move the needle (spread ≈ 0.3–0.85, like a win-leaning %).
+_DISPLAY_WEIGHTS = {**DEFAULT_WEIGHTS, "public_vps": 6e8}
+_VALUE_FN = base_fn(_DISPLAY_WEIGHTS)
+_SCORE_K = 8e8
+
+
+def _position_score(game, model_color, human_color):
+    try:
+        d = _VALUE_FN(game, model_color) - _VALUE_FN(game, human_color)
+        return round(1.0 / (1.0 + math.exp(-d / _SCORE_K)), 2)
+    except Exception:
+        return None
 from harness.agents import make_agent
 from goldilocks_eval.prompt import render_action
 from scripts.build_viewer_data import _static_board, _snapshot
@@ -89,7 +109,9 @@ def _advance(s: dict) -> list:
         game.play_tick(decide_fn=lambda p, g, a, act=action: act)
         if cur != human and len(pa) > 1:            # a real model decision
             entry = {"player": cur.value, "action": render_action(action),
-                     "reasoning": model.pop_reasoning() or ""}
+                     "reasoning": model.pop_reasoning() or "",
+                     "num_options": len(pa),
+                     "score": _position_score(game, cur, human)}
             moves.append(entry); hist.append(entry)
         steps += 1
     return moves
