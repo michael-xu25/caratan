@@ -31,3 +31,6 @@ echo "### 2/2  Mirrored batch over $N seeds"
 "$PY" -m harness.cli --a "$A" --b "$B" --n "$N" --run-dir "$RUN_DIR/batch"
 echo
 echo "Done. Transcripts under $RUN_DIR/ . Scale up with: --n 100 --concurrency 8"
+
+# Share the run by default (opt out: SHARE_TRANSCRIPTS=0).
+"$(dirname "$0")/share_transcripts.sh" "$RUN_DIR" || true
