@@ -40,11 +40,22 @@ PIPS = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 0, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1}
 # what makes a spot good (that judgment is the reward/rubric, never the prompt).
 from goldilocks_eval.prompt import CATAN_RULES  # noqa: E402
 
-SYSTEM = CATAN_RULES + "\n\n" + (
-    "TASK: you are choosing where to place an opening settlement. Respond with "
-    "ONLY an <answer> block containing exactly one node id, e.g. "
-    "<answer>node_27</answer>. Do not explain, reason, or write anything outside "
-    "the <answer> block."
+# Lean, mechanics-only placement primer (NOT the full from-scratch CATAN_RULES —
+# that 1800-token teaching primer is for cold base models in live play; here it
+# only bloats every rollout's prefill). Keeps all the mechanics the decision needs
+# (what a settlement collects, what pips mean) — strategy stays in the reward.
+PLACEMENT_RULES = (
+    "You are choosing where to place an opening settlement in 1-vs-1 Catan. "
+    "A settlement sits on a node (intersection) and collects one resource card "
+    "from each adjacent tile (up to 3) every time that tile's number is rolled. "
+    "A number's pips = the number of ways two dice make it (6 and 8 = 5 pips each, "
+    "down to 2 and 12 = 1 pip), i.e. how often that tile pays out. The board and "
+    "the legal nodes (with the resources/pips each would collect) are given below."
+)
+SYSTEM = PLACEMENT_RULES + "\n\n" + (
+    "TASK: pick the single best node. Respond with ONLY an <answer> block "
+    "containing exactly one node id, e.g. <answer>node_27</answer>. Do not explain, "
+    "reason, or write anything outside the <answer> block."
 )
 
 

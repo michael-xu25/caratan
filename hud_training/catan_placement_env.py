@@ -13,8 +13,9 @@ from hud.graders import EvaluationResult
 
 env = Environment(name="catan-placement")
 
-# MUST match goldilocks_eval.placement_score.REWARD_SHARPNESS (meaner reward).
-REWARD_SHARPNESS = 3.0
+# MUST match goldilocks_eval.placement_score.TOP_K. Reward = 1.0 if the chosen
+# spot is among the TOP_K highest-scoring legal spots, else 0.0.
+TOP_K = 3
 _ANS = re.compile(r"<answer>\s*(.+?)\s*</answer>", re.DOTALL | re.IGNORECASE)
 
 
@@ -39,10 +40,10 @@ def _score(text, spot_scores):
     totals = {_node_id_str(k): float(v) for k, v in spot_scores.items()}
     if chosen not in totals:
         return 0.0, f"illegal {chosen}"
-    c, best, worst = totals[chosen], max(totals.values()), min(totals.values())
-    base = 1.0 if best <= worst else (c - worst) / (best - worst)
-    r = base ** REWARD_SHARPNESS  # meaner: punish anything short of the best
-    return r, f"{chosen} base={base:.2f} -> {r:.3f}"
+    order = sorted(totals.values(), reverse=True)
+    threshold = order[min(TOP_K - 1, len(order) - 1)]   # TOP_K-th best score
+    r = 1.0 if totals[chosen] >= threshold else 0.0
+    return r, f"{chosen} {'TOP3' if r else 'miss'} (score {totals[chosen]:.2f}, cut {threshold:.2f})"
 
 
 @env.template()

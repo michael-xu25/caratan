@@ -27,17 +27,15 @@ from goldilocks_eval.prompt import PIPS, _node_production
 
 # ───────────────────────── EXPERT KNOB: tune these ─────────────────────────
 WEIGHTS: Dict[str, float] = {
-    "pip": 1.5,                 # production quantity (dice odds) — prioritized
-    "resource_diversity": 1.0,  # breadth of resource types
+    "pip": 3.0,                 # production quantity (dice odds) — DOMINATES the score
+    "resource_diversity": 1.0,  # breadth of resource types (tiebreaker)
     "number_diversity": 1.0,    # avoid stacking the same number on one spot
 }
 # A single spot borders up to 3 tiles; the best case is 3 tiles at 5 pips each.
 MAX_PIPS = 15.0
-# Meanness knob: the normalized reward is raised to this power, so anything short
-# of the best spot is punished hard (reward = ((c-worst)/(best-worst)) ** S).
-# S=1 is the old generous linear reward; higher = meaner. With S=3 a spot at 0.8
-# of the range earns only 0.51, and a random pick (~0.63) earns ~0.25.
-REWARD_SHARPNESS = 3.0
+# Reward = 1.0 if the chosen spot is among the TOP_K by score, else 0.0. Dead
+# simple, maximally discriminative, and identical to the eval metric (top-3).
+TOP_K = 3
 # ─────────────────────────────────────────────────────────────────────────
 
 
@@ -77,20 +75,24 @@ def score_legal_spots(game, legal_nodes: List[int],
     return scored, best
 
 
-def _reward(chosen, totals: dict, mode: str) -> float:
-    """Reward in [0,1] for `chosen` given {key: score}. 0.0 if `chosen` absent
-    (e.g. an illegal pick during training)."""
+def _reward(chosen, totals: dict, mode: str = "topk") -> float:
+    """Reward for `chosen` given {key: score}. 0.0 if `chosen` absent (illegal).
+
+    Default "topk": 1.0 iff chosen is among the TOP_K highest-scoring spots, else
+    0.0 (ties at the cutoff all count). Other modes kept for comparison."""
     if chosen not in totals or not totals:
         return 0.0
     c = totals[chosen]
-    best, worst = max(totals.values()), min(totals.values())
+    order = sorted(totals.values(), reverse=True)
+    best, worst = order[0], order[-1]
+    if mode == "topk":
+        threshold = order[min(TOP_K - 1, len(order) - 1)]
+        return 1.0 if c >= threshold else 0.0
     if mode == "ratio":
         return c / best if best > 0 else 1.0
     if mode == "rank":
-        order = sorted(totals.values(), reverse=True)
         return 1.0 - order.index(c) / (len(order) - 1) if len(order) > 1 else 1.0
-    base = (c - worst) / (best - worst) if best > worst else 1.0
-    return base ** REWARD_SHARPNESS  # meaner: punish anything short of the best
+    return (c - worst) / (best - worst) if best > worst else 1.0  # normalized (legacy)
 
 
 def regret(chosen, scored_or_totals) -> float:
@@ -106,7 +108,7 @@ def regret(chosen, scored_or_totals) -> float:
 
 
 def placement_reward(chosen: int, scored: Dict[int, Tuple[float, dict]],
-                     mode: str = "normalized") -> float:
+                     mode: str = "topk") -> float:
     """Reward for picking node `chosen` from the scored legal set (eval path).
 
     mode:
@@ -118,7 +120,7 @@ def placement_reward(chosen: int, scored: Dict[int, Tuple[float, dict]],
     return _reward(chosen, {n: v[0] for n, v in scored.items()}, mode)
 
 
-def reward_from_scores(chosen, scores: Dict, mode: str = "normalized") -> float:
+def reward_from_scores(chosen, scores: Dict, mode: str = "topk") -> float:
     """Reward from a flat {node_id_str: score} map (training-reward path — the
     reward function reconstructs this from the dataset's ground_truth). Keys and
     `chosen` are normalized to 'node_<int>'."""
