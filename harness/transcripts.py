@@ -106,13 +106,28 @@ class TranscriptAccumulator(GameAccumulator):
         agent = self.agents.get(color)
         return agent.name if isinstance(agent, Agent) else str(color.value)
 
+    def _resolve_winner(self, game):
+        """Winner with the turn-cap tie-break: whoever has more VP when the cap is
+        hit is the winner; only an exact VP tie is a draw. Returns
+        (winning_color | None, truncated). Mirrors harness.runner's authoritative
+        rule so transcripts/viewer agree with the match result."""
+        wc = game.winning_color()
+        if wc is not None:
+            return wc, False                       # reached the VP target outright
+        vps = {col: get_actual_victory_points(game.state, col) for col in game.state.colors}
+        top = max(vps.values())
+        leaders = [col for col, v in vps.items() if v == top]
+        return (leaders[0] if len(leaders) == 1 else None), True
+
     def _write_json(self, game, duration: float):
+        winner, truncated = self._resolve_winner(game)
         payload = {
             "label": self.label,
             "seed": getattr(game, "seed", None),
             "duration_seconds": round(duration, 4),
             "seats": {c.value: self._agent_name(c) for c in game.state.colors},
-            "winning_color": game.winning_color().value if game.winning_color() else None,
+            "winning_color": winner.value if winner else None,
+            "truncated": truncated,  # True == decided by VP lead at the turn cap
             "final_victory_points": {
                 c.value: get_actual_victory_points(game.state, c)
                 for c in game.state.colors
@@ -126,17 +141,20 @@ class TranscriptAccumulator(GameAccumulator):
 
     def _write_human(self, game, duration: float):
         c = _plain_console(self.width)
-        winner = game.winning_color()
+        winner, truncated = self._resolve_winner(game)
         vps = {col: get_actual_victory_points(game.state, col) for col in game.state.colors}
 
         # --- verdict banner -------------------------------------------------
         seats = " vs ".join(
             f"{col.value}={self._agent_name(col)}" for col in game.state.colors
         )
-        if winner:
+        if winner and truncated:
+            verdict = (f"WINNER {winner.value} ({self._agent_name(winner)}) — "
+                       f"{vps[winner]} VP (turn cap; decided by VP lead)")
+        elif winner:
             verdict = f"WINNER {winner.value} ({self._agent_name(winner)}) — {vps[winner]} VP"
         else:
-            verdict = "NO WINNER (turn limit reached)"
+            verdict = "DRAW (turn limit reached, tied on VP)"
         c.rule(f"[bold]GAME {self.label}")
         c.print(f"seats : {seats}")
         c.print(f"result: {verdict}")
