@@ -32,6 +32,33 @@ transcripts — the same table that targets env generation and measures before/a
 - **regret oracle** → objective ground signal; no human gold yet (calibration TBD).
 - **no self-grading** → players are Qwen/Gemma, graders are Claude/OpenAI.
 
+## Output: the detailed table (catch nuance, not just a number)
+
+The headline output is a **detailed** weakness table — one row per
+`(decision_type, criterion, tag)` keeping the nuances flat aggregation drops:
+- **both consensus & union** fail rates (precision view + recall view),
+- **per-grader fail rate** (so a one-sided grader is visible *in the row*, not
+  hidden — this is how we caught GPT-4o flagging trades 62% vs Claude's 5%),
+- **inter-grader agreement** + `disputed` count (one-sided flags kept, both takes
+  recorded), and **Cohen's κ** per criterion (low κ = a fuzzy criterion to refine),
+- **mean oracle regret** (objective corroboration) and **example plies** to drill in.
+
+`report.json` carries `detailed_table` + `findings.jsonl` (both raw verdicts per
+decision); re-rank either view without re-grading via `pipeline.report(merge=…)`.
+
+## Grader calibration (keeping the two graders aligned)
+
+Two levers keep the graders from diverging (and keep over-flagging down):
+- **Strict scale:** score **0/fail only for a clear, explainable error with a
+  clearly better legal move**; "two reasonable players could differ" → 1, not 0.
+- **Specific FAIL conditions** (esp. placement): e.g. `expansion_room` fails only
+  when *genuinely boxed in* (an open-board opening is not a fail); `blocking_value`
+  fails only when an *obvious available take* was passed up — not "a good node
+  remains open." Vague criteria were the main source of one-sided flags.
+- **Oracle is a hint, not truth:** it's a myopic 1-ply value-fn heuristic (misses
+  multi-turn/positional payoff), so graders trust their own judgment when it
+  conflicts — but a low-regret move defaults toward "defensible" absent a clear error.
+
 ## How to run
 
 ```bash

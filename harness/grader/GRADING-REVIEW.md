@@ -103,6 +103,17 @@ signal — e.g. trade `enables_key_build` runs ~11–14% (boxed-in / robber-thre
 endgame). The *consensus* (both-agree) view is the conservative high-precision
 cross-check (`--merge consensus`). Both come from the same data.
 
+**Q: The two graders disagree a lot (low κ, many `disputed`). Is that a problem?**
+It's expected signal, and we act on it rather than hide it. Low per-criterion κ
+means that *criterion* is fuzzy — vaguely-worded criteria let the two models apply
+different bars (we saw GPT-4o flag placement criteria 3–4× more than Claude). The
+fix is calibration, not averaging: (1) **specific FAIL conditions** — e.g.
+`expansion_room` fails only when genuinely boxed in, `blocking_value` only when an
+obvious take was passed up; (2) **a strict scale** — score 0 only for a clear,
+explainable error with a clearly better legal move, else 1–2. Re-grading after a
+calibration pass should raise κ and shrink the disputed share. Disputed flags are
+always kept (both takes recorded) so nothing is silently dropped.
+
 **Q: Isn't the denominator diluted by rolls / forced moves?**
 No — verified. Only decisions that map to a real `decision_type`
 (placement/trade/build_spend) are graded; rolls, end-turn, and discards never enter.
