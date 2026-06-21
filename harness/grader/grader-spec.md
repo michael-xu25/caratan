@@ -36,8 +36,8 @@ with Michael, since his generated envs must be tagged from the same vocab your s
 ### decision_type = `trade`
 | id | what it measures | a FAIL looks like |
 |---|---|---|
-| `net_resource_value` | value given vs received | trades down on raw value |
-| `enables_key_build` | unlocks a settlement/city/dev this turn | gives away a card needed for own build |
+| `net_resource_value` | resource utility/scarcity given vs received (NOT raw card count) | trades a scarcer/more-useful resource for a less-useful one, or a worse ratio than an available port (a plain 4:1/3:1 bank trade is not itself a fail) |
+| `enables_key_build` | advances toward a needed build (do NOT require completing a build this turn) | trades away a resource needed for a planned/imminent build, or trades with no constructive purpose |
 | `opponent_benefit` | does it help them more than you | hands opponent their missing piece |
 | `timing_strength` | trading from strength vs desperation | panic-trades a scarce resource away |
 
