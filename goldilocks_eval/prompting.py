@@ -26,17 +26,19 @@ from functools import lru_cache
 from typing import Any, List, Mapping, Optional
 
 # Pip count (number of dot-probabilities) for each dice number.
+# Pip count = dots printed under a number = ways two dice can make it. Board fact.
 PIPS = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 0, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1}
 
 # Reuse the SAME 1v1 rules primer the model plays with (goldilocks_eval.prompt),
 # so placement grading and live play share game knowledge — then the placement-
-# specific task + answer format.
+# specific task + answer format. NOTE: keep this mechanics-only — no hint about
+# what makes a spot good (that judgment is the reward/rubric, never the prompt).
 from goldilocks_eval.prompt import CATAN_RULES  # noqa: E402
 
 SYSTEM = CATAN_RULES + "\n\n" + (
-    "TASK: choose where to place an opening settlement. Weigh pip totals, "
-    "resource diversity, and port access. Follow the response format exactly: "
-    "a <reasoning> block then an <answer> block with one node id."
+    "TASK: you are choosing where to place an opening settlement. Follow the "
+    "response format exactly: a <reasoning> block, then an <answer> block "
+    "containing exactly one node id."
 )
 
 
@@ -74,26 +76,25 @@ def _tiles_by_coord(serialized_state: Mapping) -> dict:
 
 
 def _node_summary(node_int: int, tiles_by_coord: dict) -> str:
-    parts, total = [], 0
+    parts = []
     for coord in _node_to_coords().get(node_int, ()):  # adjacent tiles
         t = tiles_by_coord.get(coord, {})
         res, num = t.get("resource"), t.get("number")
         if res and num:  # skip desert / non-resource
-            pips = PIPS.get(num, 0)
-            total += pips
-            parts.append(f"{res}:{num}({pips}p)")
-    body = ", ".join(parts) if parts else "(no production)"
-    return f"{node_id_str(node_int)}: {body} | total {total}p"
+            parts.append(f"{res} on {num} ({PIPS.get(num, 0)} pips)")
+    body = ", ".join(parts) if parts else "no production"
+    return f"{node_id_str(node_int)}: {body}"
 
 
 def render_board(serialized_state: Mapping,
                  legal_actions: Optional[List[Any]] = None) -> str:
     tiles_by_coord = _tiles_by_coord(serialized_state)
-    lines = ["Resource tiles (resource:number(pips)):"]
+    lines = ["Tiles (resource, the dice total it produces on, and that number's "
+             "pips = dots on the board):"]
     for coord, t in sorted(tiles_by_coord.items()):
         res, num = t.get("resource"), t.get("number")
         if res and num:
-            lines.append(f"  {coord} {res}:{num}({PIPS.get(num, 0)}p)")
+            lines.append(f"  {coord} {res} on {num} ({PIPS.get(num, 0)} pips)")
         elif t.get("type") == "RESOURCE_TILE":
             lines.append(f"  {coord} DESERT")
 
@@ -107,7 +108,7 @@ def render_board(serialized_state: Mapping,
         lines.append(f"Robber: {tuple(serialized_state['robber_coordinate'])}")
 
     if legal_actions:
-        lines.append("Legal nodes (adjacent production):")
+        lines.append("Legal nodes (the resources each would collect):")
         for a in legal_actions:
             lines.append("  " + _node_summary(node_id_int(a), tiles_by_coord))
     return "\n".join(lines)
@@ -121,10 +122,10 @@ def build_prompt(scenario: Mapping) -> str:
     legal = [node_id_str(a) for a in scenario["legal_actions"]]
     board = render_board(scenario.get("serialized_state") or {}, legal)
     return (
-        "Choose the best opening settlement in this 1v1 game (first to 10 VP).\n\n"
+        "Choose where to place an opening settlement in this 1v1 game.\n\n"
         f"{board}\n\n"
         f"Legal settlement nodes: {', '.join(legal)}\n\n"
-        "Weigh pip totals, resource diversity, and ports. Reason, then answer.\n"
+        "Reason, then answer.\n"
         "Respond EXACTLY as:\n"
         "<reasoning>your reasoning</reasoning>\n"
         "<answer>node_ID</answer>"
