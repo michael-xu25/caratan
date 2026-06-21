@@ -4,9 +4,9 @@
 Aggregates, per MODEL (trained grpo / placement-only / untrained base), averaged
 over every game that model played across the matchup run dirs:
 
-  * wasted_turn_rate   -- fraction of the model's post-roll turns with NO productive
-                          action (build/buy/trade/play-dev). Resource management:
-                          lower = fewer turns that "do nothing".
+  * skipped_turn_rate  -- fraction of the model's post-roll turns with NO productive
+                          action (build/buy/trade/play-dev): turns where nothing
+                          happened (not inherently good or bad).
   * resource_gain      -- total resources flowing INTO the model's hand over the game
                           (sum of positive hand-size deltas). Proxy for production,
                           driven by placement + resource management.
@@ -150,7 +150,7 @@ def aggregate(dirs):
             "role": ROLE.get(model, model),
             "trained": model != "Qwen/Qwen3-8B",
             "games": gn,
-            "wasted_turn_rate": round(a["wasted"] / turns_n, 3),
+            "skipped_turn_rate": round(a["wasted"] / turns_n, 3),
             "resource_gain_per_game": round(a["resource_gain"] / gn, 1),
             "settlements_per_game": round(a["settlements"] / gn, 2),
             "cities_per_game": round(a["cities"] / gn, 2),
@@ -166,7 +166,7 @@ def aggregate(dirs):
 METRIC_INFO = {
     "what": "Per-decision quality measured from the head-to-head games themselves, averaged per model.",
     "metrics": {
-        "wasted_turn_rate": "Fraction of the model's turns (after its roll) with NO build/buy/trade/dev action — 'turns that do nothing'. Lower = better resource management.",
+        "skipped_turn_rate": "Fraction of the model's turns (after its roll) with NO build/buy/trade/dev action — turns where nothing happened (not inherently good or bad).",
         "resource_gain_per_game": "Total resources flowing into the model's hand over a game (production + trade inflow). Higher reflects better placement + keeping the economy moving.",
         "settlements_per_game": "Settlements built per game (includes the 2 initial).",
         "cities_per_game": "Cities built per game (settlement upgrades).",
@@ -192,7 +192,7 @@ def main(argv) -> int:
     out.write_text(json.dumps(payload, indent=2))
     print(f"{out.relative_to(REPO)}: {len(models)} models from {[d.name for d in dirs]}")
     for m, s in sorted(models.items(), key=lambda kv: kv[1]["trained"]):
-        print(f"  {m:22} games={s['games']:>3} wasted={s['wasted_turn_rate']:.0%} "
+        print(f"  {m:22} games={s['games']:>3} skipped={s['skipped_turn_rate']:.0%} "
               f"resgain={s['resource_gain_per_game']:>5} setl={s['settlements_per_game']} "
               f"city={s['cities_per_game']} sweep={s['pair_sweep_rate']}")
     return 0

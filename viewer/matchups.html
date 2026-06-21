@@ -107,12 +107,12 @@ function renderMatchups(d){
 
 // ---- game-quality stats (data/gamestats.json <- gamestats.py) ----
 const GS_METRICS = [
-  {k:"wasted_turn_rate",        label:"wasted-turn rate",            lower:true,  fmt:pct},
+  {k:"skipped_turn_rate",       label:"skipped turns (nothing happened)", lower:false, fmt:pct},
   {k:"resource_gain_per_game",  label:"resource gain / game",        lower:false, fmt:v=>v?.toFixed(0)},
   {k:"settlements_per_game",    label:"settlements / game",          lower:false, fmt:v=>v?.toFixed(2)},
   {k:"pair_sweep_rate",         label:"pair-sweep rate (adaptability)",lower:false, fmt:pct},
 ];
-const GS_COLS = ["games","wasted_turn_rate","resource_gain_per_game","settlements_per_game",
+const GS_COLS = ["games","skipped_turn_rate","resource_gain_per_game","settlements_per_game",
                  "cities_per_game","roads_per_game","dev_buys_per_game","trades_per_game","pair_sweep_rate"];
 function renderGamestats(d){
   const models = d.models||{};
