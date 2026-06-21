@@ -107,7 +107,8 @@ def _board_fingerprint(game) -> str:
 
     parts = []
     for coord, tile in sorted(game.state.board.map.tiles.items(), key=lambda kv: str(kv[0])):
-        resource = getattr(getattr(tile, "resource", None), "value", None)
+        resource = getattr(tile, "resource", None)
+        resource = getattr(resource, "value", resource)  # Enum -> value; str stays str
         number = getattr(tile, "number", None)
         parts.append(f"{coord}:{resource}:{number}")
     return hashlib.sha1("|".join(parts).encode()).hexdigest()[:12]
