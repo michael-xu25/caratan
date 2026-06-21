@@ -123,6 +123,30 @@ def render_board_summary(game: Game) -> str:
     return "\n".join(lines)
 
 
+def render_pieces(game: Game) -> str:
+    """Where every settlement, city, and road currently sits — public board info
+    a player can see (uses the same node ids the BUILD_* actions use). No scoring."""
+    from collections import defaultdict
+    b = game.state.board
+    builds = defaultdict(list)
+    for node, (color, btype) in b.buildings.items():
+        builds[color.value].append((node, btype.lower()))
+    roads = defaultdict(set)
+    for edge, color in b.roads.items():
+        roads[color.value].add(tuple(sorted(edge)))  # roads stored both directions
+    lines = ["Pieces on the board (node ids match the BUILD options):"]
+    if b.buildings:
+        for cv in sorted(builds):
+            lines.append(f"  {cv}: " +
+                         ", ".join(f"{t}@{n}" for n, t in sorted(builds[cv])))
+    else:
+        lines.append("  no settlements or cities yet")
+    for cv in sorted(roads):
+        lines.append(f"  {cv} roads: " +
+                     ", ".join(str(e) for e in sorted(roads[cv])))
+    return "\n".join(lines)
+
+
 def render_state(game: Game, me: Color, opponent: Color) -> str:
     """Human/LLM-readable snapshot of the game from `me`'s perspective."""
     lines = [
@@ -132,6 +156,8 @@ def render_state(game: Game, me: Color, opponent: Color) -> str:
         f"Robber is on tile: {game.state.board.robber_coordinate}",
         "",
         render_board_summary(game),
+        "",
+        render_pieces(game),
     ]
     return "\n".join(lines)
 
