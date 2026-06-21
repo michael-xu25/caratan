@@ -43,7 +43,7 @@ adapt the CLI to the installed version.)
 
 ## 3. GRPO run (Fireworks RFT — follow the HUD `fireworks-rl-training` cookbook)
 - **Base model:** the deployed Qwen2.5-7B (`fireworks:$FIREWORKS_MODEL` =
-  `accounts/brickedup25/deployments/blpxetwj`), or the public
+  `accounts/brickedup25/deployments/qhzroqz3`), or the public
   `accounts/fireworks/models/qwen2p5-7b-instruct` for training.
 - **Reward:** `training.placement_reward:placement_reward_fn`.
 - **Dataset:** `data/placement_opening_train.trl.jsonl` (200 rows; the four
