@@ -1,18 +1,18 @@
 #!/usr/bin/env python
-"""Dual-grader CLI: grade game transcripts into a ranked (criterion, tag) weakness table.
+"""Dual-grader CLI: one whole-game call per grader per transcript -> ranked
+(decision_type, criterion, tag) weakness table.
 
-    # preview what would be graded (no API calls, free) — counts by decision_type + tags:
+    # free preview: games, decisions sampled, and the call count:
     python scripts/grade_transcripts.py transcripts/selfplay --dry-run
 
-    # full dual grade (Claude + OpenAI):
+    # full dual grade (Claude + OpenAI), ~2 calls per game:
     export ANTHROPIC_API_KEY="$(scripts/anthropic_api_key.sh)"
     export OPENAI_API_KEY="$(scripts/openai_api_key.sh)"
-    python scripts/grade_transcripts.py transcripts/selfplay --max-per-game 40
+    python scripts/grade_transcripts.py transcripts/selfplay --per-game 15
 
-Writes <out>/findings.jsonl (one aggregator-ready grader object per decision, both
-raw verdicts kept) and <out>/report.json (Wilson-ranked weakness table + dual-grader
-agreement). Every decision that maps to a taxonomy decision_type is graded by both
-graders; the reconciler marks a criterion failed only on consensus.
+Each grader reads the whole game once and scores a uniform sample of N=`--per-game`
+decisions from it. Total LLM calls = (#transcripts) × 2 graders. Writes
+<out>/findings.jsonl + <out>/report.json.
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from harness.grader.oracle import compute_regrets
-from harness.grader.pipeline import grade_transcript, report, _select
+from harness.grader.pipeline import grade_transcript, report, _sample
 from harness.grader.aggregator import print_weakness_table
 
 
@@ -36,17 +36,17 @@ def _transcripts(target: Path) -> list[Path]:
     return [target]
 
 
-def _dry_run(paths, gate_pct, max_per_game):
-    dtypes, tags, total_sel = Counter(), Counter(), 0
+def _dry_run(paths, per_game):
+    dtypes, tags, total = Counter(), Counter(), 0
     for p in paths:
-        regrets = compute_regrets(json.loads(p.read_text()))
-        sel = _select(regrets, gate_pct, max_per_game)
-        total_sel += len(sel)
+        sel = _sample(compute_regrets(json.loads(p.read_text())), per_game)
+        total += len(sel)
         for r in sel:
             dtypes[r.decision_type] += 1
             tags.update(r.state_tags)
-        print(f"{p.name}: {len(regrets)} gradeable decisions -> {len(sel)} selected")
-    print(f"\nTOTAL selected: {total_sel}  (= {total_sel * 2} grader calls)")
+    print(f"transcripts (games): {len(paths)}")
+    print(f"decisions graded: {total}  (~{per_game}/game)")
+    print(f"LLM CALLS (hybrid, per-decision): {total} decisions × 2 graders = {total * 2}")
     print(f"by decision_type: {dict(dtypes)}")
     print(f"top state_tags: {dict(tags.most_common(10))}")
     return 0
@@ -58,11 +58,11 @@ def main() -> int:
     ap.add_argument("target", help="transcript .json or a run directory")
     ap.add_argument("--grader-a", default="claude:claude-opus-4-8")
     ap.add_argument("--grader-b", default="openai:gpt-4o")
-    ap.add_argument("--max-per-game", type=int, default=0, help="uniform-sample cap per game (0 = all; budget control)")
-    ap.add_argument("--gate-pct", type=float, default=0.0, help="optional regret-percentile gate (biases the denominator — prefer --max-per-game)")
-    ap.add_argument("--samples", type=int, default=1, help="self-consistency samples per grader")
-    ap.add_argument("--max-workers", type=int, default=8)
-    ap.add_argument("--min-samples", type=int, default=15, help="aggregator floor: (criterion,tag) below this isn't ranked")
+    ap.add_argument("--per-game", type=int, default=15, help="decisions sampled & scored per game")
+    ap.add_argument("--concurrency", type=int, default=16, help="global parallel grader calls (tune to API rate limits)")
+    ap.add_argument("--merge", choices=["consensus", "union"], default="union",
+                    help="weakness table: consensus (both graders, precision) or union (either, recall/discovery)")
+    ap.add_argument("--min-samples", type=int, default=15, help="aggregator floor per (criterion,tag)")
     ap.add_argument("--limit", type=int, default=0, help="cap transcripts (0 = all)")
     ap.add_argument("--out", default=None, help="output dir (default <target>/grading)")
     ap.add_argument("--dry-run", action="store_true", help="selection preview only, no API")
@@ -76,7 +76,7 @@ def main() -> int:
         print(f"no transcripts at {target}", file=sys.stderr); return 1
 
     if args.dry_run:
-        return _dry_run(paths, args.gate_pct, args.max_per_game)
+        return _dry_run(paths, args.per_game)
 
     if (args.grader_a.startswith("claude") or args.grader_b.startswith("claude")) and not os.environ.get("ANTHROPIC_API_KEY"):
         print("ERROR: ANTHROPIC_API_KEY not set", file=sys.stderr); return 2
@@ -84,27 +84,34 @@ def main() -> int:
         print("ERROR: OPENAI_API_KEY not set", file=sys.stderr); return 2
 
     from harness.grader.graders import make_grader
+    from harness.grader.pipeline import grade_run
     ga, gb = make_grader(args.grader_a), make_grader(args.grader_b)
-    print(f"graders: {ga.name} + {gb.name}  ({len(paths)} transcripts)\n")
+    transcripts = [json.loads(p.read_text()) for p in paths]
+    print(f"graders: {ga.name} + {gb.name}  (hybrid: per-decision, concurrency {args.concurrency})\n")
 
-    objects = []
-    for p in paths:
-        objs = grade_transcript(json.loads(p.read_text()), ga, gb,
-                                gate_pct=args.gate_pct, max_per_game=args.max_per_game,
-                                samples=args.samples, max_workers=args.max_workers)
-        objects.extend(objs)
-        print(f"  {p.name}: {len(objs)} decisions graded")
+    objects = grade_run(transcripts, ga, gb, per_game=args.per_game,
+                        concurrency=args.concurrency,
+                        progress=lambda d, n: print(f"  {d}/{n} grader calls done"))
 
     out_dir = Path(args.out) if args.out else (target if target.is_dir() else target.parent) / "grading"
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "findings.jsonl").write_text("\n".join(json.dumps(o) for o in objects))
-    rep = report(objects, min_samples=args.min_samples)
+    rep = report(objects, min_samples=args.min_samples, merge=args.merge)
     (out_dir / "report.json").write_text(json.dumps(rep, indent=2))
 
     print(f"\n=== agreement === {rep['agreement']}")
-    print("=== top weaknesses (Wilson-ranked fail-rate) ===")
-    print_weakness_table(rep["weakness_table"], top=12)
-    print(f"\nWrote {out_dir}/findings.jsonl + report.json")
+    print("=== top weaknesses (detailed; ranked by union Wilson-LB) ===")
+    rows = [r for r in rep["detailed_table"] if r["above_floor"]][:12]
+    short = lambda g: g.split(":")[0][:6]
+    hdr_graders = sorted({g for r in rows for g in r["per_grader"]})
+    print(f"  {'decision':<11}{'criterion':<19}{'tag':<14}{'n':>4}{'union':>7}{'cons':>6}"
+          + "".join(f"{short(g):>8}" for g in hdr_graders) + f"{'agree':>7}{'regretVP':>9}")
+    for r in rows:
+        pg = "".join(f"{r['per_grader'].get(g, 0)*100:>7.0f}%" for g in hdr_graders)
+        print(f"  {r['decision_type']:<11}{r['criterion']:<19}{r['tag']:<14}{r['n']:>4}"
+              f"{r['union_rate']*100:>6.0f}%{r['consensus_rate']*100:>5.0f}%{pg}"
+              f"{r['agree_rate']*100:>6.0f}%{r['mean_regret_vp']:>9.3f}")
+    print(f"\nWrote {out_dir}/findings.jsonl + report.json  (detailed_table has per-grader splits + examples)")
     return 0
 
 

@@ -94,13 +94,13 @@ def validate_tags(tags):
 # the aggregator will group on (no drift between prompt and code).
 
 _CRITERION_DESC = {
-    "resource_diversity": "breadth of resource types covered (fail: locked out of / doubled-up on a resource)",
-    "pip_coverage": "probability-weighted production / sum of dots (fail: low pips, sitting on 2s/12s)",
-    "port_access": "useful port adjacency given the resource plan (fail: mismatched or ignored strong port)",
-    "expansion_room": "open buildable nodes/roads reachable later (fail: boxed in, no second-ring spots)",
-    "blocking_value": "denying a strong spot to an opponent (fail: leaves a premium node open)",
-    "net_resource_value": "value given vs received (fail: trades down on raw value)",
-    "enables_key_build": "unlocks a settlement/city/dev this turn (fail: gives away a needed card)",
+    "resource_diversity": "breadth of resource types the player can produce (fail: leaves the player unable to produce a key resource with no realistic path to it; mild doubling or covering 3-4 types is NOT a fail)",
+    "pip_coverage": "probability-weighted production / sum of dots (fail: takes a clearly low-pip spot when a MATERIALLY higher-pip legal spot was open; being slightly under the max is NOT a fail)",
+    "port_access": "useful port adjacency given the resource plan (fail: takes a port that doesn't fit the plan, or ignores a strong port that was clearly the single best available spot; ports are optional, so this is n/a -> 2 for most placements)",
+    "expansion_room": "keeps the player's OWN future expansion open (fail: genuinely boxed in — surrounded, no reachable open building spots later; an opening on an open board is almost never a fail here)",
+    "blocking_value": "denying the opponent a strong spot (fail: passed up an obvious, available chance to take the opponent's clearly-best node when it was also good for the player; 'a good node remains open' is NOT a fail — you can't take them all)",
+    "net_resource_value": "resource utility/scarcity given vs received, NOT raw card count (fail: trades a scarcer/more-useful resource for a less-useful one, or accepts a worse ratio than an available port; a plain 4:1/3:1 bank trade is NOT a fail by itself)",
+    "enables_key_build": "advances toward a needed build (fail: trades away a resource it needed for a planned/imminent build, or trades with no constructive purpose; do NOT fail a trade merely because it doesn't COMPLETE a build this turn)",
     "opponent_benefit": "helps them more than you (fail: hands opponent their missing piece)",
     "timing_strength": "trading from strength vs desperation (fail: panic-trades a scarce resource)",
     "tempo": "speed toward next VP / engine step (fail: low-urgency sink)",

@@ -40,6 +40,11 @@ class FireworksBackend(LLMBackend):
         # wants > 0 so two identical models don't play identically into draws.
         if temperature is None:
             temperature = float(os.environ.get("FIREWORKS_TEMPERATURE", "0.0"))
+        # Thinking-mode control for models that have one (e.g. Qwen3-style):
+        # FIREWORKS_REASONING_EFFORT=none disables internal reasoning so the model
+        # is comparable to non-thinking ones. Crosses the process-pool boundary via
+        # env (like temperature); only sent when set, so other models are unaffected.
+        self.reasoning_effort = os.environ.get("FIREWORKS_REASONING_EFFORT") or None
         key = os.environ.get("FIREWORKS_API_KEY")
         if not key:
             raise RuntimeError(
@@ -85,8 +90,11 @@ class FireworksBackend(LLMBackend):
             return json.loads(resp.read())
 
     def _common(self) -> dict:
-        return {"model": self.model, "max_tokens": self.max_tokens,
+        body = {"model": self.model, "max_tokens": self.max_tokens,
                 "temperature": self.temperature}
+        if self.reasoning_effort:
+            body["reasoning_effort"] = self.reasoning_effort
+        return body
 
     def complete(self, system: str, user: str) -> str:
         last_exc: Exception | None = None

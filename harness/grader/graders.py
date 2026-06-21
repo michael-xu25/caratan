@@ -1,14 +1,18 @@
-"""Run a single LLM grader (claude:… / openai:…) over one decision and return a
-per-criterion verdict. Optional self-consistency: majority `failed` per criterion.
+"""Run a single LLM grader over ONE whole game (one call), returning a per-decision,
+per-criterion verdict for every decision it was asked to score.
 """
 from __future__ import annotations
 
-from collections import Counter
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from goldilocks_eval.agents.factory import make_backend
-from harness.grader.prompts import SYSTEM, build_user_prompt, parse_criteria
+from harness.grader.prompts import (
+    SYSTEM, build_game_prompt, parse_game_verdicts,
+    SYSTEM_DECISION, build_decision_prompt, parse_one_verdict)
 from harness.grader.taxonomy import CRITERIA_BY_TYPE
+
+# Whole-game verdicts list is large; raise the cap so it isn't truncated.
+GRADER_MAX_TOKENS = 4096
 
 
 @dataclass
@@ -19,10 +23,10 @@ class Verdict:
     ok: bool = True
 
 
-def _full_criteria(dtype: str, parsed: list) -> dict:
-    """Index parsed criteria by name; fill any the grader omitted as a pass (score 2),
-    so every criterion is present (the aggregator denominator needs all of them)."""
-    by_name = {c["name"]: c for c in parsed}
+def _full_criteria(dtype: str, parsed_criteria: list) -> dict:
+    """Index parsed criteria by name; fill any omitted as a pass (the aggregator
+    denominator needs every criterion present)."""
+    by_name = {c.get("name"): c for c in (parsed_criteria or []) if isinstance(c, dict)}
     out = {}
     for name in CRITERIA_BY_TYPE[dtype]:
         c = by_name.get(name)
@@ -35,34 +39,46 @@ def _full_criteria(dtype: str, parsed: list) -> dict:
     return out
 
 
-def grade_once(backend, regret, decision: dict | None) -> Verdict:
-    dtype = regret.decision_type
+def grade_game(backend, transcript: dict, selected, decisions_by_ply: dict) -> dict:
+    """One call. Returns {ply: Verdict} for every selected decision.
+
+    On a failed/garbled call, returns all-pass verdicts (failed=false) so the run
+    continues and the denominator stays intact (those decisions just contribute no
+    failures from this grader)."""
+    by_ply = {r.ply: r for r in selected}
     try:
-        raw = backend.complete(SYSTEM, build_user_prompt(regret, decision))
-    except Exception as e:
-        return Verdict(backend.name, _full_criteria(dtype, []), f"(grader error: {e})", ok=False)
-    obj = parse_criteria(raw, dtype)
-    if obj is None:
-        return Verdict(backend.name, _full_criteria(dtype, []), "(unparseable)", ok=False)
-    return Verdict(backend.name, _full_criteria(dtype, obj["criteria"]), obj["summary"])
+        raw = backend.complete(SYSTEM, build_game_prompt(transcript, selected, decisions_by_ply))
+        parsed = parse_game_verdicts(raw)
+    except Exception:
+        parsed = None
+
+    out = {}
+    for ply, r in by_ply.items():
+        v = (parsed or {}).get(ply)
+        crit = _full_criteria(r.decision_type, v.get("criteria") if v else None)
+        summary = (v.get("summary", "") if v else "")
+        out[ply] = Verdict(backend.name, crit, str(summary)[:200], ok=v is not None)
+    return out
 
 
-def grade(backend, regret, decision: dict | None, samples: int = 1) -> Verdict:
-    if samples <= 1:
-        return grade_once(backend, regret, decision)
-    vs = [grade_once(backend, regret, decision) for _ in range(samples)]
-    good = [v for v in vs if v.ok] or vs
-    # majority `failed` per criterion across samples
-    merged = {}
-    for name in CRITERIA_BY_TYPE[regret.decision_type]:
-        fails = sum(1 for v in good if v.criteria[name]["failed"])
-        failed = fails > len(good) / 2
-        rep = next((v.criteria[name] for v in good if v.criteria[name]["failed"] == failed),
-                   good[0].criteria[name])
-        merged[name] = {"score": rep["score"], "failed": failed, "reason": rep["reason"]}
-    return Verdict(good[0].grader + f"×{samples}", merged, good[0].summary)
+def grade_decision(backend, transcript: dict, regret, decision: dict | None) -> Verdict:
+    """Hybrid path: score ONE decision in its own call (full attention) with compact
+    game context. Designed to fan out across all decisions in a global parallel pool."""
+    try:
+        raw = backend.complete(SYSTEM_DECISION, build_decision_prompt(transcript, regret, decision))
+        obj = parse_one_verdict(raw)
+    except Exception:
+        obj = None
+    crit = _full_criteria(regret.decision_type, obj.get("criteria") if obj else None)
+    return Verdict(backend.name, crit, str(obj.get("summary", "") if obj else "")[:200], ok=obj is not None)
 
 
 def make_grader(spec: str):
-    """Build a grader backend (claude:… / openai:…); both default to temperature 0."""
-    return make_backend(spec)
+    """Build a grader backend (claude:… / openai:…); temperature 0, larger max_tokens
+    for the whole-game verdict list."""
+    b = make_backend(spec)
+    try:
+        b.max_tokens = GRADER_MAX_TOKENS
+    except Exception:
+        pass
+    return b

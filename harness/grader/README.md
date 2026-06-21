@@ -7,7 +7,7 @@ measurement baseline. Implements the shared contract in `grader-spec.md` +
 
 ```
 transcripts ─▶ derive (decision_type, state_tags) + regret
-            ─▶ Claude + OpenAI score each criterion ─▶ reconcile (consensus-fail)
+            ─▶ Claude + OpenAI score each criterion ─▶ reconcile (union-fail, default)
             ─▶ aggregator: Wilson-ranked fail-rate table ─▶ env gen / before-after demo
 ```
 
@@ -38,30 +38,54 @@ transcripts ─▶ derive (decision_type, state_tags) + regret
   unbiased.
 - `graders.py` — runs one LLM grader; optional self-consistency (majority `failed`).
 - `reconcile.py` — merges the two graders per criterion: **a criterion is failed
-  only when BOTH agree** (consensus-fail → high-precision metric). Keeps both raw
-  verdicts + per-criterion agreement; reports **Cohen's κ** overall and per
-  criterion, plus union (recall) vs consensus (precision) counts.
+  when EITHER grader fails it** (union → over-critical / high-recall, the default).
+  One-sided flags are marked `disputed` and record both graders' takes. Keeps both
+  raw verdicts + per-criterion agreement; reports **Cohen's κ** overall and per
+  criterion, plus union (recall) / consensus (precision) / disputed counts.
 - `pipeline.py` + `scripts/grade_transcripts.py` — orchestrate and emit the table.
+
+## Grading granularity (hybrid, parallel)
+
+The CLI default is the **hybrid** path: each sampled decision is graded in its **own
+call** (full attention, no compression) that carries a **compact game-context blurb**
+(outcome + VP trajectory + the local move window), and ALL `(board × decision ×
+grader)` calls fan out in **one global rate-limited pool** (`pipeline.grade_run`).
+Because per-decision calls are small and fast, wall-clock ≈ `total_calls /
+--concurrency`, so detail doesn't cost time — only API rate limits bound it.
+
+The older **whole-game** path (one call/game scoring N decisions; `grade_game` /
+`build_game_prompt`) is still available in code — cheaper in raw calls but slower
+per call and lower per-decision attention. The hybrid is preferred.
 
 ## Usage
 
 ```bash
-# free preview: what gets graded, counts by decision_type + tags
-python scripts/grade_transcripts.py transcripts/selfplay --dry-run
+# free preview: decisions, call count, decision_type + tags
+python scripts/grade_transcripts.py transcripts/selfplay --per-game 15 --dry-run
 
-# full dual grade (set both keys first):
-python scripts/grade_transcripts.py transcripts/selfplay --max-per-game 40
+# hybrid dual grade (set both keys first); tune --concurrency to your rate limits:
+python scripts/grade_transcripts.py transcripts/selfplay \
+    --per-game 15 --concurrency 16 --merge union
 ```
 
-Outputs `<run>/grading/findings.jsonl` (one aggregator-ready grader object per
-decision, both raw verdicts kept) + `report.json` (weakness table + agreement).
+- `--per-game N` — decisions uniformly sampled per game (unbiased denominator).
+- `--concurrency` — global parallel calls; raise it (rate-limit permitting) to cut
+  wall-clock. Calls = decisions × 2 graders.
+- `--merge consensus|union` — weakness table counts a criterion failed when BOTH
+  graders agree (consensus, precision) or EITHER does (union, recall/discovery).
+  **Default is `union`** (deliberately over-critical); switch to `consensus` for a
+  conservative high-precision headline. Disputed (one-sided) flags are tracked
+  either way.
 
-## Cost note
+Outputs `<run>/grading/findings.jsonl` (one object per decision, both raw verdicts
+kept) + `report.json` (weakness table + agreement). Re-rank without re-grading via
+`pipeline.report(objects, merge=...)`.
 
-These 400-cap games have ~230 gradeable decisions each → ~470 grader calls/game.
-Use `--max-per-game N` (a **uniform** sample — keeps the denominator unbiased) to
-bound cost. `--gate-pct` exists for regret-gating but biases the denominator toward
-hard decisions; prefer `--max-per-game`.
+## Cost / time note
+
+These 400-cap games have ~230 gradeable decisions each. Bound work with `--per-game`
+(coverage) and speed with `--concurrency` (wall-clock). The denominator only ever
+counts graded decisions of each decision_type — never rolls/forced moves.
 
 ## Decisions made integrating the two designs
 

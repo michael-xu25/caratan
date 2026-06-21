@@ -27,17 +27,17 @@ with Michael, since his generated envs must be tagged from the same vocab your s
 ### decision_type = `placement`
 | id | what it measures | a FAIL looks like |
 |---|---|---|
-| `resource_diversity` | breadth of resource types covered | locked out of / doubled-up on a resource |
-| `pip_coverage` | probability-weighted production (sum of dot values) | low total pips; sitting on 2s/12s |
-| `port_access` | useful port adjacency given resource plan | takes a port that doesn't match production, or ignores a strong one |
-| `expansion_room` | open buildable nodes/roads reachable later | boxed in, no second-ring spots |
-| `blocking_value` | denying a strong spot to an opponent | leaves a premium node open to next player |
+| `resource_diversity` | breadth of resource types the player can produce | left unable to produce a key resource with no realistic path to it (mild doubling / 3-4 types is fine) |
+| `pip_coverage` | probability-weighted production (sum of dot values) | takes a clearly low-pip spot when a materially higher-pip legal spot was open (slightly under max is fine) |
+| `port_access` | useful port adjacency given resource plan | takes a port that doesn't fit the plan, or ignores a strong port that was clearly the single best spot (n/a→2 for most placements) |
+| `expansion_room` | keeps the player's OWN future expansion open | genuinely boxed in — surrounded, no reachable open spots later (an opening on an open board is rarely a fail) |
+| `blocking_value` | denying the opponent a strong spot | passed up an obvious chance to take the opponent's clearly-best node when it was also good for the player (a good node merely remaining open is not a fail) |
 
 ### decision_type = `trade`
 | id | what it measures | a FAIL looks like |
 |---|---|---|
-| `net_resource_value` | value given vs received | trades down on raw value |
-| `enables_key_build` | unlocks a settlement/city/dev this turn | gives away a card needed for own build |
+| `net_resource_value` | resource utility/scarcity given vs received (NOT raw card count) | trades a scarcer/more-useful resource for a less-useful one, or a worse ratio than an available port (a plain 4:1/3:1 bank trade is not itself a fail) |
+| `enables_key_build` | advances toward a needed build (do NOT require completing a build this turn) | trades away a resource needed for a planned/imminent build, or trades with no constructive purpose |
 | `opponent_benefit` | does it help them more than you | hands opponent their missing piece |
 | `timing_strength` | trading from strength vs desperation | panic-trades a scarce resource away |
 
