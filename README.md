@@ -62,6 +62,40 @@ python -m goldilocks_eval.scenario_cli \
 # -> per-env accuracy + headline delta, e.g. placement 30% -> 78%
 ```
 
+### Scenario pipeline (placement env)
+
+```bash
+# 1. Emit unlabeled placement scenarios (STOPGAP sample emitter — the real
+#    pooled generator is the producer half, see scenario-generation-spec.md)
+python -m goldilocks_eval.sample_scenarios --start 0 --n 20 \
+    --split heldout --out data/placement_unlabeled.jsonl
+
+# 2. Champion-label them (board render + node-id overlay; resumable)
+python -m goldilocks_eval.labeling_cli data/placement_unlabeled.jsonl \
+    --out data/placement_labeled.jsonl
+
+# 3. Calibrate to the Goldilocks band (train pool); record base rate (heldout)
+python calibration_harness.py data/placement_labeled.jsonl \
+    --out data/placement_train.jsonl --filter --low 0.2 --high 0.5
+```
+
+The **prompt/answer/reward contract is one source of truth** —
+`goldilocks_eval/prompting.py` (`build_prompt`, `parse_answer`, `score`,
+`<answer>node_27</answer>` format). Generation, calibration, and the eval all
+import it, so before/after numbers can't silently compare apples to oranges.
+
+### Frozen scenario contract + fixtures
+The scenario record is frozen in `goldilocks_eval/schema.py` (`Scenario`,
+`new_unlabeled`, `apply_label` for the UI write-back, `validate`,
+`json_schema`). Real example fixtures (unlabeled, both pick-1 and
+existing-settlement cases) live in `data/examples/placement_examples.jsonl`,
+with the JSON Schema and a build guide in `data/examples/README.md`.
+
+Node ids resolve to board positions from `serialized_state` alone (each node
+carries `tile_coordinate` + `direction`) — `goldilocks_eval/geometry.py`
+(`node_position`) is the resolver, with the formula/JS-mirror notes in the
+fixtures README. No serialization change is needed for the labeling UI.
+
 Agent specs (the swappable backend flag): `random`, `weighted`, `value`,
 `alphabeta[:depth]`, `claude[:model-id]` (default `claude-opus-4-8`),
 `gemini` (stub — implement `LLMBackend.complete` to wire it in).
@@ -77,8 +111,17 @@ human-readable log with every action and the model's per-decision reasoning.
   (concurrency = max in-flight LLM calls).
 - `goldilocks_eval/scenario.py` + `scenario_cli.py` — per-weakness scenario
   scorer (tiered 1.0/0.5/0.0 vs champion labels) and before/after report.
-- `goldilocks_eval/prompt.py` — state→text rendering and reply parsing.
+- `goldilocks_eval/prompting.py` — **canonical** placement prompt/parse/reward
+  contract (shared by generation, calibration, and eval).
+- `goldilocks_eval/labeling_cli.py` — champion-labeling CLI (board render +
+  node-id overlay, resumable).
+- `goldilocks_eval/sample_scenarios.py` — stopgap unlabeled-scenario emitter.
+- `goldilocks_eval/prompt.py` — live full-game rendering/parsing (index-based,
+  arbitrary actions — distinct from the placement contract above).
 - `goldilocks_eval/transcript.py` — JSON + human-readable transcript writers.
+- `calibration_harness.py` — Goldilocks difficulty filter (drops zero-variance
+  scenarios); wire its backend to Fireworks/your `LLMBackend`.
+- `scenario-generation-spec.md` — contract for the producer-half generator.
 
 ### Notes / contract
 - **Dice = seeded purely-random** (`Game(seed=…)`), per the build-spec decision —

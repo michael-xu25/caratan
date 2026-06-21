@@ -33,34 +33,9 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 from goldilocks_eval.agents.base import LLMBackend
-from goldilocks_eval import prompt as P
-
-
-@dataclass
-class Scenario:
-    scenario_id: str
-    env: str
-    serialized_state: Any
-    legal_actions: List[Any]
-    gold_action: Any
-    acceptable_actions: List[Any] = field(default_factory=list)
-    split: str = "heldout"
-    game_id: str = ""
-    board_seed: Optional[int] = None
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> "Scenario":
-        return cls(
-            scenario_id=d["scenario_id"],
-            env=d.get("env", "unknown"),
-            serialized_state=d.get("serialized_state"),
-            legal_actions=list(d["legal_actions"]),
-            gold_action=d["gold_action"],
-            acceptable_actions=list(d.get("acceptable_actions", [])),
-            split=d.get("split", "heldout"),
-            game_id=d.get("game_id", ""),
-            board_seed=d.get("board_seed"),
-        )
+from goldilocks_eval import prompting  # canonical shared contract
+from goldilocks_eval.prompting import score  # re-export
+from goldilocks_eval.schema import Scenario  # frozen canonical record
 
 
 def load_scenarios(path: str, split: Optional[str] = None) -> List[Scenario]:
@@ -76,64 +51,41 @@ def load_scenarios(path: str, split: Optional[str] = None) -> List[Scenario]:
     return out
 
 
-def score(chosen: Any, gold: Any, acceptable: List[Any]) -> float:
-    if chosen == gold:
-        return 1.0
-    if chosen in acceptable:
-        return 0.5
-    return 0.0
+# Scoring/prompt/parse all come from the canonical contract (prompting.py) so
+# eval, calibration, and generation can never drift. `score` is re-exported above.
 
 
-# --- prompting (decoder-free: present state text + numbered legal actions) ---
-
-SCENARIO_SYSTEM = (
-    "You are an expert Settlers of Catan player. Given a frozen decision point "
-    "(the game state and a numbered list of legal actions), pick the single "
-    "best action.\n\n"
-    'Reply with ONLY one-line JSON: {"action": <index>, "reasoning": "<short>"}'
-)
-
-
-def build_scenario_prompt(s: Scenario) -> str:
-    state_str = json.dumps(s.serialized_state, indent=2)
-    if len(state_str) > 6000:  # keep prompts bounded for big GameEncoder dumps
-        state_str = state_str[:6000] + "\n... (state truncated)"
-    actions = "\n".join(f"  [{i}] {a}" for i, a in enumerate(s.legal_actions))
-    return (
-        f"Environment: {s.env}\n\n"
-        f"State:\n{state_str}\n\n"
-        f"Legal actions:\n{actions}\n\n"
-        f"Respond with the JSON object."
-    )
+def _scenario_dict(s: Scenario) -> dict:
+    return {"serialized_state": s.serialized_state, "legal_actions": s.legal_actions,
+            "env": s.env}
 
 
 @dataclass
 class ScenarioResult:
     scenario_id: str
     env: str
-    chosen: Any
+    chosen: Any        # parsed node id ("node_27") or None marker
     gold: Any
     reward: float
     reasoning: str
-    fell_back: bool
+    fell_back: bool    # True when the answer was unparseable
 
 
 def _decide(backend: LLMBackend, s: Scenario) -> ScenarioResult:
-    idx: Optional[int] = None
+    answer: Optional[str] = None
     reasoning = ""
-    fell_back = False
     try:
-        text = backend.complete(SCENARIO_SYSTEM, build_scenario_prompt(s))
-        idx, reasoning = P.parse_choice(text, len(s.legal_actions))
+        text = backend.complete(prompting.SYSTEM, prompting.build_prompt(_scenario_dict(s)))
+        answer = prompting.parse_answer(text)
+        reasoning = (text or "")[:500]
     except Exception as exc:
         reasoning = f"(backend error: {exc})"
-    if idx is None:
-        idx = 0
-        fell_back = True
-    chosen = s.legal_actions[idx]
+    fell_back = answer is None
     return ScenarioResult(
-        scenario_id=s.scenario_id, env=s.env, chosen=chosen, gold=s.gold_action,
-        reward=score(chosen, s.gold_action, s.acceptable_actions),
+        scenario_id=s.scenario_id, env=s.env,
+        chosen=answer if answer is not None else "(unparseable)",
+        gold=prompting.node_id_str(s.gold_action),
+        reward=score(answer, s.gold_action, s.acceptable_actions),
         reasoning=reasoning, fell_back=fell_back,
     )
 

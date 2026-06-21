@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PlacementScenario",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenario_id",
+    "game_id",
+    "board_seed",
+    "env",
+    "serialized_state",
+    "legal_actions",
+    "gold_action",
+    "acceptable_actions",
+    "split"
+  ],
+  "properties": {
+    "scenario_id": {
+      "type": "string"
+    },
+    "game_id": {
+      "type": "string",
+      "description": "= board seed; split grouping key"
+    },
+    "board_seed": {
+      "type": "integer"
+    },
+    "pick_index": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "maximum": 4
+    },
+    "env": {
+      "type": "string",
+      "enum": [
+        "placement"
+      ]
+    },
+    "serialized_state": {
+      "type": "object",
+      "description": "Catanatron GameEncoder JSON"
+    },
+    "legal_actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^node_\\d+$"
+      },
+      "minItems": 1
+    },
+    "gold_action": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^node_\\d+$"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "champion label; null until labeled (UI writes this)"
+    },
+    "acceptable_actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^node_\\d+$"
+      },
+      "description": "near-optimal alts (UI writes this)"
+    },
+    "base_solve_rate": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "split": {
+      "type": "string",
+      "enum": [
+        "train",
+        "heldout"
+      ]
+    }
+  }
+}
