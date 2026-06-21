@@ -18,8 +18,12 @@ env/
 *.key
 .claude/settings.local.json
 
-# Eval output
-transcripts/
+# Eval output — ignore everything under transcripts/ EXCEPT the real LLM run
+# transcripts we want to share (so Michael can see them). Bot-test and scratch
+# dirs stay ignored. Add a "!" line per LLM run to expose it.
+transcripts/*
+!transcripts/sample_game/
+!transcripts/selfplay/
 
 # Generated viewer run-picker manifest (env-specific; rebuilt by view.sh /
 # scripts/build_viewer_index.py)

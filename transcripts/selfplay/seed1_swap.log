@@ -1,0 +1,1259 @@
+───────────────────────────────────────── GAME seed1_swap ──────────────────────────────────────────
+seats : 
+RED=fireworks:accounts/fireworks/models/qwen2p5-7b-instruct#accounts/brickedup25/deployments/blpxetw
+j vs 
+BLUE=fireworks:accounts/fireworks/models/qwen2p5-7b-instruct#accounts/brickedup25/deployments/blpxet
+wj
+result: WINNER RED 
+(fireworks:accounts/fireworks/models/qwen2p5-7b-instruct#accounts/brickedup25/deployments/blpxetwj) 
+— 10 VP
+meta  : 314 turns · 110.668s · seed=1 · RED 10VP / BLUE 4VP
+
+Board                                   
+╭─────────┬────────────────────────────╮
+│resource │ numbers (probability order)│
+├─────────┼────────────────────────────┤
+│BRICK    │ 5  9  4                    │
+│ORE      │ 6  5  9                    │
+│SHEEP    │ 4  10  10  3               │
+│WHEAT    │ 6  8  3  12                │
+│WOOD     │ 8  11  11  2               │
+╰─────────┴────────────────────────────╯
+
+Decisions  (routine rolls/end-turns collapsed)
+
+── turn 0 ──
+  #1    RED   BUILD_SETTLEMENT       0
+        ctx[early] VP[RED=0 BLUE=0] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 54
+        from: BUILD_SETTLEMENT 0, BUILD_SETTLEMENT 1, BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, 
+BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 5, BUILD_SETTLEMENT 6, BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, 
+BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 11 (+42 more)
+        ↳ Build a settlement to start establishing resource production.
+  #2    RED   BUILD_ROAD             (0, 1)
+        ctx[early] VP[RED=1 BLUE=0] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 3
+        from: BUILD_ROAD (0, 1), BUILD_ROAD (0, 20), BUILD_ROAD (0, 5)
+        ↳ Connect to the nearest intersection to start building infrastructure.
+
+── turn 1 ──
+  #3    BLUE  BUILD_SETTLEMENT       25
+        ctx[early] VP[RED=1 BLUE=0] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 50
+        from: BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 6, 
+BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 
+11, BUILD_SETTLEMENT 12, BUILD_SETTLEMENT 13, BUILD_SETTLEMENT 14 (+38 more)
+        ↳ Build a settlement on BRICK 5 (4 pips) to start the game.
+  #4    BLUE  BUILD_ROAD             (24, 25)
+        ctx[early] VP[RED=1 BLUE=1] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 2
+        from: BUILD_ROAD (24, 25), BUILD_ROAD (25, 26)
+        ↳ Build road to connect to starting settlement.
+  #5    BLUE  BUILD_SETTLEMENT       28
+        ctx[early] VP[RED=1 BLUE=1] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 47
+        from: BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 6, 
+BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 
+11, BUILD_SETTLEMENT 12, BUILD_SETTLEMENT 13, BUILD_SETTLEMENT 14 (+35 more)
+        ↳ Gain access to the wood 2:1 port and start building wood resources.
+  #6    BLUE  BUILD_ROAD             (28, 29)
+        ctx[early] VP[RED=1 BLUE=2] hand[WO1 BR0 SH0 WH0 OR0] chose 1 of 2
+        from: BUILD_ROAD (28, 29), BUILD_ROAD (27, 28)
+        ↳ Build road to connect to sheep port
+
+── turn 2 ──
+  #7    RED   BUILD_SETTLEMENT       32
+        ctx[early] VP[RED=1 BLUE=2] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 44
+        from: BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 6, 
+BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 
+11, BUILD_SETTLEMENT 12, BUILD_SETTLEMENT 13, BUILD_SETTLEMENT 14 (+32 more)
+        ↳ Build a settlement on a wood 11 tile with a 2:1 wood port for efficient resource 
+collection.
+  #8    RED   BUILD_ROAD             (32, 33)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH1 WH0 OR0] chose 1 of 3
+        from: BUILD_ROAD (32, 33), BUILD_ROAD (11, 32), BUILD_ROAD (31, 32)
+        ↳ Build road to connect existing road
+  #10   RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH1 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+        ↳ Move robber to block opponent's wheat production.
+  #11   RED   MARITIME_TRADE         ('WOOD', 'WOOD', None, None, 'BRICK')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR0 SH1 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'WHEAT'), 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP')
+        ↳ Trade wood for brick to support future road building.
+
+── turn 13 ──
+  #34   BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's wheat production.
+
+── turn 16 ──
+  #41   RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR3 SH2 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to the wheat-producing tile to prevent opponent's resource gain.
+
+── turn 20 ──
+  #50   RED   MOVE_ROBBER            ((1, -2, 1), C.BLUE)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR3 SH2 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((1, -2, 1), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to disrupt opponent's wheat production on 6 and 8.
+  #51   RED   BUILD_ROAD             (1, 2)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR3 SH2 WH0 OR1] chose 1 of 8
+        from: END_TURN, BUILD_ROAD (1, 2), BUILD_ROAD (0, 20), BUILD_ROAD (11, 32), BUILD_ROAD (31, 
+32), BUILD_ROAD (0, 5), BUILD_ROAD (33, 34), BUILD_ROAD (1, 6)
+        ↳ Build road to connect existing road and expand network.
+
+── turn 21 ──
+  #54   BLUE  MOVE_ROBBER            ((0, 1, -1), C.RED)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to BRICK port to prevent opponent's resource production.
+  #55   BLUE  BUILD_ROAD             (24, 53)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR1 SH0 WH0 OR0] chose 1 of 7
+        from: END_TURN, BUILD_ROAD (24, 53), BUILD_ROAD (7, 24), BUILD_ROAD (10, 29), BUILD_ROAD 
+(27, 28), BUILD_ROAD (25, 26), BUILD_ROAD (29, 30)
+        ↳ Build a road to connect to the longest road.
+
+── turn 23 ──
+  #60   BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to prevent opponent from producing resources.
+
+── turn 25 ──
+  #65   BLUE  BUILD_ROAD             (25, 26)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR1 SH0 WH0 OR1] chose 1 of 7
+        from: END_TURN, BUILD_ROAD (52, 53), BUILD_ROAD (7, 24), BUILD_ROAD (10, 29), BUILD_ROAD 
+(27, 28), BUILD_ROAD (25, 26), BUILD_ROAD (29, 30)
+        ↳ Build road to connect pieces and form longest road.
+
+── turn 26 ──
+  #68   RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR1 SH2 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to BRICK-producing tile to prevent opponent's road building.
+  #69   RED   BUILD_ROAD             (0, 20)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR1 SH2 WH0 OR0] chose 1 of 9
+        from: END_TURN, BUILD_ROAD (0, 20), BUILD_ROAD (11, 32), BUILD_ROAD (31, 32), BUILD_ROAD (2,
+3), BUILD_ROAD (2, 9), BUILD_ROAD (0, 5), BUILD_ROAD (33, 34), BUILD_ROAD (1, 6)
+        ↳ Build a road to expand and connect to a port.
+
+── turn 32 ──
+  #82   RED   BUILD_ROAD             (19, 20)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR1 SH3 WH0 OR1] chose 1 of 14
+        from: END_TURN, BUILD_ROAD (19, 20), BUILD_ROAD (11, 32), BUILD_ROAD (31, 32), BUILD_ROAD 
+(2, 3), BUILD_ROAD (2, 9), BUILD_ROAD (0, 5), BUILD_ROAD (33, 34), BUILD_ROAD (20, 22), BUILD_ROAD 
+(1, 6), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', None, 
+None, 'ORE') (+2 more)
+        ↳ Connect to existing road and claim wood resource.
+
+── turn 38 ──
+  #95   RED   MARITIME_TRADE         ('WOOD', 'WOOD', None, None, 'BRICK')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO3 BR0 SH3 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'WHEAT'), 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP')
+        ↳ Trade wood for brick to help build roads
+  #96   RED   BUILD_ROAD             (19, 46)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR1 SH3 WH0 OR3] chose 1 of 11
+        from: END_TURN, BUILD_ROAD (19, 46), BUILD_ROAD (11, 32), BUILD_ROAD (31, 32), BUILD_ROAD 
+(2, 3), BUILD_ROAD (2, 9), BUILD_ROAD (0, 5), BUILD_ROAD (33, 34), BUILD_ROAD (20, 22), BUILD_ROAD 
+(1, 6), BUILD_ROAD (19, 21)
+        ↳ Build a road to expand the network.
+
+── turn 43 ──
+  #107  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'BRICK')
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO4 BR0 SH0 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+        ↳ Trade 3 wood for 1 brick to help build roads.
+  #108  BLUE  BUILD_ROAD             (52, 53)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR1 SH0 WH0 OR1] chose 1 of 7
+        from: END_TURN, BUILD_ROAD (52, 53), BUILD_ROAD (26, 27), BUILD_ROAD (27, 28), BUILD_ROAD 
+(10, 29), BUILD_ROAD (7, 24), BUILD_ROAD (29, 30)
+        ↳ Build a road to connect my existing road network.
+
+── turn 51 ──
+  #125  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO2 BR0 SH3 WH0 OR6] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard excess wood to make space for future actions.
+  #126  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR0 SH3 WH0 OR6] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard excess wood to stay under 7 cards.
+  #127  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO0 BR0 SH3 WH0 OR6] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard sheep to avoid discarding resources.
+  #128  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO0 BR0 SH2 WH0 OR6] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard excess sheep to make space for potential development cards.
+  #129  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO0 BR0 SH1 WH0 OR6] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Need to discard sheep to comply with 7 rolled rule.
+  #130  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR0 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production.
+
+── turn 52 ──
+  #133  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO0 BR0 SH0 WH0 OR5] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to brick tile to prevent opponent's road building.
+
+── turn 58 ──
+  #146  RED   DISCARD_RESOURCE       ORE
+  #147  RED   DISCARD_RESOURCE       ORE
+  #148  RED   DISCARD_RESOURCE       ORE
+  #149  RED   DISCARD_RESOURCE       ORE
+  #150  RED   MOVE_ROBBER            ((1, -2, 1), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO0 BR0 SH0 WH0 OR4] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((1, -2, 1), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's wheat production.
+
+── turn 60 ──
+  #155  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR0 SH0 WH0 OR4] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's wheat production
+
+── turn 61 ──
+  #158  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production
+
+── turn 64 ──
+  #165  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR0 SH0 WH0 OR5] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to disrupt opponent's wheat production on 6 and 8.
+
+── turn 67 ──
+  #172  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR0 SH0 WH0 OR7] chose 1 of 2
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE ORE
+        ↳ Discard ore to comply with the 7 card limit.
+  #173  RED   DISCARD_RESOURCE       ORE
+  #174  RED   DISCARD_RESOURCE       ORE
+  #175  RED   DISCARD_RESOURCE       ORE
+  #176  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO2 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to prevent opponent's resource production and steal a card.
+
+── turn 69 ──
+  #181  BLUE  MOVE_ROBBER            ((-1, -1, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO2 BR0 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production.
+
+── turn 73 ──
+  #190  BLUE  BUILD_ROAD             (23, 52)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO3 BR1 SH0 WH0 OR2] chose 1 of 12
+        from: END_TURN, BUILD_ROAD (23, 52), BUILD_ROAD (26, 27), BUILD_ROAD (27, 28), BUILD_ROAD 
+(10, 29), BUILD_ROAD (51, 52), BUILD_ROAD (7, 24), BUILD_ROAD (29, 30), MARITIME_TRADE ('WOOD', 
+'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 
+'SHEEP')
+        ↳ Build road to extend longest road
+
+── turn 74 ──
+  #193  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO0 BR0 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's wheat production.
+
+── turn 76 ──
+  #198  RED   MOVE_ROBBER            ((1, -2, 1), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR0 SH0 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((1, -2, 1), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to interrupt opponent's wheat production on a 6 or 8 roll.
+
+── turn 77 ──
+  #201  BLUE  MOVE_ROBBER            ((0, 1, -1), C.RED)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR0 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to BR port to prevent opponent from trading brick.
+
+── turn 83 ──
+  #214  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'BRICK')
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO3 BR0 SH0 WH0 OR2] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+        ↳ Trade 3 wood for 1 brick to help build roads or settlements.
+
+── turn 87 ──
+  #223  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR1 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to prevent opponent from collecting ore
+  #224  BLUE  BUILD_ROAD             (26, 27)
+        ctx[mid] VP[RED=4 BLUE=2] hand[WO1 BR1 SH0 WH0 OR3] chose 1 of 13
+        from: END_TURN, BUILD_ROAD (26, 27), BUILD_ROAD (27, 28), BUILD_ROAD (22, 23), BUILD_ROAD 
+(6, 23), BUILD_ROAD (10, 29), BUILD_ROAD (51, 52), BUILD_ROAD (7, 24), BUILD_ROAD (29, 30), 
+MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 
+'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD') (+1 more)
+        ↳ Build road to expand network
+  #225  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ Trade 3 ore for 1 brick to help build roads.
+
+── turn 90 ──
+  #232  RED   BUILD_ROAD             (45, 46)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR1 SH0 WH0 OR3] chose 1 of 12
+        from: END_TURN, BUILD_ROAD (45, 46), BUILD_ROAD (11, 32), BUILD_ROAD (31, 32), BUILD_ROAD 
+(2, 3), BUILD_ROAD (2, 9), BUILD_ROAD (46, 48), BUILD_ROAD (0, 5), BUILD_ROAD (33, 34), BUILD_ROAD 
+(20, 22), BUILD_ROAD (1, 6), BUILD_ROAD (19, 21)
+        ↳ Build road to expand network
+
+── turn 97 ──
+  #247  BLUE  BUILD_ROAD             (8, 27)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR4 SH0 WH0 OR0] chose 1 of 13
+        from: END_TURN, BUILD_ROAD (8, 27), BUILD_ROAD (27, 28), BUILD_ROAD (22, 23), BUILD_ROAD (6,
+23), BUILD_ROAD (10, 29), BUILD_ROAD (51, 52), BUILD_ROAD (7, 24), BUILD_ROAD (29, 30), 
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE ('BRICK', 'BRICK', 
+'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE') (+1 more)
+        ↳ Build a road to expand and potentially block opponent's longest road.
+  #248  BLUE  BUILD_ROAD             (27, 28)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR3 SH0 WH0 OR0] chose 1 of 14
+        from: END_TURN, BUILD_ROAD (27, 28), BUILD_ROAD (22, 23), BUILD_ROAD (6, 23), BUILD_ROAD (8,
+9), BUILD_ROAD (10, 29), BUILD_ROAD (51, 52), BUILD_ROAD (7, 24), BUILD_ROAD (7, 8), BUILD_ROAD (29,
+30), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE ('BRICK', 'BRICK', 
+'BRICK', None, 'WHEAT') (+2 more)
+        ↳ Build a road to expand and potentially block opponent.
+
+── turn 101 ──
+  #257  BLUE  MOVE_ROBBER            ((-1, -1, 2), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR2 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production
+
+── turn 103 ──
+  #262  BLUE  MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR3 SH0 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ Trade 3 bricks for 1 sheep to gain a resource and move towards victory points.
+
+── turn 104 ──
+  #265  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR3 SH1 WH0 OR4] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard brick to reduce resource count.
+  #266  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR2 SH1 WH0 OR4] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard excess brick to make room for future actions.
+  #267  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR1 SH1 WH0 OR4] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard brick to avoid discarding more resources later.
+  #268  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH0 OR4] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard sheep to reduce hand size.
+  #269  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH0 OR4] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production.
+
+── turn 108 ──
+  #278  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR1 SH1 WH0 OR6] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard brick to reduce resource count and avoid forced discard.
+  #279  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH0 OR6] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard sheep to avoid discarding resources.
+  #280  RED   DISCARD_RESOURCE       ORE
+  #281  RED   DISCARD_RESOURCE       ORE
+  #282  RED   MOVE_ROBBER            ((1, -2, 1), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH0 OR4] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((1, -2, 1), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to wheat tile producing on 6 and 8 to steal from opponent
+
+── turn 116 ──
+  #299  RED   MARITIME_TRADE         ('WOOD', 'WOOD', None, None, 'BRICK')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH1 WH0 OR6] chose 1 of 9
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'ORE'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 
+'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE', 'ORE', 'ORE',
+'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Trade wood for brick to support future road building.
+
+── turn 118 ──
+  #304  RED   BUILD_ROAD             (20, 22)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR1 SH1 WH0 OR6] chose 1 of 20
+        from: END_TURN, BUILD_ROAD (20, 22), BUILD_ROAD (11, 32), BUILD_ROAD (31, 32), BUILD_ROAD 
+(2, 3), BUILD_ROAD (2, 9), BUILD_ROAD (46, 48), BUILD_ROAD (0, 5), BUILD_ROAD (45, 47), BUILD_ROAD 
+(33, 34), BUILD_ROAD (1, 6), BUILD_ROAD (19, 21) (+8 more)
+        ↳ Build a road to expand and potentially block the opponent's longest road
+
+── turn 120 ──
+  #309  RED   MARITIME_TRADE         ('WOOD', 'WOOD', None, None, 'BRICK')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH1 WH0 OR6] chose 1 of 9
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'ORE'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 
+'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE', 'ORE', 'ORE',
+'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Trade wood for brick to match opponent's port.
+  #310  RED   BUILD_ROAD             (11, 32)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR1 SH1 WH0 OR6] chose 1 of 17
+        from: END_TURN, BUILD_ROAD (11, 32), BUILD_ROAD (22, 49), BUILD_ROAD (31, 32), BUILD_ROAD 
+(2, 3), BUILD_ROAD (2, 9), BUILD_ROAD (46, 48), BUILD_ROAD (22, 23), BUILD_ROAD (0, 5), BUILD_ROAD 
+(45, 47), BUILD_ROAD (33, 34), BUILD_ROAD (1, 6) (+5 more)
+        ↳ Build a road to extend my network.
+
+── turn 122 ──
+  #315  RED   MARITIME_TRADE         ('WOOD', 'WOOD', None, None, 'BRICK')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH1 WH0 OR6] chose 1 of 9
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'ORE'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 
+'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE', 'ORE', 'ORE',
+'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Trade wood for brick to help build roads
+
+── turn 124 ──
+  #320  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR1 SH1 WH0 OR7] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE',
+'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Trade 4 ore for 1 brick to gain a resource and prepare for future development card 
+purchases.
+
+── turn 125 ──
+  #323  BLUE  MOVE_ROBBER            ((0, 0, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR2 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to RED's longest road tile to prevent resource production and steal a card.
+  #324  BLUE  MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR3 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ Trade BRICK for SHEEP to gain a resource and potentially build a settlement.
+
+── turn 133 ──
+  #341  BLUE  BUILD_ROAD             (22, 23)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR1 SH1 WH0 OR0] chose 1 of 9
+        from: END_TURN, BUILD_ROAD (22, 23), BUILD_ROAD (6, 23), BUILD_ROAD (8, 9), BUILD_ROAD (10, 
+29), BUILD_ROAD (51, 52), BUILD_ROAD (7, 24), BUILD_ROAD (7, 8), BUILD_ROAD (29, 30)
+        ↳ Extend road to connect to existing road and claim sheep port.
+
+── turn 135 ──
+  #346  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR3 SH3 WH0 OR4] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard excess brick to free up space for future actions.
+  #347  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR2 SH3 WH0 OR4] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard excess brick to make space for future actions.
+  #348  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR1 SH3 WH0 OR4] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard brick to free up space for potential future actions.
+  #349  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH3 WH0 OR4] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard excess sheep to make space for potential future actions.
+  #350  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH0 OR4] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard excess sheep to avoid forced discard later.
+  #351  BLUE  MOVE_ROBBER            ((0, 1, -1), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.RED), MOVE_ROBBER ((1, 0, -1),
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Steal ore from the opponent on the next tile.
+
+── turn 139 ──
+  #360  BLUE  BUILD_ROAD             (22, 49)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR1 SH1 WH0 OR1] chose 1 of 9
+        from: END_TURN, BUILD_ROAD (22, 49), BUILD_ROAD (6, 23), BUILD_ROAD (8, 9), BUILD_ROAD (10, 
+29), BUILD_ROAD (51, 52), BUILD_ROAD (7, 24), BUILD_ROAD (7, 8), BUILD_ROAD (29, 30)
+        ↳ Build a road to connect to the port for brick.
+
+── turn 144 ──
+  #371  RED   MARITIME_TRADE         ('WOOD', 'WOOD', None, None, 'BRICK')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH1 WH0 OR5] chose 1 of 9
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'ORE'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 
+'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE', 'ORE', 'ORE',
+'ORE', 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Trade wood for brick to support future road building.
+
+── turn 145 ──
+  #374  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR1 SH1 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's wheat production.
+  #375  BLUE  MARITIME_TRADE         ('SHEEP', 'SHEEP', None, None, 'ORE')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR1 SH2 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('SHEEP', 'SHEEP', None, None, 'ORE'), MARITIME_TRADE 
+('SHEEP', 'SHEEP', None, None, 'WHEAT'), MARITIME_TRADE ('SHEEP', 'SHEEP', None, None, 'WOOD'), 
+MARITIME_TRADE ('SHEEP', 'SHEEP', None, None, 'BRICK')
+        ↳ Trade sheep for ore to gain a resource and move the robber.
+
+── turn 146 ──
+  #378  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR1 SH0 WH0 OR5] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production.
+
+── turn 152 ──
+  #391  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR5 SH3 WH0 OR7] chose 1 of 9
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), 
+MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 
+'BRICK', 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Trade 4 ore for 1 wheat to reduce ore surplus and get a resource card.
+  #392  RED   BUY_DEVELOPMENT_CARD   
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR5 SH3 WH1 OR3] chose 1 of 6
+        from: END_TURN, BUY_DEVELOPMENT_CARD, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 
+'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'), MARITIME_TRADE ('BRICK', 
+'BRICK', 'BRICK', 'BRICK', 'SHEEP'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD')
+        ↳ Buy a development card to increase VP chances.
+  #393  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT')
+        ctx[mid] VP[RED=3 BLUE=4] hand[WO0 BR5 SH2 WH0 OR2] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'), MARITIME_TRADE
+('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 
+'SHEEP'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD')
+        ↳ Trade 4 brick for 1 wheat.
+  #394  RED   BUY_DEVELOPMENT_CARD   
+        ctx[mid] VP[RED=3 BLUE=4] hand[WO0 BR1 SH2 WH1 OR2] chose 1 of 2
+        from: END_TURN, BUY_DEVELOPMENT_CARD
+        ↳ No immediate build opportunities, need development card for strategy.
+
+── turn 158 ──
+  #407  RED   MARITIME_TRADE         ('WOOD', 'WOOD', None, None, 'BRICK')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO2 BR1 SH1 WH0 OR2] chose 1 of 16
+        from: END_TURN, BUILD_ROAD (10, 11), BUILD_ROAD (31, 32), BUILD_ROAD (2, 3), BUILD_ROAD (2, 
+9), BUILD_ROAD (11, 12), BUILD_ROAD (46, 48), BUILD_ROAD (0, 5), BUILD_ROAD (45, 47), BUILD_ROAD 
+(33, 34), BUILD_ROAD (1, 6), BUILD_ROAD (19, 21) (+4 more)
+        ↳ Trade 2 wood for 1 brick to build a road.
+
+── turn 161 ──
+  #414  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO2 BR0 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production.
+  #415  BLUE  BUILD_ROAD             (48, 49)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO2 BR1 SH0 WH0 OR2] chose 1 of 10
+        from: END_TURN, BUILD_ROAD (48, 49), BUILD_ROAD (6, 23), BUILD_ROAD (8, 9), BUILD_ROAD (10, 
+29), BUILD_ROAD (51, 52), BUILD_ROAD (49, 50), BUILD_ROAD (7, 24), BUILD_ROAD (7, 8), BUILD_ROAD 
+(29, 30)
+        ↳ Build road to expand network and potentially block opponent.
+
+── turn 164 ──
+  #422  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR2 SH1 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to BRICK-producing tile to prevent opponent's production.
+
+── turn 170 ──
+  #435  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR3 SH2 WH0 OR4] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard brick to reduce resource count.
+  #436  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR2 SH2 WH0 OR4] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard brick to reduce resource count.
+  #437  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR1 SH2 WH0 OR4] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard brick to reduce resource count.
+  #438  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH2 WH0 OR4] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard sheep to free up space for future actions.
+  #439  RED   MOVE_ROBBER            ((1, -2, 1), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH1 WH0 OR4] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((1, -2, 1), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to (1, -2, 1) to steal from opponent's wheat-producing tile.
+
+── turn 172 ──
+  #444  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR0 SH1 WH0 OR4] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to (2, -2, 0) to steal from opponent's wheat-producing tile.
+
+── turn 174 ──
+  #449  RED   BUILD_ROAD             (10, 11)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR1 SH2 WH0 OR5] chose 1 of 16
+        from: END_TURN, BUILD_ROAD (10, 11), BUILD_ROAD (31, 32), BUILD_ROAD (2, 3), BUILD_ROAD (2, 
+9), BUILD_ROAD (11, 12), BUILD_ROAD (46, 48), BUILD_ROAD (0, 5), BUILD_ROAD (45, 47), BUILD_ROAD 
+(33, 34), BUILD_ROAD (1, 6), BUILD_ROAD (19, 21) (+4 more)
+        ↳ Build road to expand network and potentially block opponent's longest road.
+
+── turn 181 ──
+  #464  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH2 WH0 OR6] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard sheep to avoid having more than 7 resources.
+  #465  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH1 WH0 OR6] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard sheep to reduce resource count below 7.
+  #466  RED   DISCARD_RESOURCE       ORE
+  #467  RED   DISCARD_RESOURCE       ORE
+  #468  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production.
+
+── turn 186 ──
+  #479  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH0 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to WHEAT tile to prevent opponent's production.
+
+── turn 190 ──
+  #488  RED   BUILD_ROAD             (9, 10)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO2 BR1 SH1 WH0 OR4] chose 1 of 21
+        from: END_TURN, BUILD_ROAD (9, 10), BUILD_ROAD (31, 32), BUILD_ROAD (2, 3), BUILD_ROAD (2, 
+9), BUILD_ROAD (11, 12), BUILD_ROAD (46, 48), BUILD_ROAD (10, 29), BUILD_ROAD (0, 5), BUILD_ROAD 
+(45, 47), BUILD_ROAD (33, 34), BUILD_ROAD (1, 6) (+9 more)
+        ↳ Build a road to expand network and potentially block opponent.
+
+── turn 193 ──
+  #495  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's wheat production.
+
+── turn 195 ──
+  #500  BLUE  BUILD_ROAD             (6, 23)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR1 SH0 WH0 OR1] chose 1 of 10
+        from: END_TURN, BUILD_ROAD (6, 23), BUILD_ROAD (46, 48), BUILD_ROAD (8, 9), BUILD_ROAD (10, 
+29), BUILD_ROAD (51, 52), BUILD_ROAD (49, 50), BUILD_ROAD (7, 24), BUILD_ROAD (7, 8), BUILD_ROAD 
+(29, 30)
+        ↳ Connect to existing road and expand network
+
+── turn 198 ──
+  #507  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR1 SH1 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to the wheat tile producing on 6 to steal from opponent.
+  #508  RED   BUILD_ROAD             (31, 32)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR1 SH1 WH0 OR4] chose 1 of 17
+        from: END_TURN, BUILD_ROAD (31, 32), BUILD_ROAD (2, 3), BUILD_ROAD (2, 9), BUILD_ROAD (11, 
+12), BUILD_ROAD (8, 9), BUILD_ROAD (10, 29), BUILD_ROAD (46, 48), BUILD_ROAD (0, 5), BUILD_ROAD (45,
+47), BUILD_ROAD (33, 34), BUILD_ROAD (1, 6) (+5 more)
+        ↳ Build a road to expand network and potentially block opponent.
+
+── turn 203 ──
+  #519  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'BRICK')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO4 BR0 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+        ↳ Trade 3 wood for 1 brick to get a resource (wood) closer to a port.
+  #520  BLUE  BUILD_ROAD             (6, 7)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR1 SH0 WH0 OR0] chose 1 of 11
+        from: END_TURN, BUILD_ROAD (6, 7), BUILD_ROAD (46, 48), BUILD_ROAD (8, 9), BUILD_ROAD (10, 
+29), BUILD_ROAD (51, 52), BUILD_ROAD (49, 50), BUILD_ROAD (1, 6), BUILD_ROAD (7, 24), BUILD_ROAD (7,
+8), BUILD_ROAD (29, 30)
+        ↳ Build a road to expand and potentially block opponent.
+
+── turn 209 ──
+  #533  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'BRICK')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO3 BR0 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+        ↳ Trade 3 wood for 1 brick to support road building.
+
+── turn 210 ──
+  #536  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR2 SH3 WH0 OR5] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard excess brick to make space for future actions.
+  #537  RED   DISCARD_RESOURCE       BRICK
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR1 SH3 WH0 OR5] chose 1 of 3
+        from: DISCARD_RESOURCE BRICK, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard brick to reduce resource count.
+  #538  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH3 WH0 OR5] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Need to reduce resource count to avoid discarding.
+  #539  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH2 WH0 OR5] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard sheep to reduce resource count.
+  #540  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH1 WH0 OR5] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard sheep to stay under 7 cards.
+  #541  RED   MOVE_ROBBER            ((1, -2, 1), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH0 WH0 OR5] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((1, -2, 1), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to steal from opponent's wheat tile.
+
+── turn 219 ──
+  #560  BLUE  MOVE_ROBBER            ((0, 1, -1), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR3 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to BR port to prevent opponent's production.
+
+── turn 224 ──
+  #571  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR1 SH1 WH0 OR5] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((1, 0, -1), 
+None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to cut off opponent's ore production.
+
+── turn 225 ──
+  #574  BLUE  MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR6 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ Trade BRICK for SHEEP to increase resource diversity.
+  #575  BLUE  MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR3 SH1 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ Trade BRICK for SHEEP to increase resource diversity and potentially build a settlement or
+road.
+  #576  BLUE  MARITIME_TRADE         ('SHEEP', 'SHEEP', None, None, 'ORE')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH2 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('SHEEP', 'SHEEP', None, None, 'ORE'), MARITIME_TRADE 
+('SHEEP', 'SHEEP', None, None, 'WHEAT'), MARITIME_TRADE ('SHEEP', 'SHEEP', None, None, 'WOOD'), 
+MARITIME_TRADE ('SHEEP', 'SHEEP', None, None, 'BRICK')
+        ↳ Trade sheep for ore to gain resources and move closer to building a city.
+
+── turn 226 ──
+  #579  RED   BUILD_ROAD             (2, 3)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO2 BR1 SH1 WH0 OR6] chose 1 of 21
+        from: END_TURN, BUILD_ROAD (2, 3), BUILD_ROAD (2, 9), BUILD_ROAD (11, 12), BUILD_ROAD (8, 
+9), BUILD_ROAD (10, 29), BUILD_ROAD (46, 48), BUILD_ROAD (0, 5), BUILD_ROAD (45, 47), BUILD_ROAD 
+(33, 34), BUILD_ROAD (1, 6), BUILD_ROAD (30, 31) (+9 more)
+        ↳ Build road to expand network and potentially block opponent.
+
+── turn 227 ──
+  #582  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR0 SH1 WH0 OR6] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard wood to avoid excess resources.
+  #583  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH1 WH0 OR6] chose 1 of 2
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE ORE
+        ↳ Discard sheep to avoid discarding resources.
+  #584  RED   DISCARD_RESOURCE       ORE
+  #585  RED   DISCARD_RESOURCE       ORE
+  #586  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR0 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to interrupt opponent's wheat production.
+
+── turn 231 ──
+  #595  BLUE  BUILD_ROAD             (46, 48)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR2 SH0 WH0 OR2] chose 1 of 10
+        from: END_TURN, BUILD_ROAD (46, 48), BUILD_ROAD (8, 9), BUILD_ROAD (10, 29), BUILD_ROAD (51,
+52), BUILD_ROAD (49, 50), BUILD_ROAD (1, 6), BUILD_ROAD (7, 24), BUILD_ROAD (7, 8), BUILD_ROAD (29, 
+30)
+        ↳ Build a road to connect to the brick port for future resource advantage.
+
+── turn 239 ──
+  #612  BLUE  MOVE_ROBBER            ((-1, -1, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR2 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to (1, -1, 2) to steal from opponent and prevent wheat production.
+  #613  BLUE  MARITIME_TRADE         ('ORE', 'ORE', 'ORE', None, 'BRICK')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR2 SH0 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'BRICK'), MARITIME_TRADE ('ORE', 
+'ORE', 'ORE', None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', None, 'WOOD'), MARITIME_TRADE 
+('ORE', 'ORE', 'ORE', None, 'SHEEP')
+        ↳ Trade 3 ore for 1 brick to help build roads.
+
+── turn 241 ──
+  #618  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR3 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's wheat production.
+
+── turn 243 ──
+  #623  BLUE  MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO2 BR4 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ Trade BRICK for SHEEP to gain resources and potentially build a settlement.
+
+── turn 245 ──
+  #628  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'BRICK')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO3 BR1 SH1 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+        ↳ Trade 3 wood for 1 brick to improve resource balance.
+
+── turn 251 ──
+  #641  BLUE  MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR3 SH1 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ Trade BRICK for SHEEP to improve resource diversity and potentially build a settlement or 
+city.
+  #642  BLUE  MARITIME_TRADE         ('SHEEP', 'SHEEP', None, None, 'ORE')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR0 SH2 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('SHEEP', 'SHEEP', None, None, 'ORE'), MARITIME_TRADE 
+('SHEEP', 'SHEEP', None, None, 'WHEAT'), MARITIME_TRADE ('SHEEP', 'SHEEP', None, None, 'WOOD'), 
+MARITIME_TRADE ('SHEEP', 'SHEEP', None, None, 'BRICK')
+        ↳ Trade sheep for ore to get closer to building a settlement or city.
+
+── turn 252 ──
+  #645  RED   BUILD_ROAD             (45, 47)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO2 BR3 SH0 WH0 OR2] chose 1 of 17
+        from: END_TURN, BUILD_ROAD (3, 4), BUILD_ROAD (30, 31), BUILD_ROAD (11, 12), BUILD_ROAD (2, 
+9), BUILD_ROAD (8, 9), BUILD_ROAD (10, 29), BUILD_ROAD (0, 5), BUILD_ROAD (33, 34), BUILD_ROAD (3, 
+12), BUILD_ROAD (1, 6), BUILD_ROAD (45, 47) (+5 more)
+        ↳ Build a road to expand the longest road.
+  #646  RED   BUILD_ROAD             (3, 4)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR2 SH0 WH0 OR2] chose 1 of 13
+        from: END_TURN, BUILD_ROAD (3, 4), BUILD_ROAD (11, 12), BUILD_ROAD (2, 9), BUILD_ROAD (8, 
+9), BUILD_ROAD (10, 29), BUILD_ROAD (0, 5), BUILD_ROAD (33, 34), BUILD_ROAD (3, 12), BUILD_ROAD (1, 
+6), BUILD_ROAD (30, 31), BUILD_ROAD (19, 21) (+1 more)
+        ↳ Build a road to expand network and potentially block opponent.
+
+── turn 254 ──
+  #651  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR2 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to disrupt opponent's resource production.
+
+── turn 255 ──
+  #654  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR0 SH0 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to interrupt opponent's ore production.
+
+── turn 258 ──
+  #661  RED   MARITIME_TRADE         ('WOOD', 'WOOD', None, None, 'BRICK')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO2 BR2 SH0 WH0 OR2] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'WHEAT'), 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP')
+        ↳ Trade wood for brick to help build roads
+
+── turn 259 ──
+  #664  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'BRICK')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO3 BR0 SH0 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+        ↳ Trade 3 wood for 1 brick to help build roads
+
+── turn 260 ──
+  #667  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR4 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to BRICK tile to prevent opponent's production.
+
+── turn 261 ──
+  #670  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR1 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production.
+
+── turn 262 ──
+  #673  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR4 SH0 WH0 OR2] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's ore production.
+
+── turn 266 ──
+  #682  RED   MARITIME_TRADE         ('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR5 SH1 WH0 OR4] chose 1 of 9
+        from: END_TURN, MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), 
+MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 
+'BRICK', 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', 'BRICK', 'SHEEP'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'SHEEP')
+        ↳ Trade 4 ore for 1 wheat to increase resource diversity.
+
+── turn 268 ──
+  #687  RED   BUY_DEVELOPMENT_CARD   
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR5 SH1 WH1 OR1] chose 1 of 6
+        from: END_TURN, BUY_DEVELOPMENT_CARD, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 
+'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'), MARITIME_TRADE ('BRICK', 
+'BRICK', 'BRICK', 'BRICK', 'SHEEP'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD')
+        ↳ Need development cards for strategy and potential victory points.
+
+── turn 270 ──
+  #692  RED   MOVE_ROBBER            ((1, -2, 1), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR5 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((1, -2, 1), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to the wheat tile to prevent opponent's production.
+  #693  RED   PLAY_KNIGHT_CARD       
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR6 SH0 WH0 OR0] chose 1 of 6
+        from: PLAY_KNIGHT_CARD, END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 
+'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'), MARITIME_TRADE ('BRICK', 
+'BRICK', 'BRICK', 'BRICK', 'SHEEP'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD')
+        ↳ Play knight to potentially steal resources or move the robber.
+  #694  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO0 BR6 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to disrupt opponent's high-pip resource production.
+
+── turn 275 ──
+  #705  BLUE  MOVE_ROBBER            ((0, -2, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to block opponent's wheat production.
+
+── turn 277 ──
+  #710  BLUE  MOVE_ROBBER            ((-1, -1, 2), C.RED)
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO2 BR1 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to (2, -1, 2) to steal from opponent's wheat tile.
+
+── turn 280 ──
+  #717  RED   MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT')
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR5 SH1 WH0 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WHEAT'), MARITIME_TRADE
+('BRICK', 'BRICK', 'BRICK', 'BRICK', 'ORE'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 
+'SHEEP'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', 'BRICK', 'WOOD')
+        ↳ Trade 4 brick for 1 wheat to increase resource diversity.
+  #718  RED   BUILD_SETTLEMENT       2
+        ctx[mid] VP[RED=4 BLUE=4] hand[WO1 BR1 SH1 WH1 OR1] chose 1 of 12
+        from: END_TURN, BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, BUILD_SETTLEMENT 4, BUILD_SETTLEMENT
+9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 19, BUILD_SETTLEMENT 22, BUILD_SETTLEMENT 45, 
+BUILD_SETTLEMENT 46, BUILD_SETTLEMENT 47, BUY_DEVELOPMENT_CARD
+        ↳ Build a settlement on 2 for wood and sheep production.
+
+── turn 285 ──
+  #729  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'BRICK')
+        ctx[mid] VP[RED=5 BLUE=4] hand[WO3 BR2 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+        ↳ Trade wood for brick to help build roads
+
+── turn 287 ──
+  #734  BLUE  MARITIME_TRADE         ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP')
+        ctx[mid] VP[RED=5 BLUE=4] hand[WO0 BR3 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'SHEEP'), MARITIME_TRADE 
+('BRICK', 'BRICK', 'BRICK', None, 'WHEAT'), MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'ORE'),
+MARITIME_TRADE ('BRICK', 'BRICK', 'BRICK', None, 'WOOD')
+        ↳ Trade 3 bricks for 1 sheep to increase resource diversity.
+
+── turn 290 ──
+  #741  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=5 BLUE=4] hand[WO2 BR1 SH3 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((1, -2, 1), 
+C.BLUE), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to -2, -2, 0 to steal from opponent's wheat-producing tile.
+  #742  RED   MARITIME_TRADE         ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT')
+        ctx[mid] VP[RED=5 BLUE=4] hand[WO2 BR1 SH4 WH0 OR1] chose 1 of 9
+        from: END_TURN, MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'ORE'), 
+MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'BRICK'), MARITIME_TRADE ('SHEEP', 'SHEEP', 
+'SHEEP', 'SHEEP', 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'WHEAT'), MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD')
+        ↳ Trade 4 sheep for 1 wheat to increase resource diversity.
+
+── turn 292 ──
+  #747  RED   BUILD_SETTLEMENT       22
+        ctx[mid] VP[RED=5 BLUE=4] hand[WO2 BR1 SH1 WH1 OR1] chose 1 of 13
+        from: END_TURN, BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 19, 
+BUILD_SETTLEMENT 22, BUILD_SETTLEMENT 45, BUILD_SETTLEMENT 46, BUILD_SETTLEMENT 47, 
+BUY_DEVELOPMENT_CARD, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE ('WOOD', 
+'WOOD', None, None, 'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'WHEAT') (+1 more)
+        ↳ Build a settlement on 22 to gain access to ore and wheat production.
+
+── turn 293 ──
+  #750  BLUE  MOVE_ROBBER            ((1, -2, 1), None)
+        ctx[mid] VP[RED=6 BLUE=4] hand[WO1 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.RED), MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 
+1), C.RED), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1),
+C.RED), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+C.RED), MOVE_ROBBER ((-1, -1, 2), C.RED), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to prevent opponent's sheep production
+
+── turn 298 ──
+  #761  RED   BUILD_CITY             0
+        ctx[mid] VP[RED=6 BLUE=4] hand[WO1 BR0 SH2 WH2 OR3] chose 1 of 6
+        from: END_TURN, BUILD_CITY 0, BUILD_CITY 32, BUILD_CITY 2, BUILD_CITY 22, 
+BUY_DEVELOPMENT_CARD
+        ↳ Build a city to increase resource collection and VP.
+
+── turn 300 ──
+  #766  RED   MOVE_ROBBER            ((2, -2, 0), C.BLUE)
+        ctx[mid] VP[RED=7 BLUE=4] hand[WO1 BR0 SH2 WH0 OR3] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((2, -2, 0), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to BRICK tile to prevent opponent's longest road growth
+
+── turn 308 ──
+  #783  RED   BUILD_CITY             32
+        ctx[mid] VP[RED=7 BLUE=4] hand[WO2 BR0 SH3 WH2 OR6] chose 1 of 13
+        from: END_TURN, BUILD_CITY 32, BUILD_CITY 2, BUILD_CITY 22, BUY_DEVELOPMENT_CARD, 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 
+'ORE'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WOOD'), MARITIME_TRADE ('WOOD', 'WOOD', None, 
+None, 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'WHEAT'), MARITIME_TRADE ('ORE', 'ORE', 
+'ORE', 'ORE', 'BRICK'), MARITIME_TRADE ('ORE', 'ORE', 'ORE', 'ORE', 'WHEAT') (+1 more)
+        ↳ Build a city to increase resource production and VP.
+  #784  RED   MARITIME_TRADE         ('WOOD', 'WOOD', None, None, 'BRICK')
+        ctx[late] VP[RED=8 BLUE=4] hand[WO2 BR0 SH3 WH0 OR3] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', None, None, 'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'WHEAT'), 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP')
+        ↳ Trade wood for brick to support future road building.
+
+── turn 310 ──
+  #789  RED   BUY_DEVELOPMENT_CARD   
+        ctx[late] VP[RED=8 BLUE=4] hand[WO0 BR1 SH4 WH1 OR3] chose 1 of 6
+        from: END_TURN, BUY_DEVELOPMENT_CARD, MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 
+'BRICK'), MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WHEAT'), MARITIME_TRADE ('SHEEP', 
+'SHEEP', 'SHEEP', 'SHEEP', 'ORE'), MARITIME_TRADE ('SHEEP', 'SHEEP', 'SHEEP', 'SHEEP', 'WOOD')
+        ↳ Buy a development card to potentially gain an advantage.
+
+── turn 312 ──
+  #794  RED   BUY_DEVELOPMENT_CARD   
+        ctx[late] VP[RED=8 BLUE=4] hand[WO0 BR1 SH3 WH1 OR2] chose 1 of 3
+        from: PLAY_KNIGHT_CARD, END_TURN, BUY_DEVELOPMENT_CARD
+        ↳ Need resources to build and gain VP.
+  #795  RED   PLAY_KNIGHT_CARD       
+        ctx[late] VP[RED=8 BLUE=4] hand[WO0 BR1 SH2 WH0 OR1] chose 1 of 2
+        from: PLAY_KNIGHT_CARD, END_TURN
+        ↳ Defend against opponent's longest road
+  #796  RED   MOVE_ROBBER            ((1, -2, 1), C.BLUE)
+        ctx[late] VP[RED=8 BLUE=4] hand[WO0 BR1 SH2 WH0 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), None), MOVE_ROBBER ((1, -2, 1), C.BLUE), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+        ↳ Move robber to steal from opponent's wheat-producing tile.
+
+── turn 314 ──
+  #801  RED   PLAY_KNIGHT_CARD       
+        ctx[late] VP[RED=8 BLUE=4] hand[WO6 BR1 SH2 WH0 OR1] chose 1 of 6
+        from: PLAY_KNIGHT_CARD, END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'BRICK'), 
+MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 
+'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', None, None, 'SHEEP')
+        ↳ Play knight to potentially steal resources or disrupt opponent's longest road
