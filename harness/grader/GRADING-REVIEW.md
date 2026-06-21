@@ -135,6 +135,15 @@ report the per-`(criterion, tag)` fail-rate delta (e.g. "robber-timing-when-behi
 ~`per_game × #games × 2` calls; wall-clock is `calls / concurrency`. The 20-board
 (40-game) run at `--per-game 15` is ~1,200 calls, parallelized to the rate limit.
 
+## Fixed issues
+
+- **Decision-context off-by-one (fixed):** the grader prompt was paired with the
+  *adjacent* decision's reasoning/hand/legal set — the transcript's `ply` field is
+  1-based while the oracle indexes decisions 0-based by `action_records` position.
+  Symptom: e.g. robber reasoning shown on a trade. Now keyed by list index (1:1
+  with `action_records`). **Grading runs from before this fix used misaligned
+  context and must be re-graded.**
+
 ## Known limitations (state them before someone else does)
 
 - **No human gold yet** — the oracle + dual-grader agreement are the trust anchors;
