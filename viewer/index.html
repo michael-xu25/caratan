@@ -267,15 +267,21 @@ $("gradetoggle").onclick = () => {
   if (gradeShown && DATA) renderStepGrade(DATA.steps[idx]);
 };
 
-// ---- startup: ?data wins; else first run in the manifest ----
+// ---- startup: ?data wins; then ?run (a matchup/run dir); else first run ----
 (async () => {
   const manifest = await initPicker();
   const q = params.get("data");
+  const runQ = params.get("run");   // matchup deep-link from the dashboard
   if (q){
     fetch(q).then(r=>r.json()).then(d=>{ load(d); SRC = q; loadGrading(q);
       const sel = $("runsel"); if (sel) sel.value = q;
       const s = params.get("step"); if (s!=null) go(+s);
     }).catch(()=>{});
+  } else if (runQ && manifest){
+    // jump to the named run (match its dir path or name) and open its first game
+    const run = manifest.runs.find(r => r.path === runQ || r.name === runQ
+      || r.path.endsWith("/" + runQ)) || manifest.runs[0];
+    loadUrl(run.games[0].view);
   } else if (manifest){
     loadUrl(manifest.runs[0].games[0].view);
   }

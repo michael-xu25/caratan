@@ -78,7 +78,7 @@ fetch("data/matchups.json", {cache:"no-store"}).then(r=>r.json()).then(d=>{
       <table><tr><th>games</th><th>trained win-rate</th><th>avg VP (trained/base)</th><th>cap-stalls</th></tr>
         <tr><td>${n}</td><td><b>${pct(wr)}</b> (decided)</td>
         <td>${m.avg_vp_trained}/${m.avg_vp_base}</td><td>${m.cap_stalls}</td></tr></table>
-      <div class="note"><a href="index.html">browse ${n} games in the replay viewer →</a></div>
+      <div class="note"><a href="index.html?run=${encodeURIComponent(m.run_dir||m.matchup)}">browse ${n} games in the replay viewer →</a></div>
     </div>`;
   }).join("");
 }).catch(()=> $("matchups").innerHTML = `<div class="empty">No matchup data yet.</div>`);
