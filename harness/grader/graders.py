@@ -6,7 +6,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from goldilocks_eval.agents.factory import make_backend
-from harness.grader.prompts import SYSTEM, build_game_prompt, parse_game_verdicts
+from harness.grader.prompts import (
+    SYSTEM, build_game_prompt, parse_game_verdicts,
+    SYSTEM_DECISION, build_decision_prompt, parse_one_verdict)
 from harness.grader.taxonomy import CRITERIA_BY_TYPE
 
 # Whole-game verdicts list is large; raise the cap so it isn't truncated.
@@ -57,6 +59,18 @@ def grade_game(backend, transcript: dict, selected, decisions_by_ply: dict) -> d
         summary = (v.get("summary", "") if v else "")
         out[ply] = Verdict(backend.name, crit, str(summary)[:200], ok=v is not None)
     return out
+
+
+def grade_decision(backend, transcript: dict, regret, decision: dict | None) -> Verdict:
+    """Hybrid path: score ONE decision in its own call (full attention) with compact
+    game context. Designed to fan out across all decisions in a global parallel pool."""
+    try:
+        raw = backend.complete(SYSTEM_DECISION, build_decision_prompt(transcript, regret, decision))
+        obj = parse_one_verdict(raw)
+    except Exception:
+        obj = None
+    crit = _full_criteria(regret.decision_type, obj.get("criteria") if obj else None)
+    return Verdict(backend.name, crit, str(obj.get("summary", "") if obj else "")[:200], ok=obj is not None)
 
 
 def make_grader(spec: str):

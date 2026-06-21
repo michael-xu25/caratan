@@ -130,3 +130,99 @@ def parse_game_verdicts(text: str) -> dict | None:
             except (TypeError, ValueError):
                 continue
     return out or None
+
+
+# ============================================================================
+# Hybrid path: ONE call per DECISION (full attention, less compression) that
+# still carries compact whole-game CONTEXT, so all decisions can fan out in a
+# global parallel pool (boards × decisions) for minimum wall-clock.
+# ============================================================================
+
+SYSTEM_DECISION = (
+    "You are a Settlers of Catan decision grader. You score ONE decision from a 1v1 "
+    "game. You get a compact summary of the whole game (for context) and the recent "
+    "moves around the decision, then score the player's choice on each criterion for "
+    "this decision's type.\n\n"
+    "Criterion definitions:\n"
+    f"placement:\n{criteria_block('placement')}\n"
+    f"trade:\n{criteria_block('trade')}\n"
+    f"build_spend:\n{criteria_block('build_spend')}\n\n"
+    "Rules:\n"
+    "1. Use the game context (tempo, who won, the race) but score the move as of when "
+    "it was made.\n"
+    "2. Score EVERY criterion for this decision_type, using ONLY those IDs. Scale: "
+    "2 = good, 1 = suboptimal but defensible, 0 = clear mistake. failed=true ONLY on 0. "
+    "Give a real one-sentence reason for each (no 'n/a' unless truly irrelevant).\n"
+    "3. Judge against the legal options actually available; the oracle's best legal move "
+    "+ regret are evidence.\n"
+    "4. Output ONLY this JSON, nothing else:\n"
+    '{"criteria": [{"name": "<id>", "score": 0|1|2, "failed": true|false, '
+    '"reason": "<= 1 sentence"}], "summary": "<= 1 sentence"}'
+)
+
+
+def game_context(transcript: dict) -> str:
+    """Compact whole-game summary: outcome + a few VP snapshots over time."""
+    decs = transcript.get("decisions", [])
+    snaps = []
+    if decs:
+        idxs = [int(k * (len(decs) - 1) / 4) for k in range(5)]   # 5 points across the game
+        for i in idxs:
+            d = decs[i]
+            vp = (d.get("state", {}) or {}).get("vp", {})
+            snaps.append(f"t{d.get('turn')}:" + "/".join(f"{c[:1]}{v}" for c, v in vp.items()))
+    fvp = transcript.get("final_victory_points", {})
+    return (f"Game {transcript.get('label')} | final VP {fvp} | winner "
+            f"{transcript.get('winning_color')}\nVP trajectory: " + "  ".join(snaps))
+
+
+def local_window(transcript: dict, ply: int, before: int = 6, after: int = 3) -> str:
+    """The moves immediately around this decision (recent-context window)."""
+    decs = transcript.get("decisions", [])
+    pos = next((k for k, d in enumerate(decs) if d.get("ply", d.get("i")) == ply), None)
+    if pos is None:
+        return ""
+    lines = []
+    for d in decs[max(0, pos - before): pos + after + 1]:
+        mark = " <-- THIS" if d.get("ply", d.get("i")) == ply else ""
+        val = d.get("value")
+        lines.append(f"  t{d.get('turn')} {str(d.get('color'))[:1]} {d.get('action_type')}"
+                     f"{(' ' + str(val)) if val is not None else ''}{mark}")
+    return "\n".join(lines)
+
+
+def build_decision_prompt(transcript: dict, regret, decision: dict | None) -> str:
+    d = decision or {}
+    st = d.get("state", {}) or {}
+    legal = d.get("legal_actions") or []
+    legal_str = ", ".join(map(str, legal[:30])) + (
+        f", …(+{len(legal) - 30})" if len(legal) > 30 else "")
+    return (
+        f"GAME CONTEXT:\n{game_context(transcript)}\n\n"
+        f"RECENT MOVES:\n{local_window(transcript, regret.ply)}\n\n"
+        f"DECISION TO SCORE  (type={regret.decision_type}; "
+        f"score: {', '.join(CRITERIA_BY_TYPE[regret.decision_type])})\n"
+        f"- turn {regret.turn}, player {regret.color} | state tags: {', '.join(regret.state_tags)}\n"
+        f"- VP {st.get('vp', {})} | hand {st.get('hand', {})}\n"
+        f"- chose: {_fmt_action(regret.action)} | legal ({regret.num_legal}): {legal_str}\n"
+        f"- reasoning: \"{d.get('reasoning') or '(none)'}\"\n"
+        f"- oracle: regret {regret.regret_vp:.2f} VP-eq, best legal = {_fmt_action(regret.oracle_best)}\n\n"
+        f"Return the JSON verdict scoring every criterion for this decision."
+    )
+
+
+def parse_one_verdict(text: str) -> dict | None:
+    """Parse a single-decision {criteria:[...], summary} object."""
+    if not text:
+        return None
+    s = text.strip()
+    if s.startswith("```"):
+        s = s.strip("`"); s = s[s.find("{"):] if "{" in s else s
+    a, b = s.find("{"), s.rfind("}")
+    if a == -1 or b <= a:
+        return None
+    try:
+        obj = json.loads(s[a:b + 1])
+    except json.JSONDecodeError:
+        return None
+    return obj if isinstance(obj, dict) and "criteria" in obj else None

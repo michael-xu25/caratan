@@ -46,7 +46,7 @@ def _dry_run(paths, per_game):
             tags.update(r.state_tags)
     print(f"transcripts (games): {len(paths)}")
     print(f"decisions graded: {total}  (~{per_game}/game)")
-    print(f"LLM CALLS: {len(paths)} games × 2 graders = {len(paths) * 2}")
+    print(f"LLM CALLS (hybrid, per-decision): {total} decisions × 2 graders = {total * 2}")
     print(f"by decision_type: {dict(dtypes)}")
     print(f"top state_tags: {dict(tags.most_common(10))}")
     return 0
@@ -58,8 +58,10 @@ def main() -> int:
     ap.add_argument("target", help="transcript .json or a run directory")
     ap.add_argument("--grader-a", default="claude:claude-opus-4-8")
     ap.add_argument("--grader-b", default="openai:gpt-4o")
-    ap.add_argument("--per-game", type=int, default=15, help="decisions sampled & scored per game (one call each)")
-    ap.add_argument("--max-workers", type=int, default=8, help="games graded concurrently")
+    ap.add_argument("--per-game", type=int, default=15, help="decisions sampled & scored per game")
+    ap.add_argument("--concurrency", type=int, default=16, help="global parallel grader calls (tune to API rate limits)")
+    ap.add_argument("--merge", choices=["consensus", "union"], default="union",
+                    help="weakness table: consensus (both graders, precision) or union (either, recall/discovery)")
     ap.add_argument("--min-samples", type=int, default=15, help="aggregator floor per (criterion,tag)")
     ap.add_argument("--limit", type=int, default=0, help="cap transcripts (0 = all)")
     ap.add_argument("--out", default=None, help="output dir (default <target>/grading)")
@@ -81,29 +83,20 @@ def main() -> int:
     if (args.grader_a.startswith("openai") or args.grader_b.startswith("openai")) and not os.environ.get("OPENAI_API_KEY"):
         print("ERROR: OPENAI_API_KEY not set", file=sys.stderr); return 2
 
-    from concurrent.futures import ThreadPoolExecutor
     from harness.grader.graders import make_grader
+    from harness.grader.pipeline import grade_run
     ga, gb = make_grader(args.grader_a), make_grader(args.grader_b)
-    print(f"graders: {ga.name} + {gb.name}  ({len(paths)} games × 2 = {len(paths) * 2} calls)\n")
+    transcripts = [json.loads(p.read_text()) for p in paths]
+    print(f"graders: {ga.name} + {gb.name}  (hybrid: per-decision, concurrency {args.concurrency})\n")
 
-    def _grade(p):
-        try:
-            objs = grade_transcript(json.loads(p.read_text()), ga, gb, per_game=args.per_game)
-        except Exception as e:                      # never let one game kill the batch
-            print(f"  {p.name}: SKIPPED ({type(e).__name__}: {e})")
-            return []
-        print(f"  {p.name}: {len(objs)} decisions graded")
-        return objs
-
-    objects = []
-    with ThreadPoolExecutor(max_workers=args.max_workers) as ex:
-        for objs in ex.map(_grade, paths):
-            objects.extend(objs)
+    objects = grade_run(transcripts, ga, gb, per_game=args.per_game,
+                        concurrency=args.concurrency,
+                        progress=lambda d, n: print(f"  {d}/{n} grader calls done"))
 
     out_dir = Path(args.out) if args.out else (target if target.is_dir() else target.parent) / "grading"
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "findings.jsonl").write_text("\n".join(json.dumps(o) for o in objects))
-    rep = report(objects, min_samples=args.min_samples)
+    rep = report(objects, min_samples=args.min_samples, merge=args.merge)
     (out_dir / "report.json").write_text(json.dumps(rep, indent=2))
 
     print(f"\n=== agreement === {rep['agreement']}")
