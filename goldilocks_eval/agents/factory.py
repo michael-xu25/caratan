@@ -47,6 +47,10 @@ def make_player(spec: str, color: Color) -> Player:
         from goldilocks_eval.agents.fireworks_backend import FireworksBackend, DEFAULT_MODEL
         return LLMPlayer(color, FireworksBackend(model=arg or DEFAULT_MODEL))
 
+    if head == "openai":
+        from goldilocks_eval.agents.openai_backend import OpenAIBackend, DEFAULT_MODEL
+        return LLMPlayer(color, OpenAIBackend(model=arg or DEFAULT_MODEL))
+
     if head == "gemini":
         raise NotImplementedError(
             "Gemini backend is a stub. Implement LLMBackend.complete() in "
@@ -76,6 +80,9 @@ def make_backend(spec: str):
     if head == "fireworks":
         from goldilocks_eval.agents.fireworks_backend import FireworksBackend, DEFAULT_MODEL
         return FireworksBackend(model=arg or DEFAULT_MODEL)
+    if head == "openai":
+        from goldilocks_eval.agents.openai_backend import OpenAIBackend, DEFAULT_MODEL
+        return OpenAIBackend(model=arg or DEFAULT_MODEL)
     if head == "gemini":
         raise NotImplementedError("Gemini backend is a stub — see make_player().")
     raise ValueError(
