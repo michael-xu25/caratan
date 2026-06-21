@@ -49,29 +49,44 @@ reward-kit run --reward training.placement_reward:placement_reward_fn \
 adapt the CLI to the installed version.)
 
 ## 3. GRPO run (Fireworks RFT — GRPO on their GPUs, our reward fn grades rollouts)
-- **Base model:** the public `accounts/fireworks/models/qwen2p5-7b-instruct`
-  (same family as the deployed `$FIREWORKS_MODEL`).
-- **Evaluator/reward:** `training.placement_reward:placement_reward_fn`.
-- **Dataset:** `data/placement_opening_train.trl.jsonl` (200 rows; the four
-  placement positions are mixed in).
-- **Suggested GRPO hyperparameters (first run):** group size G = 8–16,
-  temperature 0.8–1.0 (the group needs variance), lr ≈ 1e-6, 2–4 epochs over the
-  200 rows. Start small; scale boards (`--n`) once the loop trains.
+- **Base model:** `accounts/fireworks/models/qwen3-4b-instruct-2507`.
+  ⚠️ NOT Qwen2.5 — **no Qwen2.5 model is RL-trainable on Fireworks** (all are
+  `rlLoraTunable=False`; the RFT API 400s). Only Qwen3 is. qwen3-4b-instruct-2507
+  is instruct-tuned, non-thinking (clean fit for answer-only), free RFT (<16B).
+- **Evaluator/reward:** discovered from `training/rft/test_placement_rft.py`
+  (`@evaluation_test`). MUST live in an isolated dir (`training/rft/`) with its own
+  `requirements.txt: eval-protocol` and NOTHING that imports catanatron — Fireworks
+  pytest-collects the whole upload, so a catanatron import anywhere fails the
+  evaluator build with an opaque `INTERNAL` error.
+- **Dataset:** `data/placement_opening_train.trl.jsonl` (200 rows; copied into
+  `training/rft/data/` so the isolated bundle is self-contained).
+- **GRPO hyperparameters (first run):** group size (`response-candidates-count`) 8,
+  temperature 0.9, lr 1e-6, 3 epochs over 200 rows, max-output-tokens 16
+  (answer-only needs few tokens). Scale boards (`--n`) once the loop trains.
 
-Launch (`eval-protocol`, recommended — uploads evaluator + dataset, then starts):
+Launch (`eval-protocol` — uploads evaluator + dataset, builds, then creates job):
 ```bash
-set -a; source .env; set +a            # FIREWORKS_API_KEY
+set -a; source ../../.env; set +a        # FIREWORKS_API_KEY (run from training/rft/)
+cd training/rft
 eval-protocol create rft \
-    --base-model accounts/fireworks/models/qwen2p5-7b-instruct \
-    --output-model placement-opening-grpo \
+    --training-config-base-model accounts/fireworks/models/qwen3-4b-instruct-2507 \
+    --training-config-output-model placement-opening-grpo \
+    --training-config-epochs 3 --training-config-learning-rate 1e-6 \
+    --inference-parameters-temperature 0.9 \
+    --inference-parameters-response-candidates-count 8 \
+    --inference-parameters-max-output-tokens 16 \
     --dataset data/placement_opening_train.trl.jsonl \
-    --evaluator training.placement_reward:placement_reward_fn \
-    --epochs 3
-# (equivalent: firectl rftj create --base-model ... --dataset ... --evaluator ... --output-model ...)
+    --force --skip-validation --yes
 ```
-**W&B is optional.** Default monitoring is the Fireworks RFT dashboard (the job
-link is printed on create). For W&B charts, add `--wandb-project <p> --wandb-entity
-<e>` and set `WANDB_API_KEY` first. **Never commit any API key.**
+`--skip-validation` skips the local litellm rollout test (needs Fireworks litellm
+creds; redundant — the evaluator logic is unit-tested in `test_placement_rft.py`
+and cross-checked vs the canonical reward over 10k pairs). `--force` overwrites the
+prior evaluator build.
+
+**W&B is optional** and we're not using it — monitor via the Fireworks RFT
+dashboard (job link printed on create). For W&B, add `--wandb-config-enabled
+--wandb-config-project <p> --wandb-config-entity <e>` and set `WANDB_API_KEY`.
+**Never commit any API key.**
 
 When training finishes, deploy the resulting LoRA as an on-demand deployment and
 note its deployment id for the AFTER eval below.
