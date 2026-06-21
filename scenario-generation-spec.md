@@ -52,35 +52,28 @@ Regenerable from seeds. Versioned in repo.
 
 ---
 
-## Schema (exact — matches build-spec-decisions.md)
-```json
-{
-  "scenario_id": "string",
-  "game_id": "string",              // = board seed; grouping key for the split
-  "board_seed": 12345,
-  "pick_index": 2,                  // placement-specific metadata (1–4)
-  "env": "placement",
-  "serialized_state": { },          // GameEncoder JSON of the frozen state
-  "legal_actions": ["node_3", "node_27", "..."],
-  "gold_action": "node_27",         // champion label (null until labeled)
-  "acceptable_actions": ["node_19"],
-  "base_solve_rate": 0.25,          // filled by calibration
-  "split": "train"                  // "train" | "heldout"
-}
-```
+## Schema — FROZEN in code (do not re-spec here)
+The scenario record is now the single source of truth in **`goldilocks_eval/schema.py`**
+(`Scenario`, `new_unlabeled`, `apply_label`, `validate`, `json_schema`). Build the
+generator against that, not against a copy of the JSON — a copy will drift.
+
+- Generator: emit via `schema.new_unlabeled(...)` (labels left empty).
+- Field list, both-direction contract, and a JSON Schema export: see
+  `data/examples/README.md` + `data/examples/scenario.schema.json`.
+- Example records to build against: `data/examples/placement_examples.jsonl`.
 
 ---
 
-## Shared prompt/answer contract (CRITICAL — one source of truth)
-Generation, calibration, and Cara's eval must all use the **same** prompt builder and answer parser, or before/after numbers compare apples to oranges. Define once, import everywhere.
+## Shared prompt/answer contract — EXISTS (`goldilocks_eval/prompting.py`)
+Generation, calibration, and the eval all import the **same** functions, so
+before/after numbers can't compare apples to oranges. Don't re-implement them.
 
-- **Prompt:** text board state (resources, pip values, ports, existing settlements) + the `legal_actions` list + "reason, then answer."
-- **Required output format:**
-  ```
-  <reasoning> ... </reasoning>
-  <answer>node_27</answer>
-  ```
-- **Parser:** extract `<answer>(.+?)</answer>`, strip, compare to `gold_action` / `acceptable_actions`.
-- **Reward (tiered):** `1.0` gold · `0.5` acceptable · `0.0` else. Add a small format penalty if `<answer>` is missing/unparseable.
+- `prompting.build_prompt(scenario)` — board render (resources, pips, ports,
+  existing settlements) + `legal_actions` + "reason, then answer."
+- Output format `‹reasoning›…‹/reasoning›\n‹answer›node_27‹/answer›`.
+- `prompting.parse_answer(text)` → canonical `node_<int>`.
+- `prompting.score(answer, gold, acceptable)` — tiered `1.0`/`0.5`/`0.0`.
 
-Put `build_prompt(scenario)` and `parse_answer(text)` in a shared module (e.g. `goldilocks_eval/prompting.py`) and have generation, calibration, and `scenario.py` all import them. If `scenario.py` already defines a parser, make *that* the canonical one and point the harness at it.
+Node id → board position (for any UI/render) is `goldilocks_eval/geometry.py`
+(`node_position`) — derivable from `serialized_state` alone, no extra
+serialization needed.

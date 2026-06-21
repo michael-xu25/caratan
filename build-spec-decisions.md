@@ -30,7 +30,7 @@ Play games → identify model weaknesses (via a big API model, e.g. Claude) → 
 
 ## Model — DECISION
 - **Trained model:** small open-weights, GRPO. First choice **Gemma 4 E4B-it** (~8GB, Apache 2.0, downloadable, TRL/Unsloth/vLLM support). **Fallback: Qwen3-4B** if E4B isn't supported on the training platform's catalog.
-- **Discoverer/judge:** big API model (Claude/Gemini), untrained — no size limit, since we don't train it.
+- **Weakness-discovery analysts (locked):** TWO independent analysts — **Claude Opus 4.8** + **`gpt-5.5` (non-Pro) at `reasoning_effort: xhigh`**. Untrained, API, big — no size limit since we don't train them. Run independently (never show one's output to the other); agreement triages, oracle/champion confers truth. **GPT-5.5 Pro** held as an on-demand tiebreaker only (6× cost, minutes/call). Full method in `weakness-discovery-guidance.md`.
 - Hard rule: you can only GRPO a model whose weights you control → the trained model must be open-weights. API models can't be the trained artifact.
 
 ---

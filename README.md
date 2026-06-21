@@ -1,12 +1,13 @@
 # Goldilocks × Catan — Eval Harness
 
 Hud RL-environments hackathon. We're proving one loop:
-play games → identify model weaknesses (via Claude) → auto-generate
-verifiable envs targeting them → GRPO-train an LLM → measure improvement.
+play games → identify model weaknesses (via Claude + GPT-5.5) → auto-generate
+verifiable envs targeting them → GRPO-train a small open LLM → measure improvement.
 
-This repo = the **eval/measurement half**. Trained artifact is an LLM
-(e.g. Qwen 7B / Gemini / Claude — backend is swappable). "Untrained
-version" = the base model. No self-play training; self-play is eval-only.
+This repo = the **eval/measurement half**. Trained artifact is a small
+open-weights model (Gemma E4B, fallback Qwen3-4B). The analyst/judge models
+(Claude, GPT-5.5) are API models we don't train. The agent interface is
+model-agnostic (swap by config flag). No self-play training; self-play is eval-only.
 
 ## Setup
 - Env: `catanatron/` (vendored). `pip install -e catanatron` + gym.
@@ -15,10 +16,11 @@ version" = the base model. No self-play training; self-play is eval-only.
 ## What we're building
 - Async match runner: two agents head-to-head, model-agnostic agent
   interface (swap Gemini/Claude/small model by config flag).
-- Readable transcripts: JSON via Catanatron's GameEncoder + a
-  human-readable log (board, each decision + the model's reasoning, outcome).
-- Fairness: seeded board+dice, **mirrored games** (same seed played
-  both ways with seats swapped to cancel luck), balanced dice deck,
+- Interpretable transcripts: JSON via Catanatron's GameEncoder + a human-readable
+  log — each decision records the full legal option set it chose among, VP
+  context, the model's reasoning, and the outcome (so weaknesses are analyzable).
+- Fairness: **seeded purely-random** board+dice (not a balanced deck — mirroring
+  cancels luck), **mirrored games** (same seed both ways, seats swapped),
   held-out eval seeds.
 - Parallelism ceiling = concurrent LLM calls (Catanatron is ms-fast;
   the bottleneck is model throughput), so build the runner async.
@@ -102,7 +104,8 @@ Agent specs (the swappable backend flag): `random`, `weighted`, `value`,
 
 Each match prints head-to-head win-rate and writes per-game transcripts to
 `transcripts/` — a full JSON state dump (Catanatron's `GameEncoder`) plus a
-human-readable log with every action and the model's per-decision reasoning.
+human-readable log: every action, and per LLM decision the legal option set it
+chose among, both players' VP, and the model's reasoning.
 
 ### Layout
 - `goldilocks_eval/agents/` — `LLMBackend` interface, `LLMPlayer`, baseline
@@ -119,15 +122,23 @@ human-readable log with every action and the model's per-decision reasoning.
 - `goldilocks_eval/prompt.py` — live full-game rendering/parsing (index-based,
   arbitrary actions — distinct from the placement contract above).
 - `goldilocks_eval/transcript.py` — JSON + human-readable transcript writers.
+- `goldilocks_eval/schema.py` — **frozen** scenario record (canonical, both
+  directions); `goldilocks_eval/geometry.py` — node-id → board position resolver.
 - `calibration_harness.py` — Goldilocks difficulty filter (drops zero-variance
   scenarios); wire its backend to Fireworks/your `LLMBackend`.
-- `scenario-generation-spec.md` — contract for the producer-half generator.
+
+### Project docs
+- `build-spec-decisions.md` — locked decisions (the master log).
+- `scenario-generation-spec.md` — producer-half generator contract.
+- `weakness-discovery-guidance.md` — eval → two independent analysts
+  (Claude Opus 4.8 + GPT-5.5) → oracle/champion-verified weakness workflow.
+- `data/examples/README.md` — frozen schema, fixtures, and the node→position
+  recipe the labeling UI builds against.
 
 ### Notes / contract
 - **Dice = seeded purely-random** (`Game(seed=…)`), per the build-spec decision —
   *not* a balanced deck. Mirroring already cancels dice luck, and a draw-without-
   replacement deck would be countable (an artifact real Catan lacks).
-- The scenario scorer reads the JSONL schema in `build-spec-decisions.md`
-  (`serialized_state`, `legal_actions`, `gold_action`, `acceptable_actions`,
-  `split`). Generating + champion-labeling those scenarios is the other half of
-  the loop; this repo consumes them.
+- The scenario record is frozen in `goldilocks_eval/schema.py` (canonical), with
+  the JSON Schema + UI build guide in `data/examples/`. Generating +
+  champion-labeling scenarios is the producer half; this repo consumes them.
