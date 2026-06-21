@@ -101,8 +101,14 @@ const EXPLORE = [
   {
     emoji: "🎲",
     title: "Game replays",
-    desc: "Step through full 1v1 self-play games on rendered Catan boards.",
+    desc: "Step through trained-model-vs-base games on rendered Catan boards.",
     href: "/viewer/index",
+  },
+  {
+    emoji: "📊",
+    title: "Matchups & evals",
+    desc: "Head-to-head win rates and per-decision held-out scores.",
+    href: "/viewer/matchups",
   },
   {
     emoji: "📍",
@@ -154,11 +160,11 @@ export default function Page() {
           </p>
           <div className="model-tag">{model}</div>
           <div className="hero-cta">
-            <a className="btn primary" href="#results">
-              See the results
+            <a className="btn replay" href="/viewer/index" target="_blank" rel="noreferrer">
+              <span className="play-ico">▶</span> Watch the model play
             </a>
-            <a className="btn" href="/viewer/index" target="_blank" rel="noreferrer">
-              Watch a game replay ↗
+            <a className="btn" href="#winrate">
+              See the win rate
             </a>
           </div>
         </div>
@@ -167,11 +173,25 @@ export default function Page() {
       {/* win rate — headline stat, first thing after hero */}
       <section id="winrate" className="winrate-band">
         <div className="wrap">
-          <p className="eyebrow">Headline · full-game win rate</p>
-          <h2 className="section-title">The trained model wins more games</h2>
+          <p className="eyebrow">Headline · head-to-head win rate</p>
+          <h2 className="section-title">
+            The trained model beats the baseline {Math.round(winrate.headline.trained * 100)}% of the time
+          </h2>
           <p className="section-sub">
-            1v1 self-play, {winrate.cap_turns}-turn cap.
+            {winrate.headline.games} games, trained vs. the untrained baseline — a coin-flip
+            baseline is {Math.round(winrate.headline.baseline * 100)}%.
           </p>
+          <div className="wr-headline">
+            <div className="wr-hero best">
+              <div className="wr-hero-val">{Math.round(winrate.headline.trained * 100)}%</div>
+              <div className="wr-hero-lbl">trained model wins</div>
+            </div>
+            <div className="wr-vs">vs</div>
+            <div className="wr-hero">
+              <div className="wr-hero-val muted">{Math.round(winrate.headline.baseline * 100)}%</div>
+              <div className="wr-hero-lbl">baseline (parity)</div>
+            </div>
+          </div>
           <div className="wr-cards">
             {winrate.entries.map((e, i) => (
               <div className={"wr-card" + (i === 0 ? " best" : "")} key={e.label}>
@@ -190,11 +210,13 @@ export default function Page() {
       {/* the loop */}
       <section id="loop">
         <div className="wrap">
-          <p className="eyebrow">How it works</p>
-          <h2 className="section-title">The improvement loop</h2>
+          <p className="eyebrow">Fully autonomous · recursive self-improvement</p>
+          <h2 className="section-title">An infinite self-improvement loop</h2>
           <p className="section-sub">
-            A tight, repeatable cycle: turn observed weaknesses into reward
-            signals, train against them, and verify the gain on unseen boards.
+            No human in the loop. The system plays, finds its own weaknesses, builds the
+            reward that fixes them, trains, and verifies on unseen boards — then starts
+            over on a stronger model. Each pass compounds: recursive self-improvement
+            that just keeps running.
           </p>
           <div className="loop">
             {LOOP.map((s, i) => (
@@ -204,6 +226,9 @@ export default function Page() {
                 <p>{s.d}</p>
               </div>
             ))}
+          </div>
+          <div className="loop-cycle">
+            ↻ repeats autonomously — every cycle makes the next one smarter
           </div>
         </div>
       </section>
