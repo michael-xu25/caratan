@@ -17,6 +17,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 
 from catanatron import Action, Color, Game, Player
+from catanatron.state_functions import get_actual_victory_points
 
 from goldilocks_eval import prompt as P
 
@@ -36,11 +37,17 @@ class LLMBackend(ABC):
 @dataclass
 class Decision:
     turn: int
-    chosen: str            # rendered action
+    my_vp: int             # VP context — makes "while behind/ahead" legible
+    opp_vp: int
+    chosen: str            # rendered chosen action
+    options: List[str]     # the full legal set it chose among (not just a count)
     reasoning: str
-    num_options: int
     latency_ms: int
     fell_back: bool        # True if we couldn't use the model's choice
+
+    @property
+    def num_options(self) -> int:
+        return len(self.options)
 
 
 class LLMPlayer(Player):
@@ -82,9 +89,11 @@ class LLMPlayer(Player):
         chosen = actions[idx]
         self.decisions.append(Decision(
             turn=game.state.num_turns,
+            my_vp=get_actual_victory_points(game.state, self.color),
+            opp_vp=get_actual_victory_points(game.state, opponent),
             chosen=P.render_action(chosen),
+            options=[P.render_action(a) for a in actions],
             reasoning=reasoning,
-            num_options=len(actions),
             latency_ms=latency_ms,
             fell_back=fell_back,
         ))

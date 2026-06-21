@@ -55,9 +55,16 @@ def write_human(path: str, game: Game, meta: dict, players) -> None:
             for i, d in enumerate(p.decisions):
                 flag = " [FELL BACK]" if d.fell_back else ""
                 lines.append(
-                    f"  #{i} turn{d.turn} ({d.num_options} options, "
-                    f"{d.latency_ms}ms){flag}: chose `{d.chosen}`"
+                    f"  #{i} turn{d.turn} VP[you {d.my_vp} / opp {d.opp_vp}] "
+                    f"{d.latency_ms}ms{flag}: chose `{d.chosen}` "
+                    f"(1 of {d.num_options})"
                 )
+                # The option set it chose among — this is what makes a mistake
+                # analyzable ("chose X from {A,B,C}"). Full list lives in the JSON;
+                # cap the human log for readability.
+                shown = d.options[:40]
+                more = f"  (+{len(d.options) - len(shown)} more)" if len(d.options) > 40 else ""
+                lines.append(f"        from: {', '.join(shown)}{more}")
                 if d.reasoning:
                     lines.append(f"        reason: {d.reasoning}")
 
