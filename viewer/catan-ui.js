@@ -63,12 +63,22 @@
       if (t.number != null) { const hot = t.number === 6 || t.number === 8;
         g.appendChild(el("circle", { cx, cy:cy-.05, r:.34, fill:"#f3ead2", stroke:"#cdbf9b", "stroke-width":.025 }));
         g.appendChild(txt(cx, cy-.07, t.number, { "font-size":.4, "font-weight":800, fill: hot?"#c0392b":"#2c2c2c" }));
-        const n = PIPS[t.number] || 0;
+        const n = PIPS[t.number] || 0;   // pips centered between the number and the token's bottom
         for (let k=0;k<n;k++) g.appendChild(el("circle",
-          { cx:cx+(k-(n-1)/2)*.075, cy:cy+.26, r:.03, fill: hot?"#c0392b":"#6a6a6a" })); }
+          { cx:cx+(k-(n-1)/2)*.075, cy:cy+.16, r:.03, fill: hot?"#c0392b":"#6a6a6a" })); }
     }
-    // ports: label the water hex (RES 2:1 / 3:1)
+    // ports: two docks pointing at the valid coastal nodes + a label on the water hex
     for (const t of B.tiles) { if (t.type !== "PORT" || !t.port) continue; const [cx, cy] = T(t.x, t.y);
+      if (t.direction && PORT_DIR[t.direction]) {
+        const [rA, rB] = PORT_DIR[t.direction];
+        const nA = [t.x + ND[rA][0], t.y + ND[rA][1]], nB = [t.x + ND[rB][0], t.y + ND[rB][1]];
+        const mid = [(nA[0]+nB[0])/2, (nA[1]+nB[1])/2];
+        const anchor = [mid[0] + (t.x-mid[0])*.40, mid[1] + (t.y-mid[1])*.40];
+        const [ax, ay] = T(...anchor);
+        for (const nd of [nA, nB]) { const [nx, ny] = T(...nd);
+          g.appendChild(el("line", { x1:ax, y1:ay, x2:nx, y2:ny, stroke:"#cdb98a", "stroke-width":.05,
+            "stroke-linecap":"round", opacity:.6, "stroke-dasharray":".12 .08" })); }
+      }
       if (t.port === "3:1") g.appendChild(txt(cx, cy, "3:1", { "font-size":.34, "font-weight":800, fill:"#cdd8e6" }));
       else { g.appendChild(txt(cx, cy-.1, RES_LABEL[t.port] || t.port, { "font-size":.24, "font-weight":800, fill:"#e7eef7" }));
              g.appendChild(txt(cx, cy+.18, "2:1", { "font-size":.2, "font-weight":700, fill:"#9fb0c4" })); } }

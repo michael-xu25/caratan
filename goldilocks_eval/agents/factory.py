@@ -51,6 +51,10 @@ def make_player(spec: str, color: Color) -> Player:
         from goldilocks_eval.agents.openai_backend import OpenAIBackend, DEFAULT_MODEL
         return LLMPlayer(color, OpenAIBackend(model=arg or DEFAULT_MODEL))
 
+    if head == "hud":
+        from goldilocks_eval.agents.hud_backend import HudBackend
+        return LLMPlayer(color, HudBackend(model=arg or None))
+
     raise ValueError(
         f"Unknown agent spec: {spec!r}. Use one of {sorted(BASELINES)} or "
         f"claude / fireworks / openai [:model]."
@@ -76,7 +80,10 @@ def make_backend(spec: str):
     if head == "openai":
         from goldilocks_eval.agents.openai_backend import OpenAIBackend, DEFAULT_MODEL
         return OpenAIBackend(model=arg or DEFAULT_MODEL)
+    if head == "hud":
+        from goldilocks_eval.agents.hud_backend import HudBackend
+        return HudBackend(model=arg or None)
     raise ValueError(
-        f"Scenario eval needs an LLM backend (claude / fireworks / openai [:model]); got {spec!r}. "
+        f"Scenario eval needs an LLM backend (claude / fireworks / openai / hud [:model]); got {spec!r}. "
         f"Baselines like {sorted(BASELINES)} can only run in the head-to-head runner."
     )
