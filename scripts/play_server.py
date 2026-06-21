@@ -93,11 +93,25 @@ def _advance(s: dict) -> list:
     return moves
 
 
+def _jsonable(v):
+    """Serialize an Action.value (node id, edge, robber coord+victim, trade tuple,
+    resource) to JSON so the UI can map it onto board elements."""
+    if v is None or isinstance(v, (int, float, str, bool)):
+        return v
+    if isinstance(v, Color):
+        return v.value
+    if isinstance(v, (tuple, list)):
+        return [_jsonable(x) for x in v]
+    return str(v)
+
+
 def _view(s: dict) -> dict:
     game, human = s["game"], s["human"]
     over = game.winning_color()
     your_turn = over is None and game.state.current_color() == human and len(game.playable_actions) > 1
-    legal = ([{"i": i, "label": render_action(a)} for i, a in enumerate(game.playable_actions)]
+    legal = ([{"i": i, "label": render_action(a),
+               "type": a.action_type.value, "value": _jsonable(a.value)}
+              for i, a in enumerate(game.playable_actions)]
              if your_turn else [])
     return {"game_id": s["id"], "board": s["board"], "players": [c.value for c in game.state.colors],
             "human": human.value, "turn": game.state.num_turns, "your_turn": your_turn,
