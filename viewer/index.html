@@ -8,7 +8,10 @@
 </head>
 <body>
   <div id="board">
-    <a class="boardnav right" href="play.html" title="Play vs the model">🎮 Play vs Model</a>
+    <div class="boardbtns">
+      <a class="navbtn" href="play.html" title="Play a fresh game vs the model">🎮 Play vs Model</a>
+      <button class="navbtn" id="takeover" title="Play on from THIS position vs the model (does not change the transcript)">🕹️ Take over from here</button>
+    </div>
     <div id="dicebar" class="empty"></div>
     <svg id="svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg>
     <div id="drop">
@@ -61,9 +64,8 @@
         <button id="play">▶ Play</button><button id="next">▶</button><button id="last">⏭</button>
       </div>
       <input id="slider" type="range" min="0" max="0" value="0" />
-      <div class="row" style="justify-content:space-between;margin-top:8px">
+      <div class="row" style="justify-content:center;margin-top:8px">
         <span id="steplbl" class="muted">—</span>
-        <button id="takeover" class="linkbtn" title="Play on from this position vs the model (does not change the transcript)">🎮 Take over from here</button>
       </div>
     </div>
   </div>
@@ -105,8 +107,9 @@ function updatePanel(step) {
   $("sWin").textContent = m.winner ? dname(m.winner) : "draw";
 
   // current move + reasoning
-  const graded = GRADING && (GRADING.steps||{})[String(step.i)];
-  const gradedFlag = graded ? (graded.failed && graded.failed.length ? " ⚖✗" : " ⚖") : "";
+  const g = GRADING && (GRADING.steps||{})[String(step.i)];
+  const gradedFlag = !g ? "" : (g.failed && g.failed.length) ? " ⚖✗"
+                   : g.llm_graded ? " ⚖" : ((g.regret_vp||0) >= 1 ? " ⚠" : "");
   const valTxt = Array.isArray(step.value) ? `[${step.value}]` : (step.value ?? "");
   $("action").innerHTML =
       `<span class="chip"><span class="dot" style="background:${pcol(step.color)}"></span>`
@@ -236,18 +239,27 @@ function renderStepGrade(step){
   if (!GRADING || !gradeShown) return;
   const s = (GRADING.steps||{})[String(step.i)];
   const node = $("stepgrade");
-  if (!s){ node.innerHTML = `<span class="muted">this decision wasn't in the graded sample</span>`; return; }
-  const reg = s.regret_vp!=null ? ` · regret ${(+s.regret_vp).toFixed(2)} VP` : "";
-  if (!s.failed || !s.failed.length){
-    node.innerHTML = `<span class="okbadge">✓ no failed criteria</span> <span class="muted">(${s.decision_type}${reg})</span>`; return;
+  if (!s){ node.innerHTML = `<span class="muted">not a scored decision (forced move / roll)</span>`; return; }
+  // objective oracle line — present on EVERY decision (free; regret + best legal move)
+  const reg = s.regret_vp!=null ? `${(+s.regret_vp).toFixed(2)} VP` : "—";
+  const best = s.oracle_best ? ` · oracle best <b>${s.oracle_best}</b>` : "";
+  const oracleLine = `<div class="muted">${s.decision_type||"decision"} · regret ${reg}${best}</div>`;
+  if (!s.llm_graded){
+    node.innerHTML = oracleLine +
+      `<div class="muted" style="margin-top:4px;opacity:.75">oracle insight only — not in the LLM-graded sample</div>`;
+    return;
   }
-  node.innerHTML = `<div class="muted">${s.decision_type}${reg}</div>`
-    + s.failed.map(f=>{
-        const badge = f.disputed ? `<span class="dispbadge">⚠ disputed</span>` : `<span class="failbadge">✗ failed</span>`;
-        const reasons = (f.claude?`<div class="muted" style="margin-left:8px">claude: ${f.claude}</div>`:"")
-                      + (f.openai?`<div class="muted" style="margin-left:8px">openai: ${f.openai}</div>`:"");
-        return `<div style="margin-top:5px"><b>${f.criterion}</b> ${badge}${reasons}</div>`;
-      }).join("");
+  if (!s.failed || !s.failed.length){
+    node.innerHTML = oracleLine +
+      `<div style="margin-top:5px"><span class="okbadge">✓ no failed criteria</span> <span class="muted">(claude + openai)</span></div>`;
+    return;
+  }
+  node.innerHTML = oracleLine + s.failed.map(f=>{
+      const badge = f.disputed ? `<span class="dispbadge">⚠ disputed</span>` : `<span class="failbadge">✗ failed</span>`;
+      const reasons = (f.claude?`<div class="muted" style="margin-left:8px">claude: ${f.claude}</div>`:"")
+                    + (f.openai?`<div class="muted" style="margin-left:8px">openai: ${f.openai}</div>`:"");
+      return `<div style="margin-top:6px"><b>${f.criterion}</b> ${badge}${reasons}</div>`;
+    }).join("");
 }
 $("gradetoggle").onclick = () => {
   gradeShown = !gradeShown;
