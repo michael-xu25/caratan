@@ -88,10 +88,17 @@ def post_stage(run_dir: Path, label: str, push: bool):
         print(f"[queue] pushed: {label}", flush=True)
 
 
-async def run_stage(spec, run_dir: Path, seeds, on_seeds, concurrency, max_turns, label):
+async def run_stage(spec, run_dir: Path, seeds, on_seeds, concurrency, max_turns, label,
+                    skip_existing=False):
     run_dir.mkdir(parents=True, exist_ok=True)
-    on = [s for s in seeds if s in on_seeds]
-    off = [s for s in seeds if s not in on_seeds]
+    if skip_existing:
+        before = len(seeds)
+        seeds = [s for s in seeds
+                 if not ((run_dir / f"seed{s}_norm.json").exists()
+                         and (run_dir / f"seed{s}_swap.json").exists())]
+        if before != len(seeds):
+            print(f"  [{label}] skip-existing: {before-len(seeds)} seeds already done, "
+                  f"{len(seeds)} to run", flush=True)
     for batch, reasoning in ((on, True), (off, False)):
         if not batch:
             continue
@@ -113,6 +120,8 @@ def main() -> int:
     ap.add_argument("--push", action="store_true")
     ap.add_argument("--grpo-only", action="store_true",
                     help="only run grpo (full chain) vs base; skip placement (Michael owns those)")
+    ap.add_argument("--skip-existing", action="store_true",
+                    help="skip seeds whose norm+swap transcripts already exist (resume w/o redo)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -154,7 +163,8 @@ def main() -> int:
         full = REPO / "transcripts" / rd
         print(f"\n===== STAGE: {label} =====", flush=True)
         t0 = time.time()
-        asyncio.run(run_stage(spec, full, s, on_seeds, args.concurrency, args.max_turns, label))
+        asyncio.run(run_stage(spec, full, s, on_seeds, args.concurrency, args.max_turns, label,
+                              skip_existing=args.skip_existing))
         print(f"  stage done in {(time.time()-t0)/60:.1f} min", flush=True)
         post_stage(full, label, args.push)
     print("\n[queue] ALL STAGES DONE.")

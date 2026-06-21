@@ -1,0 +1,1219 @@
+──────────────────────────────────────── GAME seed1052_swap ────────────────────────────────────────
+seats : RED=hud:Qwen/Qwen3-8B vs BLUE=hud:catan-grpo-q8b
+result: WINNER BLUE (hud:catan-grpo-q8b) — 4 VP (turn cap; decided by VP lead)
+meta  : 300 turns · 555.392s · seed=1052 · RED 2VP / BLUE 4VP
+
+Board                                   
+╭─────────┬────────────────────────────╮
+│resource │ numbers (probability order)│
+├─────────┼────────────────────────────┤
+│BRICK    │ 5  4  11                   │
+│ORE      │ 8  10  12                  │
+│SHEEP    │ 6  8  9  4                 │
+│WHEAT    │ 9  3  3  2                 │
+│WOOD     │ 6  5  10  11               │
+╰─────────┴────────────────────────────╯
+
+Decisions  (routine rolls/end-turns collapsed)
+
+── turn 0 ──
+  #1    RED   BUILD_SETTLEMENT       25
+        ctx[early] VP[RED=0 BLUE=0] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 54
+        from: BUILD_SETTLEMENT 0, BUILD_SETTLEMENT 1, BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, 
+BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 5, BUILD_SETTLEMENT 6, BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, 
+BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 11 (+42 more)
+  #2    RED   BUILD_ROAD             (24, 25)
+        ctx[early] VP[RED=1 BLUE=0] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 2
+        from: BUILD_ROAD (24, 25), BUILD_ROAD (25, 26)
+
+── turn 1 ──
+  #3    BLUE  BUILD_SETTLEMENT       0
+        ctx[early] VP[RED=1 BLUE=0] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 51
+        from: BUILD_SETTLEMENT 0, BUILD_SETTLEMENT 1, BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, 
+BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 5, BUILD_SETTLEMENT 6, BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, 
+BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 11 (+39 more)
+  #4    BLUE  BUILD_ROAD             (0, 1)
+        ctx[early] VP[RED=1 BLUE=1] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 3
+        from: BUILD_ROAD (0, 1), BUILD_ROAD (0, 20), BUILD_ROAD (0, 5)
+  #5    BLUE  BUILD_SETTLEMENT       3
+        ctx[early] VP[RED=1 BLUE=1] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 47
+        from: BUILD_SETTLEMENT 2, BUILD_SETTLEMENT 3, BUILD_SETTLEMENT 4, BUILD_SETTLEMENT 6, 
+BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, BUILD_SETTLEMENT 9, BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 
+11, BUILD_SETTLEMENT 12, BUILD_SETTLEMENT 13, BUILD_SETTLEMENT 14 (+35 more)
+  #6    BLUE  BUILD_ROAD             (2, 3)
+        ctx[early] VP[RED=1 BLUE=2] hand[WO2 BR0 SH0 WH1 OR0] chose 1 of 3
+        from: BUILD_ROAD (3, 4), BUILD_ROAD (2, 3), BUILD_ROAD (3, 12)
+
+── turn 2 ──
+  #7    RED   BUILD_SETTLEMENT       6
+        ctx[early] VP[RED=1 BLUE=2] hand[WO0 BR0 SH0 WH0 OR0] chose 1 of 43
+        from: BUILD_SETTLEMENT 6, BUILD_SETTLEMENT 7, BUILD_SETTLEMENT 8, BUILD_SETTLEMENT 9, 
+BUILD_SETTLEMENT 10, BUILD_SETTLEMENT 11, BUILD_SETTLEMENT 13, BUILD_SETTLEMENT 14, BUILD_SETTLEMENT
+15, BUILD_SETTLEMENT 16, BUILD_SETTLEMENT 17, BUILD_SETTLEMENT 18 (+31 more)
+  #8    RED   BUILD_ROAD             (6, 23)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH0 WH2 OR0] chose 1 of 3
+        from: BUILD_ROAD (6, 23), BUILD_ROAD (6, 7), BUILD_ROAD (1, 6)
+
+── turn 5 ──
+  #16   BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO4 BR0 SH1 WH1 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+
+── turn 8 ──
+  #23   RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH0 WH2 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), C.BLUE), MOVE_ROBBER ((-1, 0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, 
+-1), C.BLUE), MOVE_ROBBER ((1, 0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2,
+1), None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2),
+None) (+6 more)
+
+── turn 10 ──
+  #28   RED   MARITIME_TRADE         ('WHEAT', 'WHEAT', 'WHEAT', None, 'WOOD')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH0 WH4 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', None, 'SHEEP'), MARITIME_TRADE 
+('WHEAT', 'WHEAT', 'WHEAT', None, 'WOOD'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', None, 
+'BRICK'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', None, 'ORE')
+
+── turn 16 ──
+  #41   RED   MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'WHEAT')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO3 BR0 SH0 WH1 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+
+── turn 17 ──
+  #44   BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO3 BR0 SH2 WH3 OR1] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #45   BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR0 SH2 WH3 OR1] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #46   BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH2 WH3 OR1] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #47   BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH2 WH3 OR1] chose 1 of 3
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #48   BLUE  MOVE_ROBBER            ((1, 0, -1), C.RED)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH1 WH3 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 21 ──
+  #57   BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH2 WH4 OR1] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #58   BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH2 WH4 OR1] chose 1 of 3
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #59   BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH1 WH4 OR1] chose 1 of 3
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #60   BLUE  DISCARD_RESOURCE       WHEAT
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH0 WH4 OR1] chose 1 of 2
+        from: DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #61   BLUE  MOVE_ROBBER            ((2, -1, -1), C.RED)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH0 WH3 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+  #62   BLUE  MARITIME_TRADE         ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH0 WH4 OR1] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD'), MARITIME_TRADE 
+('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'SHEEP'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 
+'BRICK'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'ORE')
+
+── turn 27 ──
+  #75   BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO3 BR0 SH0 WH2 OR1] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 
+1), None), MOVE_ROBBER ((-1, 0, 1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), 
+None), MOVE_ROBBER ((1, 0, -1), C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), 
+None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), 
+None) (+6 more)
+
+── turn 35 ──
+  #92   BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO4 BR0 SH3 WH3 OR1] chose 1 of 6
+        from: END_TURN, BUY_DEVELOPMENT_CARD, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 
+'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 
+'WOOD', 'WOOD', 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+
+── turn 36 ──
+  #95   BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH3 WH3 OR2] chose 1 of 3
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #96   BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH2 WH3 OR2] chose 1 of 3
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #97   BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH1 WH3 OR2] chose 1 of 3
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #98   BLUE  DISCARD_RESOURCE       WHEAT
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH0 WH3 OR2] chose 1 of 2
+        from: DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #99   RED   MOVE_ROBBER            ((-1, 1, 0), None)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR0 SH0 WH0 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 38 ──
+  #104  RED   MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'BRICK')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO3 BR0 SH0 WH0 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+
+── turn 40 ──
+  #109  RED   BUILD_ROAD             (24, 53)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR1 SH0 WH0 OR0] chose 1 of 8
+        from: END_TURN, BUILD_ROAD (24, 53), BUILD_ROAD (23, 52), BUILD_ROAD (22, 23), BUILD_ROAD 
+(6, 7), BUILD_ROAD (1, 6), BUILD_ROAD (7, 24), BUILD_ROAD (25, 26)
+
+── turn 44 ──
+  #118  RED   MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', None, 'WHEAT')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO3 BR0 SH0 WH1 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'BRICK'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', None, 'WHEAT'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'ORE'), 
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', None, 'SHEEP')
+
+── turn 47 ──
+  #125  BLUE  MARITIME_TRADE         ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR0 SH1 WH4 OR2] chose 1 of 6
+        from: END_TURN, BUY_DEVELOPMENT_CARD, MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 
+'WOOD'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'SHEEP'), MARITIME_TRADE ('WHEAT', 
+'WHEAT', 'WHEAT', 'WHEAT', 'BRICK'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'ORE')
+
+── turn 50 ──
+  #132  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO4 BR0 SH1 WH1 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #133  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO3 BR0 SH1 WH1 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #134  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR0 SH1 WH1 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #135  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH1 WH1 OR2] chose 1 of 4 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #136  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH0 WH3 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), C.BLUE), MOVE_ROBBER ((-1, 0, 1), C.BLUE), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0,
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+  #137  RED   MARITIME_TRADE         ('WHEAT', 'WHEAT', 'WHEAT', None, 'WOOD')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH1 WH3 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', None, 'SHEEP'), MARITIME_TRADE 
+('WHEAT', 'WHEAT', 'WHEAT', None, 'WOOD'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', None, 
+'BRICK'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', None, 'ORE')
+
+── turn 51 ──
+  #140  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH0 WH1 OR2] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 57 ──
+  #153  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR0 SH2 WH2 OR2] chose 1 of 4 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #154  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=2] hand[WO1 BR0 SH2 WH2 OR2] chose 1 of 4 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #155  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH2 WH2 OR2] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #156  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH1 WH2 OR2] chose 1 of 3
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #157  BLUE  MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH0 WH2 OR2] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 58 ──
+  #160  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[early] VP[RED=2 BLUE=2] hand[WO2 BR0 SH0 WH0 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 0,
+1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0, 
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+
+── turn 63 ──
+  #171  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[early] VP[RED=2 BLUE=2] hand[WO4 BR0 SH2 WH2 OR2] chose 1 of 6
+        from: END_TURN, BUY_DEVELOPMENT_CARD, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 
+'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 
+'WOOD', 'WOOD', 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+  #172  BLUE  BUILD_CITY             0
+        ctx[early] VP[RED=2 BLUE=2] hand[WO0 BR0 SH2 WH2 OR3] chose 1 of 4
+        from: END_TURN, BUILD_CITY 0, BUILD_CITY 3, BUY_DEVELOPMENT_CARD
+
+── turn 77 ──
+  #201  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[early] VP[RED=2 BLUE=3] hand[WO12 BR0 SH2 WH2 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE'), MARITIME_TRADE 
+('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'BRICK'),
+MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+  #202  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[early] VP[RED=2 BLUE=3] hand[WO8 BR0 SH2 WH2 OR1] chose 1 of 6
+        from: END_TURN, BUY_DEVELOPMENT_CARD, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 
+'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 
+'WOOD', 'WOOD', 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+
+── turn 78 ──
+  #205  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=3] hand[WO4 BR0 SH2 WH2 OR2] chose 1 of 4 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #206  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=3] hand[WO3 BR0 SH2 WH2 OR2] chose 1 of 4
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #207  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=3] hand[WO2 BR0 SH2 WH2 OR2] chose 1 of 4 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #208  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=3] hand[WO1 BR0 SH2 WH2 OR2] chose 1 of 4 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, 
+DISCARD_RESOURCE ORE
+  #209  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[early] VP[RED=2 BLUE=3] hand[WO0 BR0 SH2 WH2 OR2] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT, DISCARD_RESOURCE ORE
+  #210  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[early] VP[RED=2 BLUE=3] hand[WO4 BR0 SH0 WH1 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 84 ──
+  #223  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[early] VP[RED=2 BLUE=3] hand[WO4 BR0 SH0 WH2 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 0,
+1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0, 
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+
+── turn 86 ──
+  #228  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[early] VP[RED=2 BLUE=3] hand[WO4 BR0 SH0 WH2 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 87 ──
+  #231  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[early] VP[RED=2 BLUE=3] hand[WO1 BR0 SH2 WH1 OR2] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 88 ──
+  #234  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[early] VP[RED=2 BLUE=3] hand[WO3 BR0 SH1 WH2 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 91 ──
+  #241  RED   DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=3] hand[WO4 BR0 SH2 WH2 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #242  RED   DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=3] hand[WO3 BR0 SH2 WH2 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #243  RED   DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=3] hand[WO2 BR0 SH2 WH2 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #244  RED   DISCARD_RESOURCE       WOOD
+        ctx[early] VP[RED=2 BLUE=3] hand[WO1 BR0 SH2 WH2 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #245  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[early] VP[RED=2 BLUE=3] hand[WO3 BR0 SH1 WH1 OR2] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 93 ──
+  #250  BLUE  MARITIME_TRADE         ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'ORE')
+        ctx[early] VP[RED=2 BLUE=3] hand[WO4 BR0 SH1 WH2 OR2] chose 1 of 6
+        from: END_TURN, BUY_DEVELOPMENT_CARD, MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 
+'ORE'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'SHEEP'), MARITIME_TRADE ('WOOD', 'WOOD', 
+'WOOD', 'WOOD', 'BRICK'), MARITIME_TRADE ('WOOD', 'WOOD', 'WOOD', 'WOOD', 'WHEAT')
+
+── turn 95 ──
+  #255  BLUE  MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[early] VP[RED=2 BLUE=3] hand[WO0 BR0 SH1 WH2 OR3] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+  #256  BLUE  BUILD_CITY             3
+        ctx[early] VP[RED=2 BLUE=3] hand[WO0 BR0 SH1 WH2 OR3] chose 1 of 3
+        from: END_TURN, BUILD_CITY 3, BUY_DEVELOPMENT_CARD
+
+── turn 97 ──
+  #261  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH0 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 105 ──
+  #278  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO6 BR0 SH3 WH5 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #279  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH3 WH5 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #280  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH3 WH5 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #281  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH3 WH5 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #282  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH3 WH5 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #283  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH3 WH5 OR0] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #284  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH5 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #285  BLUE  MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH5 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 107 ──
+  #290  BLUE  MARITIME_TRADE         ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH5 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'WOOD'), MARITIME_TRADE 
+('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'SHEEP'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 
+'BRICK'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', 'WHEAT', 'ORE')
+
+── turn 112 ──
+  #301  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH2 WH2 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #302  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH2 WH2 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #303  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH2 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #304  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH2 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #305  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH2 WH3 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #306  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH3 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #307  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH3 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #308  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH3 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #309  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH2 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 0,
+1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0, 
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+
+── turn 123 ──
+  #332  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO8 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #333  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO7 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #334  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO6 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #335  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #336  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH3 WH7 OR0] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #337  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #338  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #339  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #340  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH3 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #341  BLUE  MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH7 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 139 ──
+  #374  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO8 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #375  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO7 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #376  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO6 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #377  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #378  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #379  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #380  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #381  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #382  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #383  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #384  BLUE  DISCARD_RESOURCE       WHEAT
+  #385  BLUE  DISCARD_RESOURCE       WHEAT
+  #386  BLUE  DISCARD_RESOURCE       WHEAT
+  #387  BLUE  DISCARD_RESOURCE       WHEAT
+  #388  BLUE  MOVE_ROBBER            ((2, -1, -1), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH7 OR0] chose 1 of 18
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 146 ──
+  #403  RED   MARITIME_TRADE         ('WHEAT', 'WHEAT', 'WHEAT', None, 'WOOD')
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH7 OR0] chose 1 of 5
+        from: END_TURN, MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', None, 'SHEEP'), MARITIME_TRADE 
+('WHEAT', 'WHEAT', 'WHEAT', None, 'WOOD'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', None, 
+'BRICK'), MARITIME_TRADE ('WHEAT', 'WHEAT', 'WHEAT', None, 'ORE')
+
+── turn 156 ──
+  #424  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO6 BR0 SH2 WH4 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #425  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH2 WH4 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #426  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH2 WH4 OR0] chose 1 of 3
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #427  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH2 WH4 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #428  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH4 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #429  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH4 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #430  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO8 BR0 SH2 WH12 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #431  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO7 BR0 SH2 WH12 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #432  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO6 BR0 SH2 WH12 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #433  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH2 WH12 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #434  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH2 WH12 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #435  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH2 WH12 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #436  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH12 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #437  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH12 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #438  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH12 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #439  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH12 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #440  BLUE  DISCARD_RESOURCE       WHEAT
+  #441  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH4 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 
+1), C.BLUE), MOVE_ROBBER ((-1, 0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, 
+-1), C.BLUE), MOVE_ROBBER ((1, 0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2,
+1), None), MOVE_ROBBER ((0, -2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2),
+None) (+6 more)
+
+── turn 164 ──
+  #458  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #459  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH6 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #460  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH6 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #461  RED   DISCARD_RESOURCE       WHEAT
+  #462  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO6 BR0 SH0 WH12 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #463  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH0 WH12 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #464  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH0 WH12 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #465  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH0 WH12 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #466  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH12 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #467  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH12 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #468  BLUE  DISCARD_RESOURCE       WHEAT
+  #469  BLUE  DISCARD_RESOURCE       WHEAT
+  #470  BLUE  DISCARD_RESOURCE       WHEAT
+  #471  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH5 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 0,
+1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0, 
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+
+── turn 168 ──
+  #480  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #481  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #482  BLUE  DISCARD_RESOURCE       WHEAT
+  #483  BLUE  DISCARD_RESOURCE       WHEAT
+  #484  BLUE  DISCARD_RESOURCE       WHEAT
+  #485  BLUE  DISCARD_RESOURCE       WHEAT
+  #486  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH6 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 171 ──
+  #493  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #494  RED   DISCARD_RESOURCE       WHEAT
+  #495  RED   DISCARD_RESOURCE       WHEAT
+  #496  RED   DISCARD_RESOURCE       WHEAT
+  #497  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH6 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #498  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH6 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #499  BLUE  DISCARD_RESOURCE       WHEAT
+  #500  BLUE  DISCARD_RESOURCE       WHEAT
+  #501  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH4 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 174 ──
+  #508  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH3 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 180 ──
+  #521  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #522  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #523  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #524  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH3 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #525  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH3 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #526  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #527  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #528  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH4 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 0,
+1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0, 
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+
+── turn 188 ──
+  #545  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO6 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #546  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #547  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #548  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #549  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #550  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #551  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH4 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 193 ──
+  #562  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH1 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #563  RED   DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH6 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #564  RED   DISCARD_RESOURCE       WHEAT
+  #565  RED   DISCARD_RESOURCE       WHEAT
+  #566  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH6 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #567  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH6 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #568  BLUE  DISCARD_RESOURCE       WHEAT
+  #569  BLUE  DISCARD_RESOURCE       WHEAT
+  #570  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH4 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 194 ──
+  #573  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH3 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 202 ──
+  #590  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #591  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH6 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #592  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH6 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #593  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH6 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #594  BLUE  DISCARD_RESOURCE       WHEAT
+  #595  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH6 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 0,
+1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0, 
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+
+── turn 204 ──
+  #600  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH6 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 208 ──
+  #609  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #610  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #611  RED   DISCARD_RESOURCE       WHEAT
+  #612  RED   DISCARD_RESOURCE       WHEAT
+  #613  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH2 WH4 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #614  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH2 WH4 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #615  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH4 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #616  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH4 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #617  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH4 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #618  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH5 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 0,
+1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0, 
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+
+── turn 210 ──
+  #623  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH6 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 214 ──
+  #632  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #633  RED   DISCARD_RESOURCE       WHEAT
+  #634  RED   DISCARD_RESOURCE       WHEAT
+  #635  RED   DISCARD_RESOURCE       WHEAT
+  #636  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH4 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 0,
+1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0, 
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+
+── turn 216 ──
+  #641  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH3 WH5 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #642  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH5 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #643  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH5 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #644  BLUE  DISCARD_RESOURCE       WHEAT
+  #645  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH4 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 217 ──
+  #648  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH3 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 220 ──
+  #655  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH4 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 233 ──
+  #682  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH0 WH8 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #683  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH0 WH8 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #684  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH8 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #685  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH8 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #686  RED   DISCARD_RESOURCE       WHEAT
+  #687  RED   DISCARD_RESOURCE       WHEAT
+  #688  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO6 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #689  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #690  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #691  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #692  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #693  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #694  BLUE  DISCARD_RESOURCE       WHEAT
+  #695  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH8 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 249 ──
+  #728  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH0 WH5 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #729  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH5 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #730  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH5 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #731  RED   DISCARD_RESOURCE       WHEAT
+  #732  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO6 BR0 SH2 WH13 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #733  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH2 WH13 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #734  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH2 WH13 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #735  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH2 WH13 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #736  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH13 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #737  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH13 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #738  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH13 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #739  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH13 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #740  BLUE  DISCARD_RESOURCE       WHEAT
+  #741  BLUE  DISCARD_RESOURCE       WHEAT
+  #742  BLUE  MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH11 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 253 ──
+  #751  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #752  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #753  BLUE  DISCARD_RESOURCE       WHEAT
+  #754  BLUE  DISCARD_RESOURCE       WHEAT
+  #755  BLUE  DISCARD_RESOURCE       WHEAT
+  #756  BLUE  DISCARD_RESOURCE       WHEAT
+  #757  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH7 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 264 ──
+  #780  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO5 BR0 SH0 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #781  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH0 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #782  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH0 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #783  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #784  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH11 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #785  BLUE  DISCARD_RESOURCE       WHEAT
+  #786  BLUE  DISCARD_RESOURCE       WHEAT
+  #787  BLUE  DISCARD_RESOURCE       WHEAT
+  #788  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH6 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 268 ──
+  #797  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #798  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #799  RED   DISCARD_RESOURCE       WHEAT
+  #800  RED   DISCARD_RESOURCE       WHEAT
+  #801  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #802  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #803  BLUE  DISCARD_RESOURCE       WHEAT
+  #804  BLUE  DISCARD_RESOURCE       WHEAT
+  #805  BLUE  DISCARD_RESOURCE       WHEAT
+  #806  RED   MOVE_ROBBER            ((1, -1, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH5 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), None), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 0,
+1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 0, 
+-1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 
+2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1),
+None) (+6 more)
+
+── turn 272 ──
+  #815  BLUE  DISCARD_RESOURCE       WHEAT
+  #816  BLUE  DISCARD_RESOURCE       WHEAT
+  #817  BLUE  DISCARD_RESOURCE       WHEAT
+  #818  BLUE  DISCARD_RESOURCE       WHEAT
+  #819  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH6 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 277 ──
+  #830  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #831  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH9 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #832  RED   DISCARD_RESOURCE       WHEAT
+  #833  RED   DISCARD_RESOURCE       WHEAT
+  #834  RED   DISCARD_RESOURCE       WHEAT
+  #835  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH7 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 278 ──
+  #838  BLUE  DISCARD_RESOURCE       WHEAT
+  #839  BLUE  DISCARD_RESOURCE       WHEAT
+  #840  BLUE  DISCARD_RESOURCE       WHEAT
+  #841  BLUE  DISCARD_RESOURCE       WHEAT
+  #842  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH5 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
+
+── turn 289 ──
+  #865  RED   DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH10 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE WHEAT
+  #866  RED   DISCARD_RESOURCE       WHEAT
+  #867  RED   DISCARD_RESOURCE       WHEAT
+  #868  RED   DISCARD_RESOURCE       WHEAT
+  #869  RED   DISCARD_RESOURCE       WHEAT
+  #870  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH2 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #871  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH2 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #872  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #873  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH7 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #874  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #875  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH7 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #876  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH7 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 293 ──
+  #885  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO4 BR0 SH2 WH10 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #886  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO3 BR0 SH2 WH10 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #887  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO2 BR0 SH2 WH10 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #888  BLUE  DISCARD_RESOURCE       WOOD
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH2 WH10 OR0] chose 1 of 3 [FELL BACK]
+        from: DISCARD_RESOURCE WOOD, DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #889  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH10 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #890  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH10 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #891  BLUE  DISCARD_RESOURCE       WHEAT
+  #892  BLUE  DISCARD_RESOURCE       WHEAT
+  #893  BLUE  MOVE_ROBBER            ((0, 0, 0), None)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH8 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), None), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 297 ──
+  #902  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH2 WH8 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #903  BLUE  DISCARD_RESOURCE       SHEEP
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH1 WH8 OR0] chose 1 of 2 [FELL BACK]
+        from: DISCARD_RESOURCE SHEEP, DISCARD_RESOURCE WHEAT
+  #904  BLUE  DISCARD_RESOURCE       WHEAT
+  #905  BLUE  DISCARD_RESOURCE       WHEAT
+  #906  BLUE  DISCARD_RESOURCE       WHEAT
+  #907  BLUE  MOVE_ROBBER            ((1, -1, 0), C.RED)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO0 BR0 SH0 WH5 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((1, -1, 0), C.RED), MOVE_ROBBER ((0, -1, 1), None), MOVE_ROBBER ((-1, 0, 
+1), None), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), None), MOVE_ROBBER ((1, 0, -1), 
+C.RED), MOVE_ROBBER ((2, -2, 0), C.RED), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, -2, 2), 
+None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1, 1), 
+None) (+6 more)
+
+── turn 298 ──
+  #910  RED   MOVE_ROBBER            ((0, 0, 0), C.BLUE)
+        ctx[mid] VP[RED=2 BLUE=4] hand[WO1 BR0 SH0 WH5 OR0] chose 1 of 18 [FELL BACK]
+        from: MOVE_ROBBER ((0, 0, 0), C.BLUE), MOVE_ROBBER ((0, -1, 1), C.BLUE), MOVE_ROBBER ((-1, 
+0, 1), C.BLUE), MOVE_ROBBER ((-1, 1, 0), None), MOVE_ROBBER ((0, 1, -1), C.BLUE), MOVE_ROBBER ((1, 
+0, -1), C.BLUE), MOVE_ROBBER ((2, -2, 0), None), MOVE_ROBBER ((1, -2, 1), None), MOVE_ROBBER ((0, 
+-2, 2), None), MOVE_ROBBER ((-1, -1, 2), None), MOVE_ROBBER ((-2, 0, 2), None), MOVE_ROBBER ((-2, 1,
+1), None) (+6 more)
