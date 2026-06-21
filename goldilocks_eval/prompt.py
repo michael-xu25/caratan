@@ -361,21 +361,24 @@ def parse_choice(text: str, num_actions: int) -> tuple[int | None, str]:
     """
     import json
 
-    reasoning = ""
-    match = _JSON_RE.search(text or "")
-    if match:
+    text = text or ""
+    # The model reasons first (chain-of-thought), then emits the JSON last — so
+    # scan JSON objects in reverse and take the last valid one. Capture the
+    # reasoning prose that preceded it (richer than the one-line summary).
+    for m in reversed(list(_JSON_RE.finditer(text))):
         try:
-            obj = json.loads(match.group(0))
-            reasoning = str(obj.get("reasoning", ""))[:500]
+            obj = json.loads(m.group(0))
             idx = int(obj["action"])
-            if 0 <= idx < num_actions:
-                return idx, reasoning
         except (ValueError, KeyError, TypeError):
-            pass
-    # Last resort: first standalone integer in the text.
-    int_match = re.search(r"\d+", text or "")
-    if int_match:
-        idx = int(int_match.group(0))
+            continue
         if 0 <= idx < num_actions:
-            return idx, reasoning or "(parsed bare integer)"
-    return None, reasoning or "(unparseable reply)"
+            cot = text[:m.start()].strip()
+            reasoning = (cot or str(obj.get("reasoning", ""))).strip()[:1000]
+            return idx, reasoning
+    # Fallback: an explicit action:N even if no clean JSON object parsed.
+    am = re.search(r'"?action"?\s*[:=]\s*(\d+)', text)
+    if am:
+        idx = int(am.group(1))
+        if 0 <= idx < num_actions:
+            return idx, (text.strip()[:1000] or "(parsed action field)")
+    return None, (text.strip()[:300] or "(unparseable reply)")

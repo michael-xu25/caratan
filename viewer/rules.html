@@ -60,9 +60,9 @@ You may play at most ONE development card in the entire turn — whether before 
 - ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say.</pre></div>
 
 <h2>Output formats</h2>
-<div class="card"><span class="label">Live, with reasoning</span><pre>Reply with ONLY a JSON object on one line:
-{&quot;action&quot;: &lt;index&gt;, &quot;reasoning&quot;: &quot;&lt;one short sentence&gt;&quot;}
-The index must be one of the listed action indices. No prose outside the JSON.</pre></div>
+<div class="card"><span class="label">Live, with reasoning</span><pre>Think it through briefly, THEN choose — put the reasoning first so it informs the choice. Reply with ONLY a JSON object (reasoning before action):
+{&quot;reasoning&quot;: &quot;&lt;2-4 short steps: what you need now; the key options; why this one&gt;&quot;, &quot;action&quot;: &lt;index&gt;}
+Keep reasoning to a few clauses (separate steps with &#x27;;&#x27;); the index must be one of the listed action indices; no prose outside the JSON.</pre></div>
 <div class="card"><span class="label">Live, action-only</span><pre>Reply with ONLY a JSON object on one line:
 {&quot;action&quot;: &lt;index&gt;}
 The index must be one of the listed action indices. No prose outside the JSON.</pre></div>
@@ -120,9 +120,9 @@ HOW TO ANSWER: you are given the exact list of legal moves available right now; 
 - PLAY_KNIGHT_CARD: play a knight (then move the robber and steal). PLAY_MONOPOLY R: name resource R and take all of it from the opponent. PLAY_YEAR_OF_PLENTY (R1, R2): take those two resources from the bank. PLAY_ROAD_BUILDING: place two roads for free.
 - ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say.
 
-Reply with ONLY a JSON object on one line:
-{&quot;action&quot;: &lt;index&gt;, &quot;reasoning&quot;: &quot;&lt;one short sentence&gt;&quot;}
-The index must be one of the listed action indices. No prose outside the JSON.</pre></details>
+Think it through briefly, THEN choose — put the reasoning first so it informs the choice. Reply with ONLY a JSON object (reasoning before action):
+{&quot;reasoning&quot;: &quot;&lt;2-4 short steps: what you need now; the key options; why this one&gt;&quot;, &quot;action&quot;: &lt;index&gt;}
+Keep reasoning to a few clauses (separate steps with &#x27;;&#x27;); the index must be one of the listed action indices; no prose outside the JSON.</pre></details>
 <details open><summary>USER prompt (the live game state)</summary><pre>Turn 0. You are RED. First to 10 VP wins.
 YOU (RED): VP=0 longest_road=0 dev_cards=0 | pieces left to build: 5 settlements, 4 cities, 15 roads | hand: WO=0 BR=0 SH=0 WH=0 OR=0
 OPPONENT (BLUE): VP=0 (visible) longest_road=0 dev_cards=0 | pieces left to build: 5 settlements, 4 cities, 15 roads | hand: WO=0 BR=0 SH=0 WH=0 OR=0
