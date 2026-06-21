@@ -46,9 +46,19 @@ python -m harness.scenario_cli --scenarios data/placement_heldout.jsonl \
 ```
 
 **Agent specs** are `"<backend>"` or `"<backend>:<arg>"`. Bots: `random`/`R`,
-`weighted`/`W`, `value`/`VP`, `alphabeta`/`AB` (`alphabeta:3` sets depth). LLMs:
-`claude[:model]` (wired, via Michael's Claude backend), `gemini[:model]` (stub —
-one `complete()` method to wire).
+`weighted`/`W`, `value`/`VP`, `alphabeta`/`AB` (`alphabeta:3` sets depth). LLMs
+(all wired): `claude[:model]` and `openai[:model]` (the two graders) and
+`fireworks:<model>` — the player + training target. Fireworks deployment specs
+use `accounts/fireworks/models/<base>#accounts/<acct>/deployments/<id>`; the
+current player is **Qwen2.5-7B-Instruct** on Fireworks. The backend auto-uses
+`/completions` for templateless base models and `/chat/completions` for instruct
+ones. (Gemini was removed.)
+
+**Match rules** (2-player): first to **10 VP**, a **400-turn cap** (`--max-turns`),
+and at the cap the winner is whoever has more VP (true tie → draw;
+`MatchResult.truncated` flags it). **Dice** are seeded i.i.d. by default
+(decoupled from the global RNG, so a mirrored pair sees identical rolls);
+`--balanced-dice` opts into the colonist deck for A/B only.
 
 **Reasoning mode** (`--reasoning`, default off): model reasoning is captured only
 when on — use it for the small set of games you'll open in the viewer. Training/
@@ -87,11 +97,13 @@ for:
 
 ### Backends
 
-The Claude backend (`goldilocks_eval.agents.claude_backend`, re-exported via
-`harness.backends`) is wired — `make_agent("claude[:model]", color)` just works
-with `ANTHROPIC_API_KEY` set. To add Gemini/a local model, implement one method,
-`complete(system, user) -> str`, and register it in Michael's factory; the
-agent, runner, scorer, and transcripts are all backend-agnostic.
+Three backends are wired (`goldilocks_eval/agents/`, re-exported via
+`harness.backends`), each a `complete(system, user) -> str`:
+`claude` (Anthropic SDK) and `openai` (the graders), and `fireworks` (the player
++ training target). Set the matching key (`ANTHROPIC_API_KEY` / `OPENAI_API_KEY`
+/ `FIREWORKS_API_KEY` — see `scripts/*_api_key.sh`). To add another model,
+implement one `complete()` method and register it in the factory; the agent,
+runner, scorer, and transcripts are all backend-agnostic.
 
 ---
 
