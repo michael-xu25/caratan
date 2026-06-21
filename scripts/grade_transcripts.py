@@ -100,9 +100,18 @@ def main() -> int:
     (out_dir / "report.json").write_text(json.dumps(rep, indent=2))
 
     print(f"\n=== agreement === {rep['agreement']}")
-    print("=== top weaknesses (Wilson-ranked fail-rate) ===")
-    print_weakness_table(rep["weakness_table"], top=12)
-    print(f"\nWrote {out_dir}/findings.jsonl + report.json")
+    print("=== top weaknesses (detailed; ranked by union Wilson-LB) ===")
+    rows = [r for r in rep["detailed_table"] if r["above_floor"]][:12]
+    short = lambda g: g.split(":")[0][:6]
+    hdr_graders = sorted({g for r in rows for g in r["per_grader"]})
+    print(f"  {'decision':<11}{'criterion':<19}{'tag':<14}{'n':>4}{'union':>7}{'cons':>6}"
+          + "".join(f"{short(g):>8}" for g in hdr_graders) + f"{'agree':>7}{'regretVP':>9}")
+    for r in rows:
+        pg = "".join(f"{r['per_grader'].get(g, 0)*100:>7.0f}%" for g in hdr_graders)
+        print(f"  {r['decision_type']:<11}{r['criterion']:<19}{r['tag']:<14}{r['n']:>4}"
+              f"{r['union_rate']*100:>6.0f}%{r['consensus_rate']*100:>5.0f}%{pg}"
+              f"{r['agree_rate']*100:>6.0f}%{r['mean_regret_vp']:>9.3f}")
+    print(f"\nWrote {out_dir}/findings.jsonl + report.json  (detailed_table has per-grader splits + examples)")
     return 0
 
 

@@ -90,6 +90,59 @@ def grade_run(transcripts: list[dict], grader_a, grader_b, per_game: int = 15,
     return objects
 
 
+def detailed_weakness_table(objects: list[dict], min_samples: int = 15) -> list[dict]:
+    """Richer table that keeps the nuances flat aggregation drops, per
+    (decision_type, criterion, tag) bucket:
+      - both consensus (both graders) AND union (either) fail rates
+      - per-grader fail rate (surfaces a one-sided grader at the row level)
+      - inter-grader agreement on this criterion
+      - mean oracle regret_vp (objective corroboration of the bucket)
+      - a few example decision_ids (to drill into actual mistakes)
+    Ranked by Wilson-LB on the union rate (discovery), above-floor first.
+    """
+    from collections import defaultdict
+    from harness.grader.taxonomy import CRITERIA_BY_TYPE
+    from harness.grader.aggregator import wilson_lower_bound
+
+    B = defaultdict(lambda: {"n": 0, "cons": 0, "union": 0, "agree": 0, "regret": 0.0,
+                             "pf": defaultdict(int), "pn": defaultdict(int), "ex": []})
+    for o in objects:
+        dt = o["decision_type"]
+        graders = {k: v for k, v in o["graders"].items() if isinstance(v, dict) and "criteria" in v}
+        for crit in CRITERIA_BY_TYPE[dt]:
+            fails = {g: bool(graders[g]["criteria"][crit]["failed"])
+                     for g in graders if crit in graders[g]["criteria"]}
+            if not fails:
+                continue
+            cons, uni = all(fails.values()), any(fails.values())
+            agree = len(set(fails.values())) == 1
+            for tag in o.get("state_tags", []):
+                b = B[(dt, crit, tag)]
+                b["n"] += 1; b["cons"] += cons; b["union"] += uni; b["agree"] += agree
+                b["regret"] += o.get("regret_vp", 0.0)
+                for g, f in fails.items():
+                    b["pn"][g] += 1; b["pf"][g] += int(f)
+                if uni and len(b["ex"]) < 3:
+                    b["ex"].append(o.get("decision_id"))
+
+    rows = []
+    for (dt, crit, tag), b in B.items():
+        n = b["n"]
+        rows.append({
+            "decision_type": dt, "criterion": crit, "tag": tag, "n": n,
+            "consensus_rate": round(b["cons"] / n, 3), "consensus_fail": b["cons"],
+            "union_rate": round(b["union"] / n, 3), "union_fail": b["union"],
+            "per_grader": {g: round(b["pf"][g] / b["pn"][g], 3) for g in b["pn"]},
+            "agree_rate": round(b["agree"] / n, 3),
+            "mean_regret_vp": round(b["regret"] / n, 4),
+            "wilson_lb_union": round(wilson_lower_bound(b["union"], n), 3),
+            "above_floor": n >= min_samples,
+            "examples": b["ex"],
+        })
+    rows.sort(key=lambda r: (r["above_floor"], r["wilson_lb_union"], r["union_rate"]), reverse=True)
+    return rows
+
+
 def _merged_object(o: dict, merge: str) -> dict:
     """Re-derive an object's criteria as consensus (both fail) or union (either fail)
     from the two raw grader verdicts, for the aggregator."""
@@ -111,7 +164,11 @@ def report(objects: list[dict], min_samples: int = 15, merge: str = "consensus")
     return {
         "merge": merge,
         "agreement": agreement_report(objects),
+        # simple, contract-shaped table (single merge view) — kept for compatibility
         "weakness_table": aggregate(verdicts, min_samples=min_samples),
+        # richer table: keeps consensus+union, per-grader split, agreement, mean
+        # regret, and examples per (decision_type, criterion, tag) bucket
+        "detailed_table": detailed_weakness_table(objects, min_samples=min_samples),
         "num_decisions": len(objects),
         "num_verdicts": len(verdicts),
     }
