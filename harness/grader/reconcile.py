@@ -95,10 +95,13 @@ def agreement_report(objects: list[dict]) -> dict:
     overall, by_crit = [], defaultdict(list)
     union = inter = 0
     for o in objects:
+        # only compare when BOTH graders actually produced a verdict (ok); a parse-fail
+        # verdict is not a real "pass" and must not enter the agreement stats.
+        g = [v for v in o["graders"].values()
+             if isinstance(v, dict) and "criteria" in v and v.get("ok", True)]
+        if len(g) != 2:
+            continue
         for c in o["criteria"]:
-            g = list(o["graders"].values())
-            if len(g) != 2:
-                continue
             fa = g[0]["criteria"][c["name"]]["failed"]
             fb = g[1]["criteria"][c["name"]]["failed"]
             overall.append((fa, fb)); by_crit[c["name"]].append((fa, fb))

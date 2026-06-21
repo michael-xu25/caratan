@@ -90,6 +90,7 @@ def build_game_prompt(transcript: dict, selected, decisions_by_ply: dict) -> str
     blocks = []
     for r in selected:
         d = decisions_by_ply.get(r.ply, {}) or {}
+        _assert_aligned(r, d or None)
         st = d.get("state", {}) or {}
         legal = d.get("legal_actions") or []
         legal_str = ", ".join(map(str, legal[:30])) + (
@@ -155,12 +156,13 @@ SYSTEM_DECISION = (
     "1. Use the game context (tempo, who won, the race) but score the move as of when "
     "it was made.\n"
     "2. Score EVERY criterion for this decision_type, using ONLY those IDs. Scale: "
-    "2 = good, 1 = suboptimal but defensible, 0 = clear mistake. CALIBRATE STRICTLY: "
-    "score 0 (failed=true) ONLY when a clearly better legal option was available AND the "
-    "choice is a genuine, explainable error. If two reasonable players could choose "
-    "differently, or the move is merely not-the-single-best, it is a 1 (or 2) — NOT a 0. "
-    "Do not fail a defensible choice. Give a real one-sentence reason for each (no 'n/a' "
-    "unless truly irrelevant); when you fail something, name the specific better legal move.\n"
+    "2 = good, 1 = suboptimal but defensible, 0 = a real mistake on this criterion. "
+    "Score 0 (failed=true) when the move is CLEARLY worse on this criterion than an "
+    "available legal alternative — you do NOT need it to be the single worst move or a "
+    "unanimous blunder; a clearly better legal option existing is enough. Reserve 1 for "
+    "genuinely defensible-but-imperfect. Don't fail a move that's actually fine. Give a "
+    "real one-sentence reason for each (no 'n/a' unless truly irrelevant); when you score "
+    "0, name the specific better legal move.\n"
     "3. Judge against the legal options actually available; the oracle's best legal move "
     "+ regret are a 1-ply value-function HEURISTIC (catches blunders but is myopic — "
     "ignores multi-turn payoff/opponent reply and undervalues dev-card, knight, and "
@@ -190,7 +192,8 @@ def game_context(transcript: dict) -> str:
 def local_window(transcript: dict, ply: int, before: int = 6, after: int = 3) -> str:
     """The moves immediately around this decision (recent-context window)."""
     decs = transcript.get("decisions", [])
-    pos = next((k for k, d in enumerate(decs) if d.get("ply", d.get("i")) == ply), None)
+    # ply IS the list position (decisions[] is 1:1 with action_records by position).
+    pos = ply if 0 <= ply < len(decs) else None
     if pos is None:
         return ""
     lines = []
@@ -202,7 +205,16 @@ def local_window(transcript: dict, ply: int, before: int = 6, after: int = 3) ->
     return "\n".join(lines)
 
 
+def _assert_aligned(regret, decision):
+    """Loud crash on context misalignment — the bug class that already cost a re-grade.
+    The grader prompt must describe the SAME action the oracle scored."""
+    assert decision is None or decision.get("action_type") == regret.action_type, (
+        f"grader context misalignment at ply {regret.ply}: decision "
+        f"{decision.get('action_type')!r} != regret {regret.action_type!r}")
+
+
 def build_decision_prompt(transcript: dict, regret, decision: dict | None) -> str:
+    _assert_aligned(regret, decision)
     d = decision or {}
     st = d.get("state", {}) or {}
     legal = d.get("legal_actions") or []

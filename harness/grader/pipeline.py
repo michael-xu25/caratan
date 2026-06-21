@@ -49,7 +49,7 @@ def grade_transcript(transcript: dict, grader_a, grader_b, per_game: int = 15) -
 
 
 def grade_run(transcripts: list[dict], grader_a, grader_b, per_game: int = 15,
-              concurrency: int = 16, progress=None) -> list[dict]:
+              concurrency: int = 16, progress=None, drop_stats: dict | None = None) -> list[dict]:
     """HYBRID path: score each sampled decision in its OWN call (full attention +
     compact game context), fanning ALL (board × decision × grader) calls into one
     global rate-limited pool. Wall-clock ~= total_calls / concurrency, so detail
@@ -59,7 +59,7 @@ def grade_run(transcripts: list[dict], grader_a, grader_b, per_game: int = 15,
     tasks = []  # (key, transcript, regret, decision)
     for t in transcripts:
         try:
-            regrets = compute_regrets(t)
+            regrets = compute_regrets(t, stats=drop_stats)
         except Exception:
             continue
         decs = _decisions_by_ply(t)
@@ -108,7 +108,10 @@ def detailed_weakness_table(objects: list[dict], min_samples: int = 15) -> list[
                              "pf": defaultdict(int), "pn": defaultdict(int), "ex": []})
     for o in objects:
         dt = o["decision_type"]
-        graders = {k: v for k, v in o["graders"].items() if isinstance(v, dict) and "criteria" in v}
+        # exclude parse/API-failed verdicts (ok=False) — they are NOT real passes and
+        # must not dilute the denominator (feedback #2).
+        graders = {k: v for k, v in o["graders"].items()
+                   if isinstance(v, dict) and "criteria" in v and v.get("ok", True)}
         for crit in CRITERIA_BY_TYPE[dt]:
             fails = {g: bool(graders[g]["criteria"][crit]["failed"])
                      for g in graders if crit in graders[g]["criteria"]}
@@ -148,7 +151,10 @@ def _merged_object(o: dict, merge: str) -> dict:
     from the two raw grader verdicts, for the aggregator. `disputed` marks one-sided
     flags so the disparity survives into the per-decision view even under union."""
     from harness.grader.taxonomy import CRITERIA_BY_TYPE
-    graders = [g for g in o["graders"].values() if isinstance(g, dict) and "criteria" in g]
+    graders = [g for g in o["graders"].values()
+               if isinstance(g, dict) and "criteria" in g and g.get("ok", True)]  # drop parse-fails
+    if not graders:                     # no valid verdict -> don't count it as anything
+        return None
     crit = []
     for name in CRITERIA_BY_TYPE[o["decision_type"]]:
         fs = [bool(g["criteria"][name]["failed"]) for g in graders if name in g["criteria"]]
@@ -159,12 +165,29 @@ def _merged_object(o: dict, merge: str) -> dict:
             "criteria": crit, "decision_id": o.get("decision_id")}
 
 
+def _parse_stats(objects: list[dict]) -> dict:
+    """Per-grader parse/API-failure accounting — so a low fail-rate from grader
+    whiffs is distinguishable from a low fail-rate from genuine passes (feedback #2)."""
+    from collections import Counter
+    n, ok = Counter(), Counter()
+    for o in objects:
+        for name, v in o.get("graders", {}).items():
+            if isinstance(v, dict) and "criteria" in v:
+                n[name] += 1; ok[name] += bool(v.get("ok", True))
+    return {name: {"ok": ok[name], "total": n[name],
+                   "parse_fail_rate": round(1 - ok[name] / n[name], 3) if n[name] else 0}
+            for name in n}
+
+
 def report(objects: list[dict], min_samples: int = 15, merge: str = "union") -> dict:
     verdicts = []
     for o in objects:
-        verdicts.extend(flatten_grader_object(_merged_object(o, merge)))
+        mo = _merged_object(o, merge)
+        if mo is not None:              # skip decisions where every grader parse-failed
+            verdicts.extend(flatten_grader_object(mo))
     return {
         "merge": merge,
+        "parse_failures": _parse_stats(objects),
         "agreement": agreement_report(objects),
         # simple, contract-shaped table (single merge view) — kept for compatibility
         "weakness_table": aggregate(verdicts, min_samples=min_samples),
