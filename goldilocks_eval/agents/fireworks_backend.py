@@ -32,8 +32,14 @@ DEFAULT_MODEL = None
 
 class FireworksBackend(LLMBackend):
     def __init__(self, model: str = DEFAULT_MODEL, max_tokens: int = 2048,
-                 temperature: float = 0.0, timeout: float = 60.0,
+                 temperature: float = None, timeout: float = 60.0,
                  max_retries: int = 3):
+        # Temperature default comes from FIREWORKS_TEMPERATURE when not passed,
+        # so it can cross the runner's process-pool boundary (spawned workers
+        # inherit the env). Greedy (0.0) is fine for one-shot scoring; self-play
+        # wants > 0 so two identical models don't play identically into draws.
+        if temperature is None:
+            temperature = float(os.environ.get("FIREWORKS_TEMPERATURE", "0.0"))
         key = os.environ.get("FIREWORKS_API_KEY")
         if not key:
             raise RuntimeError(

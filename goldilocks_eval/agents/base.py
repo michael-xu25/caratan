@@ -13,13 +13,12 @@ from __future__ import annotations
 
 import time
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from catanatron import Action, Color, Game, Player
-from catanatron.state_functions import get_actual_victory_points
 
 from goldilocks_eval import prompt as P
+from goldilocks_eval.decision_record import build_decision_record
 
 
 class LLMBackend(ABC):
@@ -34,36 +33,24 @@ class LLMBackend(ABC):
         raise NotImplementedError
 
 
-@dataclass
-class Decision:
-    turn: int
-    my_vp: int             # VP context — makes "while behind/ahead" legible
-    opp_vp: int
-    chosen: str            # rendered chosen action
-    options: List[str]     # the full legal set it chose among (not just a count)
-    reasoning: str
-    latency_ms: int
-    fell_back: bool        # True if we couldn't use the model's choice
-
-    @property
-    def num_options(self) -> int:
-        return len(self.options)
-
-
 class LLMPlayer(Player):
-    """A Catanatron player that delegates each decision to an `LLMBackend`."""
+    """A Catanatron player that delegates each decision to an `LLMBackend`.
+
+    Each real decision is recorded as an enriched dict (shared schema — see
+    `goldilocks_eval.decision_record.build_decision_record`): the full legal set,
+    decision-time state, the chosen action, and the reasoning."""
 
     def __init__(self, color: Color, backend: LLMBackend, is_bot: bool = True):
         super().__init__(color, is_bot)
         self.backend = backend
-        self.decisions: List[Decision] = []
+        self.decisions: List[Dict[str, Any]] = []
 
     def reset_state(self):
         self.decisions = []
 
     def decide(self, game: Game, playable_actions) -> Action:
         actions: List[Action] = list(playable_actions)
-        # No real choice -> don't spend a model call.
+        # No real choice -> don't spend a model call (and nothing to analyze).
         if len(actions) <= 1:
             if actions:
                 return actions[0]
@@ -87,15 +74,9 @@ class LLMPlayer(Player):
         latency_ms = int((time.time() - start) * 1000)
 
         chosen = actions[idx]
-        self.decisions.append(Decision(
-            turn=game.state.num_turns,
-            my_vp=get_actual_victory_points(game.state, self.color),
-            opp_vp=get_actual_victory_points(game.state, opponent),
-            chosen=P.render_action(chosen),
-            options=[P.render_action(a) for a in actions],
-            reasoning=reasoning,
-            latency_ms=latency_ms,
-            fell_back=fell_back,
+        self.decisions.append(build_decision_record(
+            game, self.color, actions, chosen,
+            reasoning=reasoning, fell_back=fell_back, latency_ms=latency_ms,
         ))
         return chosen
 

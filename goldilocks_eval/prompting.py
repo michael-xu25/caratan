@@ -28,9 +28,15 @@ from typing import Any, List, Mapping, Optional
 # Pip count (number of dot-probabilities) for each dice number.
 PIPS = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 0, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1}
 
-SYSTEM = (
-    "You are a Settlers of Catan world champion. Follow the response format "
-    "exactly: a <reasoning> block then an <answer> block with one node id."
+# Reuse the SAME 1v1 rules primer the model plays with (goldilocks_eval.prompt),
+# so placement grading and live play share game knowledge — then the placement-
+# specific task + answer format.
+from goldilocks_eval.prompt import CATAN_RULES  # noqa: E402
+
+SYSTEM = CATAN_RULES + "\n\n" + (
+    "TASK: choose where to place an opening settlement. Weigh pip totals, "
+    "resource diversity, and port access. Follow the response format exactly: "
+    "a <reasoning> block then an <answer> block with one node id."
 )
 
 
