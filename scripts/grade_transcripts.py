@@ -87,7 +87,11 @@ def main() -> int:
     print(f"graders: {ga.name} + {gb.name}  ({len(paths)} games × 2 = {len(paths) * 2} calls)\n")
 
     def _grade(p):
-        objs = grade_transcript(json.loads(p.read_text()), ga, gb, per_game=args.per_game)
+        try:
+            objs = grade_transcript(json.loads(p.read_text()), ga, gb, per_game=args.per_game)
+        except Exception as e:                      # never let one game kill the batch
+            print(f"  {p.name}: SKIPPED ({type(e).__name__}: {e})")
+            return []
         print(f"  {p.name}: {len(objs)} decisions graded")
         return objs
 

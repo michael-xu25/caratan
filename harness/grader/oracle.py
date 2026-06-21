@@ -123,9 +123,15 @@ def compute_regrets(transcript: dict) -> list[DecisionRegret]:
                                      _encode_value(best_action.value)],
                     ))
 
-        # advance the real game with the recorded result (deterministic)
-        game.execute(chosen, validate_action=False,
-                     action_record=ActionRecord(action=chosen, result=_norm(rec[1])))
+        # advance the real game with the recorded result (deterministic). If a
+        # recorded action can't be replayed (rare engine/result edge cases, e.g.
+        # a maritime trade whose replayed hand diverged), stop here and return the
+        # decisions gathered so far rather than crashing the whole run.
+        try:
+            game.execute(chosen, validate_action=False,
+                         action_record=ActionRecord(action=chosen, result=_norm(rec[1])))
+        except Exception:
+            break
 
     # attach turn numbers from the transcript's decisions[] if present
     decisions = transcript.get("decisions", [])
