@@ -31,8 +31,8 @@ per board (x2)".
 
 Splits reflect how a board is used, pre-assigned by a deterministic shuffle keyed
 on `--meta-seed` (reproducible, independent of file order):
-  * holdout_eval -- reserved pool for final mirrored head-to-head eval; never
-    mined for examples or trained on. Default 100 boards.
+  * grader_games -- seeds for the full self-play games the grader runs on
+    (play the game out from this board, then grade it). Default 100 boards.
   * example_pool -- boards to mine specific mid-game states from (e.g. opening
     placements): load the board, advance to a state, ask the model to act. The
     remainder of `--count`.
@@ -123,16 +123,16 @@ def build_board_record(seed: int, number_placement: str, vps_to_win: int) -> dic
     }
 
 
-def assign_splits(board_ids: list[str], n_holdout: int, meta_seed: int) -> dict[str, str]:
+def assign_splits(board_ids: list[str], n_grader: int, meta_seed: int) -> dict[str, str]:
     """Deterministically map each board_id -> split via a meta-seeded shuffle.
 
-    First `n_holdout` shuffled boards -> holdout_eval; the rest -> example_pool.
+    First `n_grader` shuffled boards -> grader_games; the rest -> example_pool.
     """
     rng = random.Random(meta_seed)
     shuffled = board_ids[:]
     rng.shuffle(shuffled)
     return {
-        bid: ("holdout_eval" if i < n_holdout else "example_pool")
+        bid: ("grader_games" if i < n_grader else "example_pool")
         for i, bid in enumerate(shuffled)
     }
 
@@ -146,9 +146,9 @@ def main() -> None:
     ap.add_argument("--vps-to-win", type=int, default=10)
     ap.add_argument("--out", default="dataset/initial", help="output directory")
     ap.add_argument("--meta-seed", type=int, default=20260620,
-                    help="seed for the holdout/example split shuffle")
-    ap.add_argument("--holdout-eval", type=int, default=100,
-                    help="number of boards reserved for held-out eval (rest -> example_pool)")
+                    help="seed for the grader/example split shuffle")
+    ap.add_argument("--grader-games", type=int, default=100,
+                    help="number of boards used as grader self-play games (rest -> example_pool)")
     args = ap.parse_args()
 
     out_dir = Path(args.out)
@@ -156,7 +156,7 @@ def main() -> None:
 
     seeds = list(range(args.start_seed, args.start_seed + args.count))
     board_ids = [f"init_{i:04d}" for i in range(args.count)]
-    splits = assign_splits(board_ids, args.holdout_eval, args.meta_seed)
+    splits = assign_splits(board_ids, args.grader_games, args.meta_seed)
 
     fingerprints: dict[str, str] = {}
     manifest_boards = []
@@ -189,7 +189,7 @@ def main() -> None:
         "start_seed": args.start_seed,
         "number_placement": args.number_placement,
         "vps_to_win": args.vps_to_win,
-        "holdout_eval": args.holdout_eval,
+        "grader_games": args.grader_games,
         "meta_seed": args.meta_seed,
         "split_counts": split_counts,
         "unique_layouts": len(fingerprints),

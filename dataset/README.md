@@ -24,7 +24,7 @@ dataset/
   "schema_version": 1,
   "board_id": "init_0000",
   "seed": 1000,                 // source of truth: regenerates the whole board
-  "split": "example_pool",      // "holdout_eval" | "example_pool" (see below)
+  "split": "example_pool",      // "grader_games" | "example_pool" (see below)
   "number_placement": "official_spiral",
   "map_template": "BASE",
   "vps_to_win": 10,
@@ -47,8 +47,9 @@ dataset/
 - **1 seed per board, played ×2.** The seed fixes the board; at run time the
   match runner plays it as a **mirrored seat-swap pair** (RED/BLUE swapped across
   the two orientations) — the project's fairness primitive.
-- **`holdout_eval`** (default 100 boards): reserved for final mirrored
-  head-to-head eval. Never mined for examples or trained on.
+- **`grader_games`** (default 100 boards): seeds for the full self-play games the
+  grader runs on. Play each board out to a finished game, then grade it (the
+  dual-grader pipeline).
 - **`example_pool`** (the rest): boards to mine specific mid-game states from
   (e.g. opening placements). Load a board, advance it to a target state, and ask
   a model to act — used for per-weakness example/env construction, not full games.
