@@ -82,11 +82,20 @@
     <div class="pad">
       <div class="row" style="justify-content:space-between">
         <span id="turnlbl" class="muted">—</span>
-        <span class="dice" id="dice"></span>
+        <span class="row" style="gap:6px">
+          <button id="gradetoggle" title="Show grading verdicts for this game"
+                  style="display:none;font-size:11px;padding:2px 8px;background:#5a6b3a">⚖️ Grading</button>
+          <span class="dice" id="dice"></span>
+        </span>
       </div>
       <div id="action">—</div>
       <div id="note" class="muted"></div>
       <div id="reason"></div>
+    </div>
+    <div class="pad" id="gradingpad" style="display:none">
+      <div class="seclabel">⚖️ Grading <span id="gradewinner" class="muted"></span></div>
+      <div id="failuremodes" style="margin-bottom:8px"></div>
+      <div id="stepgrade" class="muted">—</div>
     </div>
     <div class="pad">
       <div class="seclabel">Victory points <span class="pub">PUBLIC</span></div>
@@ -262,7 +271,9 @@ function updatePanel(step) {
   curStep = step;
   const handTotal = (c) => RES5.reduce((s,r)=>s+(((step.hands||{})[c]||{})[r]||0),0);
   // turn header — richer: turn, ply, acting player's standing
-  $("turnlbl").textContent = `Turn ${step.turn ?? "—"} · ply ${idx+1}/${DATA.meta.num_steps}`;
+  const graded = GRADING && (GRADING.steps||{})[String(step.i)];
+  const gradedFlag = graded ? (graded.failed && graded.failed.length ? " ⚖✗" : " ⚖") : "";
+  $("turnlbl").textContent = `Turn ${step.turn ?? "—"} · ply ${idx+1}/${DATA.meta.num_steps}${gradedFlag}`;
   $("dice").innerHTML = step.dice ? step.dice.map(dieHTML).join("") : "";
   const valTxt = Array.isArray(step.value) ? `[${step.value}]` : (step.value ?? "");
   $("action").innerHTML =
@@ -316,6 +327,7 @@ function updatePanel(step) {
 
   $("slider").value = idx;
   $("steplbl").textContent = `Step ${idx+1} / ${DATA.meta.num_steps}`;
+  renderStepGrade(step);
 }
 
 function setHeader() {
@@ -382,7 +394,7 @@ async function initPicker(){
 let SRC = null;   // path of the currently-loaded .view.json (for "take over from here")
 function loadUrl(url){
   fetch(url).then(r=>r.json()).then(d=>{
-    load(d); SRC = url;
+    load(d); SRC = url; loadGrading(url);
     history.replaceState(null, "", `?data=${url}`);
     const sel = $("runsel"); if (sel) sel.value = url;
   }).catch(()=>{});
@@ -403,12 +415,55 @@ async function takeOver(){
   }catch(e){ btn.textContent = "needs play server"; }
 }
 
+// ---- grading overlay (per-game <game>.grading.json sidecar) ----
+let GRADING = null, gradeShown = false;
+const gradeUrlOf = v => v.replace(/\.view\.json$/, ".grading.json");
+async function loadGrading(viewUrl){
+  GRADING = null;
+  try { GRADING = await (await fetch(gradeUrlOf(viewUrl), {cache:"no-store"})).json(); } catch(e){}
+  const btn = $("gradetoggle");
+  if (GRADING){ btn.style.display = ""; renderFailureModes(); if (gradeShown && DATA) renderStepGrade(DATA.steps[idx]); }
+  else { btn.style.display = "none"; $("gradingpad").style.display = "none"; gradeShown = false; }
+}
+function renderFailureModes(){
+  if (!GRADING) return;
+  $("gradewinner").textContent = GRADING.winner ? `· winner ${dname(GRADING.winner)}` : "· draw";
+  const fm = GRADING.failure_modes || [];
+  $("failuremodes").innerHTML = fm.length
+    ? `<div class="muted" style="margin-bottom:3px">game-level failure modes (why it lost):</div>`
+      + fm.map(m=>`<div>• <b>${m.mode}</b> <span class="muted">— ${m.why||""}</span></div>`).join("")
+    : `<div class="muted">no game-level failure modes flagged</div>`;
+}
+function renderStepGrade(step){
+  if (!GRADING || !gradeShown) return;
+  const s = (GRADING.steps||{})[String(step.i)];
+  const el = $("stepgrade");
+  if (!s){ el.innerHTML = `<span class="muted">this decision wasn't in the graded sample</span>`; return; }
+  const reg = s.regret_vp!=null ? ` · regret ${(+s.regret_vp).toFixed(2)} VP` : "";
+  if (!s.failed || !s.failed.length){
+    el.innerHTML = `<span style="color:#8fce8f">✓ no failed criteria</span> <span class="muted">(${s.decision_type}${reg})</span>`;
+    return;
+  }
+  el.innerHTML = `<div class="muted">${s.decision_type}${reg}</div>`
+    + s.failed.map(f=>{
+        const badge = f.disputed ? `<span style="color:#e0b36a">⚠ disputed</span>` : `<span style="color:#e88">✗ failed</span>`;
+        const reasons = (f.claude?`<div class="muted" style="margin-left:8px">claude: ${f.claude}</div>`:"")
+                      + (f.openai?`<div class="muted" style="margin-left:8px">openai: ${f.openai}</div>`:"");
+        return `<div style="margin-top:5px"><b>${f.criterion}</b> ${badge}${reasons}</div>`;
+      }).join("");
+}
+$("gradetoggle").onclick = () => {
+  gradeShown = !gradeShown;
+  $("gradingpad").style.display = gradeShown ? "" : "none";
+  if (gradeShown && DATA) renderStepGrade(DATA.steps[idx]);
+};
+
 // ---- startup: ?data wins; else first run in the manifest ----
 (async () => {
   const manifest = await initPicker();
   const q = params.get("data");
   if (q){
-    fetch(q).then(r=>r.json()).then(d=>{ load(d); SRC = q;
+    fetch(q).then(r=>r.json()).then(d=>{ load(d); SRC = q; loadGrading(q);
       const sel = $("runsel"); if (sel) sel.value = q;
       const s = params.get("step"); if (s!=null) go(+s);
     }).catch(()=>{});
