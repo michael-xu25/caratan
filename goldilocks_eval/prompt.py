@@ -14,6 +14,7 @@ from catanatron.models.enums import RESOURCES
 from catanatron.state_functions import (
     get_actual_victory_points,
     get_longest_road_length,
+    player_key,
     player_num_dev_cards,
     player_num_resource_cards,
 )
@@ -22,11 +23,14 @@ from catanatron.state_functions import (
 def _player_line(game: Game, color: Color, label: str) -> str:
     hand = {r: player_num_resource_cards(game.state, color, r) for r in RESOURCES}
     hand_str = " ".join(f"{r[:2]}={hand[r]}" for r in RESOURCES)
+    ps, k = game.state.player_state, player_key(game.state, color)
     return (
         f"{label} ({color.value}): "
         f"VP={get_actual_victory_points(game.state, color)} "
         f"longest_road={get_longest_road_length(game.state, color)} "
         f"dev_cards={player_num_dev_cards(game.state, color)} "
+        f"| pieces left to build: {ps[f'{k}_SETTLEMENTS_AVAILABLE']} settlements, "
+        f"{ps[f'{k}_CITIES_AVAILABLE']} cities, {ps[f'{k}_ROADS_AVAILABLE']} roads "
         f"| hand: {hand_str}"
     )
 
@@ -185,10 +189,13 @@ CATAN_RULES = (
     "from each of these: a settlement you own is worth 1 VP; a city is worth "
     "2 VP; holding Longest Road is worth 2 VP (you hold it if you have the single "
     "longest connected run of your own roads and it is at least 5 roads long, and "
-    "longer than the opponent's); holding Largest Army is worth 2 VP (you hold it "
-    "if you have played the most knight cards and have played at least 3, more "
-    "than the opponent); and each victory-point development card you hold is "
-    "worth 1 VP (these stay hidden until you win).\n\n"
+    "longer than the opponent's — and note an opponent who builds a settlement on "
+    "a node partway along your road splits that run into shorter separate pieces); "
+    "holding Largest Army is worth 2 VP (you hold it if you have played the most "
+    "knight cards and have played at least 3, more than the opponent); and each "
+    "victory-point development card you hold is worth 1 VP — it counts toward your "
+    "10 as soon as you hold it, and stays hidden from the opponent until the game "
+    "ends.\n\n"
 
     "WHAT THINGS COST AND THE BUILD RULES:\n"
     "- Road: 1 wood + 1 brick. A road must connect to one of your existing roads, "
@@ -199,7 +206,13 @@ CATAN_RULES = (
     "rule' — no two settlements/cities can be neighbours).\n"
     "- City: 2 wheat + 3 ore to upgrade one of your OWN existing settlements into "
     "a city on the same spot. A city collects 2 resources per tile instead of 1.\n"
-    "- Development card: 1 sheep + 1 wheat + 1 ore (you draw a random one).\n\n"
+    "- Development card: 1 sheep + 1 wheat + 1 ore (you draw a random card from "
+    "the deck, which holds 14 Knights, 5 Victory Point cards, and 2 each of Road "
+    "Building, Year of Plenty, and Monopoly).\n\n"
+
+    "PIECE SUPPLY: each player has a limited stock of pieces — 5 settlements, "
+    "4 cities, and 15 roads in total — and cannot build beyond that. (Upgrading a "
+    "settlement to a city returns the settlement to your stock.)\n\n"
 
     "THE OPENING: the game begins with each player placing a couple of starting "
     "settlements and roads for free (the distance rule still applies; the "
@@ -225,15 +238,23 @@ CATAN_RULES = (
     "TRADING: on your turn you may trade resources with the bank at 4 of one "
     "resource for 1 of any other (4:1). If you own a settlement or city on a "
     "port, you may instead trade at that port's ratio: a generic port is 3:1 "
-    "(any 3 matching resources for 1), and a resource-specific port is 2:1 "
-    "(2 of that resource for 1 of any other).\n\n"
+    "(any 3 of the same resource for 1), and a resource-specific port is 2:1 "
+    "(2 of that resource for 1 of any other). There is no player-to-player "
+    "trading in this game — you exchange resources only with the bank or at your "
+    "ports.\n\n"
 
     "A TURN, STEP BY STEP: first you roll the two dice (this produces resources, "
     "or triggers the robber on a 7). After rolling you may take as many actions "
     "as you can afford, in any order you like: build roads, settlements, and "
     "cities, buy a development card, play one development card, and trade. Each of "
     "these is a separate action; you keep taking actions until you choose to end "
-    "your turn."
+    "your turn.\n\n"
+
+    "YOU DO NOT ENFORCE THE RULES: the game checks every rule for you and always "
+    "offers you exactly the moves that are legal right now (placement distance, "
+    "road connection, costs, whose turn it is, discards, and so on are all handled "
+    "for you). Your only job each step is to pick one move from the list you are "
+    "given."
 )
 
 # Live-play action glossary (index-based selection over the full legal set).
@@ -246,10 +267,17 @@ _LIVE_ACTION_GLOSSARY = (
     "- BUILD_ROAD (a, b): build a road on the edge between nodes a and b.\n"
     "- MOVE_ROBBER ((x, y, z), victim): move the robber onto the tile at that "
     "coordinate and steal from the named opponent (or no one).\n"
-    "- MARITIME_TRADE (...): give the listed resources to the bank in exchange "
-    "for the last one listed.\n"
-    "- PLAY_KNIGHT and other PLAY_* moves play that development card. "
-    "ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say."
+    "- MARITIME_TRADE (give1, give2, give3, give4, receive): hand the bank the "
+    "resources listed in the give slots (empty slots show as 'None') and take the "
+    "'receive' resource. Example: (WHEAT, WHEAT, None, None, WOOD) means give "
+    "2 wheat, get 1 wood (a 2:1 wheat-port trade).\n"
+    "- DISCARD_RESOURCE R: discard one card of resource R (offered only when a 7 "
+    "was rolled and you must discard down).\n"
+    "- PLAY_KNIGHT_CARD: play a knight (then move the robber and steal). "
+    "PLAY_MONOPOLY R: name resource R and take all of it from the opponent. "
+    "PLAY_YEAR_OF_PLENTY (R1, R2): take those two resources from the bank. "
+    "PLAY_ROAD_BUILDING: place two roads for free.\n"
+    "- ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say."
 )
 
 RULES_1V1 = CATAN_RULES + "\n\n" + _LIVE_ACTION_GLOSSARY
