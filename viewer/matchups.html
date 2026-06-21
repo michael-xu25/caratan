@@ -6,13 +6,16 @@
 <title>Caratan — Evals & Matchups</title>
 <link rel="stylesheet" href="catan-ui.css" />
 <style>
-  body { margin:0; font-family:-apple-system,Segoe UI,Roboto,sans-serif; background:#0f2233; color:#eaf1f8; }
+  /* override catan-ui.css's app-shell body (flex/100vh/overflow:hidden) so this page scrolls */
+  html, body { height:auto; }
+  body { margin:0; display:block; min-height:100vh; overflow-y:auto;
+         font-family:-apple-system,Segoe UI,Roboto,sans-serif; background:#0f2233; color:#eaf1f8; }
   .wrap { max-width:980px; margin:0 auto; padding:24px 20px 60px; }
   h1 { font-size:22px; margin:0 0 4px; }
   h2 { font-size:17px; margin:28px 0 6px; border-bottom:1px solid #2f5778; padding-bottom:6px; }
   a { color:#8fc7ff; }
   .sub { color:#9fb6cc; font-size:13px; margin:0 0 8px; }
-  .nav a { margin-right:14px; font-size:13px; }
+  .nav { margin:12px 0 4px; } .nav a { margin-right:10px; }
   .card { background:#14304a; border:1px solid #2f5778; border-radius:10px; padding:14px 16px; margin:12px 0; }
   .mu-title { font-size:15px; font-weight:700; margin-bottom:8px; }
   .tag { font-size:11px; padding:2px 7px; border-radius:10px; font-weight:700; }
@@ -40,7 +43,7 @@
 <body>
 <div class="wrap">
   <h1>🏆 Caratan — Evals & Matchups</h1>
-  <div class="nav"><a href="index.html">← Replay viewer</a></div>
+  <div class="nav"><a class="navbtn" href="index.html">← Back to replay viewer</a></div>
 
   <h2>Head-to-head win-rate <span class="sub" style="font-weight:400">— full games, trained model vs untrained base</span></h2>
   <p class="sub">Each trained checkpoint plays the untrained base (<code>Qwen/Qwen3-8B</code>) over the

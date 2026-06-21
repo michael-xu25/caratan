@@ -25,7 +25,8 @@
   <div id="side">
     <div class="top">
       <div class="brand"><b>🎬 Caratan Replay</b></div>
-      <select id="runsel" title="Pick a sample run / game" style="width:100%;margin-bottom:12px;display:none"></select>
+      <select id="runsel" title="Pick a sample run / game" style="width:100%;margin-bottom:8px;display:none"></select>
+      <button id="mirrorbtn" class="navbtn" style="display:none;width:100%;margin-bottom:12px" title="Jump to this seed's mirror game (seats swapped)">🔄 mirror</button>
       <div class="pills" id="seats"></div>
       <div id="winnerbanner" class="winbanner" style="display:none"></div>
       <div class="stats">
@@ -61,8 +62,10 @@
     </div>
     <div id="controls">
       <div class="ctlrow">
+        <button id="prevgame" title="Previous transcript in the list">⏪ game</button>
         <button id="first">⏮</button><button id="prev">◀</button>
         <button id="play">▶ Play</button><button id="next">▶</button><button id="last">⏭</button>
+        <button id="nextgame" title="Next transcript in the list">game ⏩</button>
       </div>
       <input id="slider" type="range" min="0" max="0" value="0" />
       <div class="row" style="justify-content:center;margin-top:8px">
@@ -198,25 +201,53 @@ async function initPicker(){
   let manifest = null;
   try { manifest = await (await fetch("runs.json", {cache:"no-store"})).json(); } catch(e){}
   if (!manifest || !manifest.runs || !manifest.runs.length) return null;
-  const sel = $("runsel"); sel.innerHTML = "";
+  const sel = $("runsel"); sel.innerHTML = ""; VIEWS = [];
   for (const run of manifest.runs){
     const og = document.createElement("optgroup"); og.label = run.name;
     for (const g of run.games){
-      const o = document.createElement("option"); o.value = g.view; o.textContent = fmtGame(g); og.appendChild(o); }
+      const o = document.createElement("option"); o.value = g.view; o.textContent = fmtGame(g); og.appendChild(o);
+      VIEWS.push(g.view); }
     sel.appendChild(og);
   }
   sel.onchange = () => loadUrl(sel.value);
   sel.style.display = "";
   return manifest;
 }
-let SRC = null;
+let SRC = null, VIEWS = [];
 function loadUrl(url){
   fetch(url).then(r=>r.json()).then(d=>{
     load(d); SRC = url; loadGrading(url);
     history.replaceState(null, "", `?data=${url}`);
     const sel = $("runsel"); if (sel) sel.value = url;
+    updateNav();
   }).catch(()=>{});
 }
+
+// ---- transcript navigation: mirror toggle + next/prev game ----
+const mirrorOf = u => !u ? null
+  : u.includes("_norm.view.json") ? u.replace("_norm.view.json", "_swap.view.json")
+  : u.includes("_swap.view.json") ? u.replace("_swap.view.json", "_norm.view.json") : null;
+function gotoSibling(off){
+  if (!VIEWS.length) return;
+  let i = VIEWS.indexOf(SRC); if (i < 0) i = 0;
+  const j = Math.min(VIEWS.length-1, Math.max(0, i + off));
+  if (VIEWS[j] && VIEWS[j] !== SRC) loadUrl(VIEWS[j]);
+}
+function updateNav(){
+  const mb = $("mirrorbtn");
+  if (mb){ const m = mirrorOf(SRC);
+    if (m && VIEWS.includes(m)){ mb.style.display = "";
+      mb.textContent = SRC.includes("_norm") ? "🔄 view mirror (swapped seats)"
+                                             : "🔄 view original (norm seats)"; }
+    else mb.style.display = "none"; }
+  const i = VIEWS.indexOf(SRC);
+  const pg = $("prevgame"), ng = $("nextgame");
+  if (pg) pg.disabled = !(i > 0);
+  if (ng) ng.disabled = !(i >= 0 && i < VIEWS.length-1);
+}
+$("mirrorbtn").onclick = () => { const m = mirrorOf(SRC); if (m) loadUrl(m); };
+$("prevgame").onclick = () => gotoSibling(-1);
+$("nextgame").onclick = () => gotoSibling(1);
 
 // "Take over from here" — fork an interactive game at the current ply (read-only).
 async function takeOver(){
@@ -285,6 +316,7 @@ function renderStepGrade(step){
     fetch(q).then(r=>r.json()).then(d=>{ load(d); SRC = q; loadGrading(q);
       const sel = $("runsel"); if (sel) sel.value = q;
       const s = params.get("step"); if (s!=null) go(+s);
+      updateNav();
     }).catch(()=>{});
   } else if (runQ && manifest){
     // jump to the named run (match its dir path or name) and open its first game
