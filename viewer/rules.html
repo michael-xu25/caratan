@@ -19,11 +19,25 @@ pre{background:#23201a;color:#ece6d8;border-radius:10px;padding:16px;overflow:au
 details{margin:10px 0}
 summary{cursor:pointer;color:var(--accent);font-weight:600}
 .note{color:var(--muted);font-size:14px;margin:6px 0 0}
+.banner{background:#fff5ec;border:1px solid var(--accent);border-radius:10px;padding:14px 18px;margin:18px 0;font-size:14.5px;line-height:1.5}
+.banner b{color:var(--accent)}
 </style></head><body><div class="wrap">
 <h1>1v1 Catan — Rules the model is given</h1>
 <p class="sub">Generated from the live code (<code>goldilocks_eval/prompt.py</code> +
 <code>goldilocks_eval/prompting.py</code>) — this is byte-for-byte what the model sees.
 Review the sections below and flag anything wrong or missing.</p>
+
+<div class="banner">
+<b>Why there is no strategy on this page.</b> This is the <b>statable floor</b> —
+the game rules, the legal moves, how to read the board (including pips as plain
+dice-odds facts), and the output format — given <b>identically to the baseline and
+the trained model</b>. All un-enumerable judgment (when to take a high-pip vs. a
+resource-diverse spot, when to trade or block, when to switch from expanding to
+cities to longest road) is taught only through the <b>RL reward</b> and never
+appears here. That separation is what makes the trained-vs-baseline before/after a
+valid measure of <i>learned strategy</i> rather than hint-following. See
+<code>words-vs-rl.md</code> for the full principle.
+</div>
 
 <h2>Rules primer <span class="tag">CATAN_RULES — shared by play &amp; grading</span></h2>
 <div class="card">You are playing a 1-vs-1 game of Settlers of Catan (you and exactly one opponent). This explains the whole game from scratch — assume no prior knowledge.</div>
@@ -57,7 +71,9 @@ You may play at most ONE development card in the entire turn — whether before 
 - MARITIME_TRADE (give1, give2, give3, give4, receive): hand the bank the resources listed in the give slots (empty slots show as &#x27;None&#x27;) and take the &#x27;receive&#x27; resource. Example: (WHEAT, WHEAT, None, None, WOOD) means give 2 wheat, get 1 wood (a 2:1 wheat-port trade).
 - DISCARD_RESOURCE R: discard one card of resource R (offered only when a 7 was rolled and you must discard down).
 - PLAY_KNIGHT_CARD: play a knight (then move the robber and steal). PLAY_MONOPOLY R: name resource R and take all of it from the opponent. PLAY_YEAR_OF_PLENTY (R1, R2): take those two resources from the bank. PLAY_ROAD_BUILDING: place two roads for free.
-- ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say.</pre></div>
+- ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say.
+
+WHAT YOU CAN SEE: the state above is complete public information — every player&#x27;s settlements, cities, roads, victory points, longest-road length, knights played, and resource hand, plus the whole board and the robber. The only thing hidden from you is which specific development cards the opponent holds (you see their count, not their types).</pre></div>
 
 <h2>Output formats</h2>
 <div class="card"><span class="label">Live, with reasoning</span><pre>Think it through briefly, THEN choose — put the reasoning first so it informs the choice. Reply with ONLY a JSON object (reasoning before action):
@@ -119,6 +135,8 @@ HOW TO ANSWER: you are given the exact list of legal moves available right now; 
 - DISCARD_RESOURCE R: discard one card of resource R (offered only when a 7 was rolled and you must discard down).
 - PLAY_KNIGHT_CARD: play a knight (then move the robber and steal). PLAY_MONOPOLY R: name resource R and take all of it from the opponent. PLAY_YEAR_OF_PLENTY (R1, R2): take those two resources from the bank. PLAY_ROAD_BUILDING: place two roads for free.
 - ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say.
+
+WHAT YOU CAN SEE: the state above is complete public information — every player&#x27;s settlements, cities, roads, victory points, longest-road length, knights played, and resource hand, plus the whole board and the robber. The only thing hidden from you is which specific development cards the opponent holds (you see their count, not their types).
 
 Think it through briefly, THEN choose — put the reasoning first so it informs the choice. Reply with ONLY a JSON object (reasoning before action):
 {&quot;reasoning&quot;: &quot;&lt;2-4 short steps: what you need now; the key options; why this one&gt;&quot;, &quot;action&quot;: &lt;index&gt;}
