@@ -53,6 +53,34 @@ its raw "as-deployed" score is ~0, an even bigger but less fair gap). Determinis
 3. Log cosmetic: per-step "top3 <x>" is really mean-reward for maritime/build.
 4. Data is 16 fixed boards/env (fast, clear climb). Scale `--limit` up for breadth.
 
+## DEPLOYED for Cara (gateway-queryable by name)
+Decision: **ship 2 envs (placement + build)** — the generalizing wins. Maritime is
+kept in the chain but not pursued further: discovery showed it *over-corrected*
+(takes a productive trade only 2% vs base 10%) and the env has thin trainable signal
+(not-trading is near-optimal on sampled states). The order was placement→maritime→
+**build**, so the post-build model includes all three.
+
+| model name | = checkpoint | use |
+|---|---|---|
+| `Qwen/Qwen3-8B` | base (untrained) | BEFORE baseline |
+| `catan-placement-only` | step-54 (post-placement) | placement-only |
+| `catan-grpo-q8b` | step-104 (post-build, full chain) | the shipped model |
+| ~~`catan-postplacement`~~ | (accidental dup of post-build — **ignore**) | n/a |
+
+Verified differ as expected: placement identical (no forgetting); build
+post-placement 1.12/87% → post-build **1.38/97%**.
+
+**Cara — run evals** (held-out grader_games scenarios, both no-think, fair):
+```bash
+cd hud_training && set -a; source ../.env; set +a
+../.venv-hud/bin/python eval_holdout.py \
+    --models Qwen/Qwen3-8B catan-placement-only catan-grpo-q8b
+# add --envs placement build  to pick envs; data in hud_training/data/*_eval.trl.jsonl
+```
+Or query any model directly: HUD gateway `https://inference.beta.hud.ai/v1` (OpenAI-
+compatible), model = the name above, `HUD_API_KEY` from `.env`. Append `/no_think`
+to the user message so the base answers directly.
+
 ## HUD run stats (the whole session on the fork)
 - **104 optim steps**, **12,979 rollouts** (datums), across **12 jobs** (smokes +
   the real runs), **123 min** of active training (10:39–12:42).

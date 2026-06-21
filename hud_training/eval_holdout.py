@@ -102,14 +102,21 @@ def summarize(env, res):
             f"| invalid {sum(r['invalid'] for r in res)/n:.0%}")
 
 
-def main():
-    for env, (path, _) in ENVS.items():
+def main(models, envs):
+    for env in envs:
+        path, _ = ENVS[env]
         rows = [json.loads(l) for l in open(HERE / path) if l.strip()]
         print(f"\n===== {env}  ({len(rows)} held-out scenarios) =====")
-        for label, model in [("BEFORE (base Qwen3-8B)", BASE), ("AFTER  (trained)", TRAINED)]:
+        for model in models:
             res = eval_model(env, model, rows)
-            print(f"  {label:24} {summarize(env, res)}")
+            print(f"  {model:26} {summarize(env, res)}")
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    p = argparse.ArgumentParser(description="Held-out eval over the HUD gateway.")
+    p.add_argument("--models", nargs="+", default=[BASE, TRAINED],
+                   help="gateway model names, e.g. catan-placement-only catan-grpo-q8b")
+    p.add_argument("--envs", nargs="+", default=list(ENVS), choices=list(ENVS))
+    a = p.parse_args()
+    main(a.models, a.envs)
