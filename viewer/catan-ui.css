@@ -132,11 +132,12 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 
 /* floating nav button over the board's empty space (corners) — e.g. switch
    between the replay viewer and the interactive game */
-.boardnav{position:absolute;top:16px;z-index:6;display:inline-flex;align-items:center;gap:7px;
-  background:rgba(14,21,33,.85);border:1px solid var(--line);border-radius:11px;padding:9px 13px;
-  color:var(--ink);font-size:13px;font-weight:700;text-decoration:none;cursor:pointer}
-.boardnav:hover{background:var(--card2);border-color:#37445a;color:var(--ink)}
-.boardnav.left{left:16px} .boardnav.right{right:16px}
+.boardnav{position:absolute;top:18px;z-index:6;display:inline-flex;align-items:center;gap:9px;
+  background:var(--card2);border:1px solid #37445a;border-radius:12px;padding:13px 20px;
+  color:var(--ink);font-size:15px;font-weight:700;text-decoration:none;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.boardnav:hover{background:#22304a;border-color:var(--gold);color:#fff}
+.boardnav.left{left:18px} .boardnav.right{right:18px}
 
 /* dice bar OVER the board (big, easy to read) */
 #dicebar{position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;
