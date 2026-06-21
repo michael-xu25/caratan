@@ -45,6 +45,9 @@
   .files { font-size: 13px; color: var(--muted); }
   table { width: 100%; font-size: 12px; border-collapse: collapse; }
   td { padding: 2px 0; }
+  .handrow { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .cards { display: flex; gap: 7px; font-size: 13px; }
+  .card { white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -70,8 +73,12 @@
       <div id="reason"></div>
     </div>
     <div class="pad">
-      <div class="muted" style="margin-bottom:6px">Victory points (built — excludes longest road / army / dev)</div>
+      <div class="muted" style="margin-bottom:6px">Victory points (engine — actual VP)</div>
       <table id="vptable"></table>
+    </div>
+    <div class="pad">
+      <div class="muted" style="margin-bottom:6px">Resource cards (in hand)</div>
+      <div id="hands"></div>
     </div>
     <div id="controls">
       <div class="row" style="justify-content:center; margin-bottom:8px">
@@ -89,6 +96,8 @@
 <script>
 const RES_COLOR = { WOOD:"#2f7d32", BRICK:"#c4502a", SHEEP:"#9ed16f", WHEAT:"#e6c14b",
                     ORE:"#8b97a6", DESERT:"#d8c79a" };
+const RES_ICON = { WOOD:"🌲", BRICK:"🧱", SHEEP:"🐑", WHEAT:"🌾", ORE:"⛏️", DEV:"🃏" };
+const RES_ORDER = ["WOOD","BRICK","SHEEP","WHEAT","ORE","DEV"];
 const PLAYER_COLOR = { RED:"#d83b3b", BLUE:"#2f74d0", ORANGE:"#e8862e", WHITE:"#e9eef2" };
 const SVG_NS = "http://www.w3.org/2000/svg";
 const NODE_DELTA = { NORTH:[0,-1], NORTHEAST:[Math.sqrt(3)/2,-0.5], SOUTHEAST:[Math.sqrt(3)/2,0.5],
@@ -194,6 +203,21 @@ function updatePanel(step) {
       <td><div class="vpbar"><div class="vpfill" style="width:${pct}%;background:${pcolor(c)}"></div></div></td>
       <td style="width:64px;text-align:right" class="muted">${v} · fin ${fv[c]??"?"}</td></tr>`;
   }).join("");
+  // resource cards in hand, per player
+  const hands = step.hands || {};
+  $("hands").innerHTML = DATA.players.map(c => {
+    const h = hands[c] || {};
+    const cards = RES_ORDER.map(r => {
+      const n = h[r] || 0;
+      const dim = n === 0 ? "opacity:.3" : "";
+      return `<span class="card" style="${dim}" title="${r}">${RES_ICON[r]}&thinsp;${n}</span>`;
+    }).join("");
+    const total = ["WOOD","BRICK","SHEEP","WHEAT","ORE"].reduce((s,r)=>s+(h[r]||0),0);
+    return `<div class="handrow"><span class="chip" style="background:${pcolor(c)}">${c}</span>`
+         + `<span class="cards">${cards}</span>`
+         + `<span class="muted" style="margin-left:auto">${total} cards</span></div>`;
+  }).join("");
+
   $("slider").value = idx;
   $("steplbl").textContent = `Step ${idx+1} / ${DATA.meta.num_steps}`;
 }
