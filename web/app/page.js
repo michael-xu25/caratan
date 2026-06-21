@@ -102,19 +102,19 @@ const EXPLORE = [
     emoji: "🎲",
     title: "Game replays",
     desc: "Step through full 1v1 self-play games on rendered Catan boards.",
-    href: "/viewer/index.html",
+    href: "/viewer/index",
   },
   {
     emoji: "📍",
     title: "Placement grading",
     desc: "How opening settlement spots are scored against the optimal pick.",
-    href: "/viewer/placement_grading.html",
+    href: "/viewer/placement_grading",
   },
   {
     emoji: "📖",
     title: "Rules",
     desc: "The exact 1v1 Catan ruleset the engine and model play under.",
-    href: "/viewer/rules.html",
+    href: "/viewer/rules",
   },
 ];
 
@@ -156,7 +156,7 @@ export default function Page() {
             <a className="btn primary" href="#results">
               See the results
             </a>
-            <a className="btn" href="/viewer/index.html" target="_blank" rel="noreferrer">
+            <a className="btn" href="/viewer/index" target="_blank" rel="noreferrer">
               Watch a game replay ↗
             </a>
           </div>
@@ -331,7 +331,7 @@ export default function Page() {
               </span>
               {"\n\n"}
               <span className="cmt"># 2. then open the play UI in your browser</span>
-              {"\n"}http://localhost:8000/viewer/play.html
+              {"\n"}http://localhost:8000/viewer/play
             </div>
           </div>
         </div>
