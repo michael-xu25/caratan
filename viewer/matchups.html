@@ -51,28 +51,47 @@
     training bought in <i>actual games</i> — distinct from the per-decision eval below.</p>
   <div id="matchups"></div>
 
+  <h2>Game-quality stats <span class="sub" style="font-weight:400">— measured from the games · untrained vs settlement-only vs fully-trained</span></h2>
+  <p class="sub" id="gswhat"></p>
+  <div id="gamestats"></div>
+
   <h2>Per-decision held-out eval <span class="sub" style="font-weight:400">— pick quality on frozen scenarios</span></h2>
   <p class="sub" id="evalwhat"></p>
   <div id="evals"></div>
+
+  <div class="sub" id="updstamp" style="margin-top:18px;opacity:.7"></div>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
 const pct = x => x==null ? "n/a" : Math.round(x*100)+"%";
+const getJSON = u => fetch(u, {cache:"no-store"}).then(r=>r.json());
 
-// ---- head-to-head win-rate ----
-fetch("data/matchups.json", {cache:"no-store"}).then(r=>r.json()).then(d=>{
+// distinguish the two trained checkpoints (full chain vs settlement/placement only)
+const TRAINED_DESC = {
+  "catan-grpo-q8b":       {tag:"fully trained",  blurb:"full GRPO chain — placement → build → trade (shipped model)"},
+  "catan-placement-only": {tag:"settlement-only", blurb:"trained on placement/settlements only (mid checkpoint)"},
+};
+function descOf(m){
+  const t = TRAINED_DESC[m.trained] || {tag:"trained", blurb:""};
+  const diag = /diag/i.test(m.matchup||"") ? " · diagnostic (12-seed subset)" : "";
+  return {tag:t.tag, blurb:(t.blurb||"") + diag};
+}
+
+// ---- head-to-head win-rate (data/matchups.json <- winrate_stats.py) ----
+function renderMatchups(d){
   const ms = (d.matchups||[]).filter(m=>m.games>0)
     .sort((a,b)=> (b.trained_winrate||0)-(a.trained_winrate||0));
   if (!ms.length){ $("matchups").innerHTML =
-    `<div class="empty">No matchup runs yet. Run <code>python scripts/run_hud_matchups.py</code>,
-     then <code>python scripts/winrate_stats.py transcripts/hud-*-vs-base</code> to populate this.</div>`; return; }
+    `<div class="empty">No matchup runs yet — win-rate fills in as the games land.</div>`; return; }
   $("matchups").innerHTML = ms.map(m=>{
     const wr=m.trained_winrate, t=m.trained_wins, b=m.base_wins, dr=m.draws, n=m.games;
     const tp=Math.round(100*t/n), dp=Math.round(100*dr/n), bp=100-tp-dp;
+    const de=descOf(m);
     return `<div class="card">
-      <div class="mu-title">${m.trained} <span class="tag trained">trained</span>
+      <div class="mu-title">${m.trained} <span class="tag trained">${de.tag}</span>
         &nbsp;vs&nbsp; ${m.base} <span class="tag base">base</span></div>
+      <div class="note" style="margin:-2px 0 8px">${de.blurb}</div>
       <div class="wrbar">
         <div class="t" style="width:${tp}%">${tp?('trained '+t):''}</div>
         <div class="d" style="width:${dp}%">${dp?('draw '+dr):''}</div>
@@ -84,10 +103,45 @@ fetch("data/matchups.json", {cache:"no-store"}).then(r=>r.json()).then(d=>{
       <div class="note"><a href="index.html?run=${encodeURIComponent(m.run_dir||m.matchup)}">browse ${n} games in the replay viewer →</a></div>
     </div>`;
   }).join("");
-}).catch(()=> $("matchups").innerHTML = `<div class="empty">No matchup data yet.</div>`);
+}
 
-// ---- per-decision held-out eval ----
-fetch("data/eval_holdout.json", {cache:"no-store"}).then(r=>r.json()).then(d=>{
+// ---- game-quality stats (data/gamestats.json <- gamestats.py) ----
+const GS_METRICS = [
+  {k:"skipped_turn_rate",       label:"skipped turns (nothing happened)", lower:false, fmt:pct},
+  {k:"resource_gain_per_game",  label:"resource gain / game",        lower:false, fmt:v=>v?.toFixed(0)},
+  {k:"settlements_per_game",    label:"settlements / game",          lower:false, fmt:v=>v?.toFixed(2)},
+  {k:"pair_sweep_rate",         label:"pair-sweep rate (adaptability)",lower:false, fmt:pct},
+];
+const GS_COLS = ["games","skipped_turn_rate","resource_gain_per_game","settlements_per_game",
+                 "cities_per_game","roads_per_game","dev_buys_per_game","trades_per_game","pair_sweep_rate"];
+function renderGamestats(d){
+  const models = d.models||{};
+  const order = Object.keys(models).sort((a,b)=> (models[a].trained?1:0)-(models[b].trained?1:0)); // base first
+  $("gswhat").textContent = d.what || "";
+  if (!order.length){ $("gamestats").innerHTML =
+    `<div class="empty">No game-quality stats yet — these compute from the matchup transcripts as they arrive.</div>`; return; }
+  const bars = GS_METRICS.map(met=>{
+    const vals = order.map(m=>({m, v:models[m][met.k]})).filter(x=>x.v!=null);
+    if (!vals.length) return "";
+    const max = Math.max(...vals.map(x=>x.v), 0.001);
+    const rows = vals.map(x=>`
+      <div class="ba"><div class="lbl">${x.m} ${models[x.m].trained?'<span class="tag trained">trained</span>':'<span class="tag base">base</span>'}</div>
+        <div class="track"><div class="fill ${models[x.m].trained?'after':'before'}" style="width:${Math.max(2,100*x.v/max)}%"></div></div>
+        <div class="v">${met.fmt(x.v)}</div></div>`).join("");
+    return `<div class="card"><div class="mu-title">${met.label}`+
+      `${met.lower?' <span class="sub" style="font-weight:400">(lower = better)</span>':''}</div>${rows}</div>`;
+  }).join("");
+  const head = `<tr><th>model</th>${GS_COLS.map(c=>`<th>${c.replace(/_/g,' ').replace(' per game','/g')}</th>`).join("")}</tr>`;
+  const body = order.map(m=>{ const s=models[m];
+    return `<tr><td>${m}${s.trained?' ✅':''}</td>`+
+      GS_COLS.map(c=>`<td>${c.includes('rate')?pct(s[c]):(s[c]??'—')}</td>`).join("")+`</tr>`; }).join("");
+  const expl = Object.entries(d.metrics||{}).map(([k,v])=>`<b>${k.replace(/_/g,' ')}:</b> ${v}`).join("<br>");
+  $("gamestats").innerHTML = bars +
+    `<div class="card"><table>${head}${body}</table><div class="note">${expl}</div></div>`;
+}
+
+// ---- per-decision held-out eval (data/eval_holdout.json) ----
+function renderEval(d){
   $("evalwhat").innerHTML = d.what + " <i>" + d.vs_headtohead + "</i>";
   const baseName = Object.keys(d.models).find(m=>!d.models[m].trained);
   $("evals").innerHTML = d.envs.map(e=>{
@@ -98,7 +152,6 @@ fetch("data/eval_holdout.json", {cache:"no-store"}).then(r=>r.json()).then(d=>{
       <div class="ba"><div class="lbl">${v.m} ${v.trained?'<span class="tag trained">trained</span>':'<span class="tag base">base</span>'}</div>
         <div class="track"><div class="fill ${v.trained?'after':'before'}" style="width:${Math.max(2,100*v.v/max)}%"></div></div>
         <div class="v">${(mk.includes('rate')? pct(v.v) : v.v.toFixed(2))}</div></div>`).join("");
-    // full metric table
     const cols = Object.keys(e.rows[baseName]);
     const head = `<tr><th>model</th>${cols.map(c=>`<th>${c}</th>`).join("")}</tr>`;
     const body = Object.entries(e.rows).map(([m,r])=>
@@ -109,7 +162,18 @@ fetch("data/eval_holdout.json", {cache:"no-store"}).then(r=>r.json()).then(d=>{
       <table>${head}${body}</table>
       <div class="note">${e.note}</div></div>`;
   }).join("");
-}).catch(()=> $("evals").innerHTML = `<div class="empty">eval data not found.</div>`);
+}
+
+// ---- load + auto-refresh (each panel draws from its own stats file) ----
+function refresh(){
+  getJSON("data/matchups.json").then(renderMatchups).catch(()=> $("matchups").innerHTML=`<div class="empty">No matchup data yet.</div>`);
+  getJSON("data/gamestats.json").then(renderGamestats).catch(()=> $("gamestats").innerHTML=`<div class="empty">No game-quality stats yet.</div>`);
+  getJSON("data/eval_holdout.json").then(renderEval).catch(()=> $("evals").innerHTML=`<div class="empty">eval data not found.</div>`);
+  const now = new Date();
+  $("updstamp").textContent = "auto-refreshing every 15s · last update " + now.toLocaleTimeString();
+}
+refresh();
+setInterval(refresh, 15000);
 </script>
 </body>
 </html>

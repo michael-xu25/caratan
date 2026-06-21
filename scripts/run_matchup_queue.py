@@ -79,8 +79,10 @@ def post_stage(run_dir: Path, label: str, push: bool):
     subprocess.run([sys.executable, "scripts/build_viewer_data.py", str(run_dir)], cwd=REPO)
     subprocess.run([sys.executable, "scripts/build_viewer_index.py"], cwd=REPO)
     subprocess.run([sys.executable, "scripts/winrate_stats.py", str(run_dir)], cwd=REPO)
+    subprocess.run([sys.executable, "scripts/gamestats.py"], cwd=REPO)   # all matchup dirs -> gamestats.json
     if push:
-        subprocess.run(["git", "add", str(run_dir), "viewer/runs.json", "viewer/data/matchups.json"], cwd=REPO)
+        subprocess.run(["git", "add", str(run_dir), "viewer/runs.json",
+                        "viewer/data/matchups.json", "viewer/data/gamestats.json"], cwd=REPO)
         subprocess.run(["git", "commit", "-q", "-m", f"matchups: {label}"], cwd=REPO)
         subprocess.run(["git", "push", "origin", "cara"], cwd=REPO)
         print(f"[queue] pushed: {label}", flush=True)
@@ -109,6 +111,8 @@ def main() -> int:
                     help="first N grader_games seeds (global) played with reasoning ON (0 = all off)")
     ap.add_argument("--wait-for-diag", action="store_true")
     ap.add_argument("--push", action="store_true")
+    ap.add_argument("--grpo-only", action="store_true",
+                    help="only run grpo (full chain) vs base; skip placement (Michael owns those)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -128,6 +132,8 @@ def main() -> int:
         ("placement remaining 88",             PLACE_SPEC, PLACE_RUN, rest),
         ("grpo remaining 88",                  GRPO_SPEC,  GRPO_RUN,  rest),
     ]
+    if args.grpo_only:
+        stages = [s for s in stages if s[2] == GRPO_RUN]   # focus the shipped full-chain model
     new_games = sum(len(s) * 2 for _, _, _, s in stages)
     print(f"STAGED QUEUE | cap {args.max_turns} | conc {args.concurrency} | reasoning-on {args.reasoning_on}")
     print(f"  reuse: 24 grpo diagnostic games (seeds {diag[0]}..{diag[-1]}) -> copied into {GRPO_RUN}/")

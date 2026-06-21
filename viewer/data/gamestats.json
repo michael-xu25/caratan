@@ -1,43 +1,42 @@
 {
   "what": "Per-decision quality measured from the head-to-head games themselves, averaged per model.",
   "metrics": {
-    "wasted_turn_rate": "Fraction of the model's turns (after its roll) with NO build/buy/trade/dev action \u2014 'turns that do nothing'. Lower = better resource management.",
+    "skipped_turn_rate": "Fraction of the model's turns (after its roll) with NO build/buy/trade/dev action \u2014 turns where nothing happened (not inherently good or bad).",
     "resource_gain_per_game": "Total resources flowing into the model's hand over a game (production + trade inflow). Higher reflects better placement + keeping the economy moving.",
     "settlements_per_game": "Settlements built per game (includes the 2 initial).",
     "cities_per_game": "Cities built per game (settlement upgrades).",
     "pair_sweep_rate": "Of seeds played BOTH ways (mirror), how often the model won both orientations \u2014 adaptability / winning regardless of seat."
   },
   "dirs": [
-    "diag-grpo-vs-base",
     "hud-grpo-vs-base"
   ],
   "models": {
     "catan-grpo-q8b": {
       "role": "trained (full chain)",
       "trained": true,
-      "games": 48,
-      "wasted_turn_rate": 0.752,
+      "games": 24,
+      "skipped_turn_rate": 0.752,
       "resource_gain_per_game": 166.4,
       "settlements_per_game": 4.08,
       "cities_per_game": 1.25,
       "roads_per_game": 11.29,
       "dev_buys_per_game": 2.04,
       "trades_per_game": 27.21,
-      "pairs": 22,
+      "pairs": 11,
       "pair_sweep_rate": 0.182
     },
     "Qwen/Qwen3-8B": {
       "role": "untrained base",
       "trained": false,
-      "games": 48,
-      "wasted_turn_rate": 0.741,
+      "games": 24,
+      "skipped_turn_rate": 0.741,
       "resource_gain_per_game": 162.9,
       "settlements_per_game": 3.67,
       "cities_per_game": 1.75,
       "roads_per_game": 9.83,
       "dev_buys_per_game": 1.79,
       "trades_per_game": 32.12,
-      "pairs": 22,
+      "pairs": 11,
       "pair_sweep_rate": 0.182
     }
   }
