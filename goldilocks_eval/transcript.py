@@ -1,7 +1,6 @@
 """Write per-game transcripts: machine-readable JSON + a human-readable log."""
 from __future__ import annotations
 
-import dataclasses
 import json
 import os
 from typing import List, Optional
@@ -17,7 +16,7 @@ def _decisions_payload(players) -> dict:
     out = {}
     for p in players:
         if isinstance(p, LLMPlayer):
-            out[p.color.value] = [dataclasses.asdict(d) for d in p.decisions]
+            out[p.color.value] = list(p.decisions)  # already enriched dicts
     return out
 
 
@@ -53,20 +52,24 @@ def write_human(path: str, game: Game, meta: dict, players) -> None:
             lines.append(f"\n--- {p.color.value} ({meta['seats'][p.color.value]}) "
                          f"decisions: {len(p.decisions)} ---")
             for i, d in enumerate(p.decisions):
-                flag = " [FELL BACK]" if d.fell_back else ""
+                flag = " [FELL BACK]" if d.get("fell_back") else ""
+                st = d.get("state", {})
+                vp = " ".join(f"{c}={v}" for c, v in st.get("vp", {}).items())
+                hand = " ".join(f"{r[:2]}{n}" for r, n in st.get("hand", {}).items())
                 lines.append(
-                    f"  #{i} turn{d.turn} VP[you {d.my_vp} / opp {d.opp_vp}] "
-                    f"{d.latency_ms}ms{flag}: chose `{d.chosen}` "
-                    f"(1 of {d.num_options})"
+                    f"  #{i} turn{d['turn']} [{d['phase']}] VP[{vp}] "
+                    f"{d['latency_ms']}ms{flag}: chose `{d['chosen']}` "
+                    f"(1 of {d['num_legal']})"
                 )
-                # The option set it chose among — this is what makes a mistake
-                # analyzable ("chose X from {A,B,C}"). Full list lives in the JSON;
-                # cap the human log for readability.
-                shown = d.options[:40]
-                more = f"  (+{len(d.options) - len(shown)} more)" if len(d.options) > 40 else ""
+                lines.append(f"        hand: {hand}")
+                # The legal set it chose among — what makes a mistake analyzable
+                # ("chose X from {A,B,C}"). Full list lives in the JSON; cap here.
+                opts = d.get("legal_actions", [])
+                shown = opts[:40]
+                more = f"  (+{len(opts) - len(shown)} more)" if len(opts) > 40 else ""
                 lines.append(f"        from: {', '.join(shown)}{more}")
-                if d.reasoning:
-                    lines.append(f"        reason: {d.reasoning}")
+                if d.get("reasoning"):
+                    lines.append(f"        reason: {d['reasoning']}")
 
     # Full action log (every decision, both players).
     lines.append("\n--- Action log ---")

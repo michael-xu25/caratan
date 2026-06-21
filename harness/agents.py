@@ -58,6 +58,7 @@ class Agent(Player):
         super().__init__(color, is_bot=is_bot)
         self.model = model
         self._reasoning: Optional[str] = None
+        self._decision: Optional[dict] = None
 
     def _note(self, text: Optional[str]) -> None:
         self._reasoning = text
@@ -66,6 +67,17 @@ class Agent(Player):
         """Return and clear the rationale for the most recent decision."""
         r, self._reasoning = self._reasoning, None
         return r
+
+    def _capture(self, record: Optional[dict]) -> None:
+        """Stash the enriched decision record for the transcript to pop."""
+        self._decision = record
+
+    def pop_decision(self) -> Optional[dict]:
+        """Return and clear the enriched record for the most recent decision.
+
+        None for forced/single-option moves (nothing to analyze)."""
+        d, self._decision = self._decision, None
+        return d
 
     @property
     def name(self) -> str:
@@ -92,10 +104,15 @@ class BotAgent(Agent):
         self._bot = bot_cls(color, **bot_kwargs)
 
     def decide(self, game, playable_actions):
-        action = self._bot.decide(game, playable_actions)
-        # Single-option decisions are forced; only annotate real choices.
-        if len(playable_actions) > 1:
-            self._note(f"[{self.backend}] chose among {len(playable_actions)} options")
+        actions = list(playable_actions)
+        action = self._bot.decide(game, actions)
+        # Single-option decisions are forced; only record/annotate real choices.
+        if len(actions) > 1:
+            from goldilocks_eval.decision_record import build_decision_record
+            note = f"[{self.backend}] chose among {len(actions)} options"
+            self._note(note)
+            self._capture(build_decision_record(
+                game, self.color, actions, action, reasoning=note))
         return action
 
     def reset_state(self):
@@ -144,7 +161,10 @@ class LLMAgent(Agent):
         self.capture_reasoning = capture_reasoning
 
     def decide(self, game, playable_actions):
+        import time
+
         from harness import prompt as P
+        from goldilocks_eval.decision_record import build_decision_record
 
         actions = list(playable_actions)
         if len(actions) <= 1:
@@ -153,20 +173,32 @@ class LLMAgent(Agent):
         opponent = next(c for c in game.state.colors if c != self.color)
         user = P.build_user_prompt(game, self.color, opponent, actions)
         system = P.system_prompt(self.capture_reasoning)
+
+        start = time.time()
+        reasoning = ""
+        fell_back = False
         try:
             text = self.backend_obj.complete(system, user)
             index, reasoning = P.parse_choice(text, len(actions))
             if index is None:
                 raise ValueError("model returned no valid action index")
-            if self.capture_reasoning:
-                self._note(reasoning)
-            return actions[index]
+            chosen = actions[index]
         except Exception as exc:  # noqa: BLE001 - any failure must stay in-game
-            fallback = self.fallback_action(game, actions)
-            if self.capture_reasoning:
-                self._note(f"[fallback: {type(exc).__name__}: {exc}] "
-                           f"played {fallback.action_type.value}")
-            return fallback
+            chosen = self.fallback_action(game, actions)
+            fell_back = True
+            reasoning = (f"[fallback: {type(exc).__name__}: {exc}] "
+                         f"played {chosen.action_type.value}")
+        latency_ms = int((time.time() - start) * 1000)
+
+        # Enriched record ALWAYS (legal set + state is the analyzable signal,
+        # independent of reasoning mode); reasoning only when captured.
+        self._capture(build_decision_record(
+            game, self.color, actions, chosen,
+            reasoning=(reasoning if self.capture_reasoning else ""),
+            fell_back=fell_back, latency_ms=latency_ms))
+        if self.capture_reasoning:
+            self._note(reasoning)
+        return chosen
 
     def fallback_action(self, game, playable_actions):
         """Legal move to play when the model fails. Override for a smarter

@@ -71,11 +71,15 @@ class TranscriptAccumulator(GameAccumulator):
 
     def step(self, game, action):
         state = game.state
-        decider = state.current_player()
+        # Pop from the agent that produced THIS action (correct for multi-action
+        # turns), not current_player() which may have advanced.
+        actor = self.agents.get(action.color)
         reasoning = None
-        if isinstance(decider, Agent):
-            reasoning = decider.pop_reasoning()
-        self.events.append({
+        record = None
+        if isinstance(actor, Agent):
+            record = actor.pop_decision()
+            reasoning = actor.pop_reasoning()
+        event = {
             "ply": len(self.events) + 1,
             "turn": state.num_turns,
             "color": action.color.value,
@@ -83,7 +87,14 @@ class TranscriptAccumulator(GameAccumulator):
             "action_type": action.action_type.value,
             "value": _stringify(action.value),
             "reasoning": reasoning,
-        })
+        }
+        # Merge the enriched decision context (the analyzable signal) when this
+        # action was a real choice; forced moves carry no record.
+        if record is not None:
+            for k in ("phase", "chosen", "legal_actions", "num_legal",
+                      "state", "fell_back", "latency_ms"):
+                event[k] = record[k]
+        self.events.append(event)
 
     def after(self, game):
         self.duration = time.perf_counter() - self._start
@@ -158,6 +169,19 @@ class TranscriptAccumulator(GameAccumulator):
             # markup=False: action values and reasoning are dynamic and may
             # contain '[...]' which rich would otherwise eat as style markup.
             c.print(line, markup=False)
+            # Enriched context line: the {A,B,C} it chose from + decision-time
+            # state, so a mistake is analyzable from the human log too.
+            if "legal_actions" in e:
+                st = e.get("state", {})
+                vp = " ".join(f"{col}={v}" for col, v in st.get("vp", {}).items())
+                hand = " ".join(f"{r[:2]}{n}" for r, n in st.get("hand", {}).items())
+                opts = e["legal_actions"]
+                shown = ", ".join(opts[:12])
+                more = f" (+{len(opts) - 12} more)" if len(opts) > 12 else ""
+                fb = " [FELL BACK]" if e.get("fell_back") else ""
+                c.print(f"        ctx[{e.get('phase')}] VP[{vp}] hand[{hand}] "
+                        f"chose 1 of {e['num_legal']}{fb}", markup=False)
+                c.print(f"        from: {shown}{more}", markup=False)
             if e["reasoning"]:
                 reasoning = " ".join(str(e["reasoning"]).split())  # flatten newlines
                 c.print(f"        ↳ {reasoning}", markup=False)
