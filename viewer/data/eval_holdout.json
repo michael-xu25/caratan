@@ -1,0 +1,42 @@
+{
+  "title": "Held-out per-decision eval (HUD gateway)",
+  "what": "Each model answers the SAME frozen held-out scenarios independently (not games, no opponent) and is scored by a deterministic reward function vs ground-truth. Held-out = the grader_games boards, disjoint from training. Both models forced /no_think for a fair pick-quality comparison.",
+  "vs_headtohead": "This is per-decision 'exam' scoring; the head-to-head matchups (other section) are full games, model-vs-base, scored by who wins.",
+  "models": {
+    "Qwen/Qwen3-8B": {"role": "base (untrained)", "trained": false},
+    "catan-placement-only": {"role": "post-placement (trained, placement only)", "trained": true},
+    "catan-grpo-q8b": {"role": "post-build (trained, full chain — shipped)", "trained": true}
+  },
+  "envs": [
+    {
+      "env": "placement", "n": 80,
+      "headline_metric": "top3", "headline_label": "top-3 hit rate",
+      "rows": {
+        "Qwen/Qwen3-8B":        {"mean_reward": 0.388, "top1": 0.28, "top3": 0.39, "regret": 0.131},
+        "catan-placement-only": {"mean_reward": 0.775, "top1": 0.49, "top3": 0.78, "regret": 0.043},
+        "catan-grpo-q8b":       {"mean_reward": 0.775, "top1": 0.49, "top3": 0.78, "regret": 0.044}
+      },
+      "note": "Clear generalization to unseen boards; placement-only and full chain are identical (no forgetting)."
+    },
+    {
+      "env": "build", "n": 90,
+      "headline_metric": "build_rate", "headline_label": "build rate",
+      "rows": {
+        "Qwen/Qwen3-8B":        {"mean_reward": 0.927, "build_rate": 0.78},
+        "catan-placement-only": {"mean_reward": 1.124, "build_rate": 0.87},
+        "catan-grpo-q8b":       {"mean_reward": 1.381, "build_rate": 0.97}
+      },
+      "note": "Builds instead of hoarding — clear generalization (0.93→1.38 reward, 78→97% build)."
+    },
+    {
+      "env": "maritime", "n": 90,
+      "headline_metric": "trade_rate", "headline_label": "trade rate (lower = stopped over-trading)",
+      "rows": {
+        "Qwen/Qwen3-8B":        {"mean_reward": -0.038, "trade_rate": 0.21},
+        "catan-placement-only": {"mean_reward": -0.158, "trade_rate": 0.69},
+        "catan-grpo-q8b":       {"mean_reward": 0.004, "trade_rate": 0.03}
+      },
+      "note": "Trained model stopped over-trading (21%→3%) — our #1 discovered failure mode — but reward gain is marginal (over-corrected; skips some good trades)."
+    }
+  ]
+}

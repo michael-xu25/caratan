@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Caratan — Evals & Matchups</title>
+<link rel="stylesheet" href="catan-ui.css" />
+<style>
+  /* override catan-ui.css's app-shell body (flex/100vh/overflow:hidden) so this page scrolls */
+  html, body { height:auto; }
+  body { margin:0; display:block; min-height:100vh; overflow-y:auto;
+         font-family:-apple-system,Segoe UI,Roboto,sans-serif; background:#0f2233; color:#eaf1f8; }
+  .wrap { max-width:980px; margin:0 auto; padding:24px 20px 60px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  h2 { font-size:17px; margin:28px 0 6px; border-bottom:1px solid #2f5778; padding-bottom:6px; }
+  a { color:#8fc7ff; }
+  .sub { color:#9fb6cc; font-size:13px; margin:0 0 8px; }
+  .nav { margin:12px 0 4px; } .nav a { margin-right:10px; }
+  .card { background:#14304a; border:1px solid #2f5778; border-radius:10px; padding:14px 16px; margin:12px 0; }
+  .mu-title { font-size:15px; font-weight:700; margin-bottom:8px; }
+  .tag { font-size:11px; padding:2px 7px; border-radius:10px; font-weight:700; }
+  .tag.trained { background:#2e5d3a; color:#bdf0c9; }
+  .tag.base { background:#5a3a3a; color:#f0c9c9; }
+  .wrbar { height:22px; background:#1c4060; border-radius:6px; overflow:hidden; display:flex; font-size:11px; font-weight:700; }
+  .wrbar .t { background:#3a9d52; display:flex; align-items:center; justify-content:center; }
+  .wrbar .d { background:#5a6b3a; display:flex; align-items:center; justify-content:center; }
+  .wrbar .b { background:#b85a5a; display:flex; align-items:center; justify-content:center; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:6px; }
+  th,td { text-align:left; padding:4px 8px; border-bottom:1px solid #243f57; }
+  th { color:#9fb6cc; font-weight:600; }
+  .ba { display:flex; align-items:center; gap:8px; margin:5px 0; }
+  .ba .lbl { width:170px; font-size:13px; }
+  .ba .track { flex:1; height:18px; background:#1c4060; border-radius:5px; position:relative; }
+  .ba .fill { height:100%; border-radius:5px; }
+  .ba .fill.before { background:#7088a0; }
+  .ba .fill.after { background:#3a9d52; }
+  .ba .v { width:54px; text-align:right; font-size:12px; font-variant-numeric:tabular-nums; }
+  .note { color:#9fb6cc; font-size:12px; margin-top:4px; }
+  .empty { color:#9fb6cc; font-size:13px; padding:10px 0; }
+  code { background:#1c4060; padding:1px 5px; border-radius:4px; font-size:12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🏆 Caratan — Evals & Matchups</h1>
+  <div class="nav"><a class="navbtn" href="index.html">← Back to replay viewer</a></div>
+
+  <h2>Head-to-head win-rate <span class="sub" style="font-weight:400">— full games, trained model vs untrained base</span></h2>
+  <p class="sub">Each trained checkpoint plays the untrained base (<code>Qwen/Qwen3-8B</code>) over the
+    held-out grader_games boards, <b>mirrored seat-swap</b> so win-rate is seat-fair. This measures what
+    training bought in <i>actual games</i> — distinct from the per-decision eval below.</p>
+  <div id="matchups"></div>
+
+  <h2>Per-decision held-out eval <span class="sub" style="font-weight:400">— pick quality on frozen scenarios</span></h2>
+  <p class="sub" id="evalwhat"></p>
+  <div id="evals"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const pct = x => x==null ? "n/a" : Math.round(x*100)+"%";
+
+// ---- head-to-head win-rate ----
+fetch("data/matchups.json", {cache:"no-store"}).then(r=>r.json()).then(d=>{
+  const ms = (d.matchups||[]).filter(m=>m.games>0)
+    .sort((a,b)=> (b.trained_winrate||0)-(a.trained_winrate||0));
+  if (!ms.length){ $("matchups").innerHTML =
+    `<div class="empty">No matchup runs yet. Run <code>python scripts/run_hud_matchups.py</code>,
+     then <code>python scripts/winrate_stats.py transcripts/hud-*-vs-base</code> to populate this.</div>`; return; }
+  $("matchups").innerHTML = ms.map(m=>{
+    const wr=m.trained_winrate, t=m.trained_wins, b=m.base_wins, dr=m.draws, n=m.games;
+    const tp=Math.round(100*t/n), dp=Math.round(100*dr/n), bp=100-tp-dp;
+    return `<div class="card">
+      <div class="mu-title">${m.trained} <span class="tag trained">trained</span>
+        &nbsp;vs&nbsp; ${m.base} <span class="tag base">base</span></div>
+      <div class="wrbar">
+        <div class="t" style="width:${tp}%">${tp?('trained '+t):''}</div>
+        <div class="d" style="width:${dp}%">${dp?('draw '+dr):''}</div>
+        <div class="b" style="width:${bp}%">${bp?('base '+b):''}</div>
+      </div>
+      <table><tr><th>games</th><th>trained win-rate</th><th>avg VP (trained/base)</th><th>cap-stalls</th></tr>
+        <tr><td>${n}</td><td><b>${pct(wr)}</b> (decided)</td>
+        <td>${m.avg_vp_trained}/${m.avg_vp_base}</td><td>${m.cap_stalls}</td></tr></table>
+      <div class="note"><a href="index.html?run=${encodeURIComponent(m.run_dir||m.matchup)}">browse ${n} games in the replay viewer →</a></div>
+    </div>`;
+  }).join("");
+}).catch(()=> $("matchups").innerHTML = `<div class="empty">No matchup data yet.</div>`);
+
+// ---- per-decision held-out eval ----
+fetch("data/eval_holdout.json", {cache:"no-store"}).then(r=>r.json()).then(d=>{
+  $("evalwhat").innerHTML = d.what + " <i>" + d.vs_headtohead + "</i>";
+  const baseName = Object.keys(d.models).find(m=>!d.models[m].trained);
+  $("evals").innerHTML = d.envs.map(e=>{
+    const mk=e.headline_metric;
+    const vals = Object.entries(e.rows).map(([m,r])=>({m, v:r[mk], trained:d.models[m].trained, row:r}));
+    const max = Math.max(...vals.map(v=>v.v), 0.001);
+    const bars = vals.map(v=>`
+      <div class="ba"><div class="lbl">${v.m} ${v.trained?'<span class="tag trained">trained</span>':'<span class="tag base">base</span>'}</div>
+        <div class="track"><div class="fill ${v.trained?'after':'before'}" style="width:${Math.max(2,100*v.v/max)}%"></div></div>
+        <div class="v">${(mk.includes('rate')? pct(v.v) : v.v.toFixed(2))}</div></div>`).join("");
+    // full metric table
+    const cols = Object.keys(e.rows[baseName]);
+    const head = `<tr><th>model</th>${cols.map(c=>`<th>${c}</th>`).join("")}</tr>`;
+    const body = Object.entries(e.rows).map(([m,r])=>
+      `<tr><td>${m}${d.models[m].trained?' ✅':''}</td>${cols.map(c=>`<td>${typeof r[c]==='number' && c.includes('rate')?pct(r[c]):r[c]}</td>`).join("")}</tr>`).join("");
+    return `<div class="card">
+      <div class="mu-title">${e.env} <span class="sub" style="font-weight:400">— ${e.n} held-out scenarios · ${e.headline_label}</span></div>
+      ${bars}
+      <table>${head}${body}</table>
+      <div class="note">${e.note}</div></div>`;
+  }).join("");
+}).catch(()=> $("evals").innerHTML = `<div class="empty">eval data not found.</div>`);
+</script>
+</body>
+</html>

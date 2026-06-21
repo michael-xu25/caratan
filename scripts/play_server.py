@@ -34,6 +34,43 @@ from catanatron.game import Game
 from catanatron.models.enums import ActionType
 from catanatron.models.player import Color, RandomPlayer
 from catanatron.json import GameEncoder
+from catanatron.players.value import base_fn, DEFAULT_WEIGHTS
+
+# Regret oracle for the Model's-Analysis panel — the SAME mechanism the grader uses
+# (harness/grader/oracle.py): score every legal action with Catanatron's value
+# function, compare the model's pick to the best legal one.
+#   regret      = value(best legal) - value(chosen)        (>= 0)
+#   regret_vp   = regret / public_vps weight               (VP-equivalents)
+#   move score  = where the chosen action's value sits in [worst, best] legal -> 0..1
+#                 (1.0 = it played the oracle's best move; lower = left value behind)
+_VALUE_FN = base_fn(DEFAULT_WEIGHTS)
+
+
+def _oracle_eval(game, color, legal, chosen):
+    """Grade the model's decision against every legal alternative (1-ply value fn)."""
+    try:
+        scored = []
+        for a in legal:
+            gc = game.copy()
+            try:
+                gc.execute(a)
+            except Exception:
+                continue
+            scored.append((float(_VALUE_FN(gc, color)), a))
+        if not scored:
+            return {}
+        v_best = max(v for v, _ in scored)
+        v_worst = min(v for v, _ in scored)
+        best_a = max(scored, key=lambda t: t[0])[1]
+        v_chosen = next((v for v, a in scored
+                         if a.action_type == chosen.action_type and a.value == chosen.value), None)
+        out = {"num_options": len(legal), "oracle_best": render_action(best_a)}
+        if v_chosen is not None:
+            out["score"] = round((v_chosen - v_worst) / (v_best - v_worst), 2) if v_best > v_worst else 1.0
+            out["regret_vp"] = round(max(0.0, v_best - v_chosen) / DEFAULT_WEIGHTS["public_vps"], 2)
+        return out
+    except Exception:
+        return {}
 from harness.agents import make_agent
 from goldilocks_eval.prompt import render_action
 from scripts.build_viewer_data import _static_board, _snapshot
@@ -86,10 +123,12 @@ def _advance(s: dict) -> list:
         if cur == human and len(pa) > 1:
             break                                   # human's turn to choose
         action = pa[0] if cur == human else model.decide(game, pa)
+        real_model = cur != human and len(pa) > 1
+        ev = _oracle_eval(game, cur, pa, action) if real_model else {}   # before play_tick mutates game
         game.play_tick(decide_fn=lambda p, g, a, act=action: act)
-        if cur != human and len(pa) > 1:            # a real model decision
+        if real_model:                              # a real model decision
             entry = {"player": cur.value, "action": render_action(action),
-                     "reasoning": model.pop_reasoning() or ""}
+                     "reasoning": model.pop_reasoning() or "", **ev}
             moves.append(entry); hist.append(entry)
         steps += 1
     return moves
@@ -272,6 +311,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
+        # never let the browser serve a stale viewer/play UI after we edit it
+        self.send_header("Cache-Control", "no-store, must-revalidate")
         self.end_headers()
         self.wfile.write(body)
 

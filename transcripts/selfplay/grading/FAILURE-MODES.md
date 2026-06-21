@@ -31,14 +31,23 @@ to cities (`no_city_upgrades`), so its production stays thin (`weak_production_e
 and it never assembles a path to 10 VP. Result: games stall to the turn cap or are
 lost late.
 
-## Per-decision view (the weak/one-sided signal)
+## Per-decision view (secondary signal — graded on the hardened grader)
 
-After grader calibration, the only per-decision failure that clears the floor is
-**`build_spend / timing`** (robber + dev-card timing) at ~10–16% — but it is
-**entirely one-sided** (Claude flags it, GPT-4o ~0%, **consensus ≈ 0**). The two
-graders genuinely disagree on per-decision Catan "mistakes," and consensus is
-near-empty (2 of 62 union flags). This is *why* we added the game-level pass — the
-per-decision lens under-captures this model's cumulative weakness.
+Top per-decision weaknesses (union, Wilson-ranked): **`build_spend / timing`** (Claude's
+lens, ~12–15%) and **placement `pip_coverage` / `resource_diversity`** (GPT-4o's lens,
+~16–17%). Each is largely *one-sided* — the two graders favor different criteria — but
+after loosening the scale they now **both contribute** (union 113, **consensus 11**, κ
+0.156, up from union 62 / consensus 2 / κ 0.058). Still, per-decision blunders are rare
+(regret ≈ 0 on most), which is exactly why the **game-level table above is the headline**
+and the per-decision view is supporting detail.
+
+### Grading robustness (this run is trustworthy)
+Hardened per review feedback — the denominator is the load-bearing thing and it's clean:
+- **0 oracle drops** (all decision types fully graded; trades 0%, build_spend 0% after a
+  type-match fallback), **0 games broke early** — so no per-type denominator bias.
+- **Parse failures excluded from the denominator** and reported: Claude 0.2%, GPT-4o 0.0%.
+- **action_type assertion** fires on any context misalignment — validated 0 fires across
+  600 prompts (the off-by-one bug class can't silently recur).
 
 ## Behavioral corroboration
 
@@ -60,13 +69,23 @@ These map onto the shared taxonomy for env generation (trade `enables_key_build`
 `net_resource_value`; build_spend `vp_efficiency` / `tempo`; placement
 `expansion_room`).
 
+## See it in the viewer
+
+Open the run in `viewer/` and click **⚖️ Grading** — it shows this game's failure
+modes and, as you step through, each graded decision's verdict (failed criteria,
+disputed/agreed, both graders' reasons, regret). Plies marked `⚖`/`⚖✗` were graded.
+
 ## Method notes / caveats
 
 - **Game-level reviewer:** single model (Claude), one call per game, fixed
-  strategic vocab (`harness/grader/game_review.py`).
-- **Per-decision:** dual Claude+OpenAI, union-default merge, strict scale
-  calibration; consensus is near-empty here (graders diverge), so union + the
-  game-level pass are the usable signals, not consensus/κ.
+  strategic vocab (`harness/grader/game_review.py`). The strategic table is ranked by
+  **presence-count** (# games a mode appears in), NOT Wilson-discounted — so read the
+  82/70/68% as "share of games containing this mode," and its ordering less rigorously
+  than the Wilson-ranked per-decision table.
+- **Per-decision:** dual Claude+OpenAI, union-default merge, calibrated 0/1/2 scale;
+  the two graders favor different criteria, so union (recall) + the game-level pass are
+  the usable signals — κ/consensus are informative but low here by base-rate (raw
+  agreement is ~97%).
 - **Self-play:** both seats are the same model, so "the losing player" = this model;
   draws are turn-cap stalls.
 - No human gold labels yet — the regret oracle (myopic 1-ply) + dual-grader
