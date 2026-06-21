@@ -26,21 +26,23 @@ summary{cursor:pointer;color:var(--accent);font-weight:600}
 Review the sections below and flag anything wrong or missing.</p>
 
 <h2>Rules primer <span class="tag">CATAN_RULES — shared by play &amp; grading</span></h2>
-<div class="card intro">You are an expert Settlers of Catan player in a 1-vs-1 game (exactly one opponent). Rules that matter:</div>
-<div class="card"><span class="label">GOAL:</span> first to 10 victory points (VP). VP come from: settlement = 1, city = 2, Longest Road (&gt;=5 segments, the most) = 2, Largest Army (&gt;=3 knights played, the most) = 2, and Victory-Point dev cards = 1 each.</div>
-<div class="card"><span class="label">BUILD COSTS</span><ul><li>Road: 1 wood + 1 brick</li><li>Settlement: 1 wood + 1 brick + 1 sheep + 1 wheat (must be on a free node &gt;=2 edges from any settlement and connected to your road)</li><li>City: upgrade a settlement for 2 wheat + 3 ore (doubles its production)</li><li>Development card: 1 sheep + 1 wheat + 1 ore</li></ul></div>
-<div class="card"><span class="label">PRODUCTION:</span> each turn the active player rolls 2d6; every tile with that number pays its resource to adjacent settlements (1) / cities (2). Pips = how likely a number is (6/8=5, 5/9=4, 4/10=3, 3/11=2, 2/12=1); 7 = no production, move robber + steal. Settle high-pip, resource-diverse nodes.</div>
-<div class="card"><span class="label">DEV CARDS:</span> Knight = move robber + steal + counts toward Largest Army; Road Building = 2 free roads; Year of Plenty = take any 2 resources; Monopoly = name a resource, take ALL the opponent&#x27;s of it; VP = +1 VP.</div>
-<div class="card"><span class="label">ROBBER:</span> blocks a tile (its owners get nothing from it) and steals 1 card from an adjacent player. TRADE: 4:1 with the bank, or 3:1/2:1 at ports you have settled.</div>
-<div class="card"><span class="label">1v1 STRATEGY:</span> tempo and denial decide games. Race Longest Road and Largest Army (each is a 2-VP swing), block the opponent&#x27;s best tile with the robber, and don&#x27;t over-trade away scarce resources. No multiplayer politics.</div>
+<div class="card">You are playing a 1-vs-1 game of Settlers of Catan (you and exactly one opponent). Here is how the game works.</div>
+<div class="card"><span class="label">WINNING:</span> the first player to reach 10 victory points (VP) wins. You get VP from each of these: a settlement you own is worth 1 VP; a city is worth 2 VP; holding Longest Road is worth 2 VP (you hold it if you have the single longest connected run of your own roads and it is at least 5 roads long, and longer than the opponent&#x27;s); holding Largest Army is worth 2 VP (you hold it if you have played the most knight cards and have played at least 3, more than the opponent); and each victory-point development card you hold is worth 1 VP (these stay hidden until you win).</div>
+<div class="card"><span class="label">RESOURCES:</span> there are five resources - wood, brick, sheep, wheat, and ore. You spend them to build things.</div>
+<div class="card"><span class="label">WHAT THINGS COST</span><ul><li>Road: 1 wood + 1 brick.</li><li>Settlement: 1 wood + 1 brick + 1 sheep + 1 wheat. It must go on an empty intersection that is connected to one of your own roads and is at least two edges away from any existing settlement or city (yours or the opponent&#x27;s).</li><li>City: 2 wheat + 3 ore to upgrade one of your existing settlements into a city. A city collects 2 resources from each of its tiles instead of 1.</li><li>Development card: 1 sheep + 1 wheat + 1 ore (you draw a random one).</li></ul></div>
+<div class="card">HOW TILES PRODUCE RESOURCES: every land tile shows one resource and a number from 2 to 12 (one tile is the desert and produces nothing). On a player&#x27;s turn they roll two dice and add them up; every tile whose number equals that total produces, giving its resource to each player who has a settlement (1 resource) or city (2 resources) on a corner of that tile. Because two dice are added, the totals are not equally likely: there are 5 ways to roll a 6 or an 8, 4 ways to roll a 5 or 9, 3 ways for a 4 or 10, 2 ways for a 3 or 11, and 1 way for a 2 or 12. In the board and action descriptions, &#x27;SHEEP on 9&#x27; means a sheep tile that produces when the two dice add up to 9.</div>
+<div class="card">ROLLING A 7 AND THE ROBBER: if the two dice add up to 7, no tile produces. Instead the player who rolled moves the robber onto any tile (while the robber sits on a tile, that tile produces nothing for anyone) and steals 1 random resource card from an opponent who has a settlement or city on that tile. Also, whenever a 7 is rolled, any player holding more than 7 resource cards must discard half of them.</div>
+<div class="card">DEVELOPMENT CARDS (what each one does when played): Knight - move the robber and steal, the same as rolling a 7; played knights count toward Largest Army. Road Building - place 2 roads for free. Year of Plenty - take any 2 resources from the bank. Monopoly - name one resource and take every card of that resource from the opponent. Victory Point - worth 1 VP. You may play at most one development card per turn, and not on the same turn you bought it (victory-point cards are the exception).</div>
+<div class="card"><span class="label">TRADING:</span> on your turn you may trade resources with the bank, giving 4 of one resource for 1 of any other (a 4:1 trade). If you own a settlement or city on a port you get a better rate there: a generic port lets you trade any 3 matching resources for 1 (3:1), and a specific port lets you trade 2 of its resource for 1 of any other (2:1).</div>
+<div class="card">A TURN, STEP BY STEP: first you roll the two dice (this produces resources, or triggers the robber on a 7). After rolling you may take as many actions as you can afford, in any order you like: build roads, settlements, and cities, buy a development card, play one development card, and trade. Each of these is a separate action; you keep taking actions until you choose to end your turn.</div>
 
 <h2>Live action glossary <span class="tag">live play only</span></h2>
-<div class="card"><pre>READING THE ACTIONS — you get the EXACT list of legal moves; pick one by index:
-- BUILD_SETTLEMENT N / BUILD_CITY N: N is a node id; its adjacent production (and port) is shown after &#x27;-&gt;&#x27;.
-- BUILD_ROAD (a, b): an edge between nodes a and b.
-- MOVE_ROBBER ((x,y,z), victim): tile to block + whom to steal from.
-- MARITIME_TRADE (...): give the listed resources to the bank for the last.
-- PLAY_KNIGHT/PLAY_*: play that dev card. ROLL / END_TURN / BUY_DEVELOPMENT_CARD as named.</pre></div>
+<div class="card"><pre>HOW TO ANSWER: you are given the exact list of legal moves available right now; choose one of them by its index number. What each move means:
+- BUILD_SETTLEMENT N / BUILD_CITY N: N is a board intersection (node) id. After &#x27;-&gt;&#x27; you are shown which resources that node would collect (which tile and on what dice roll) and whether it sits on a port.
+- BUILD_ROAD (a, b): build a road on the edge between nodes a and b.
+- MOVE_ROBBER ((x, y, z), victim): move the robber onto the tile at that coordinate and steal from the named opponent (or no one).
+- MARITIME_TRADE (...): give the listed resources to the bank in exchange for the last one listed.
+- PLAY_KNIGHT and other PLAY_* moves play that development card. ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say.</pre></div>
 
 <h2>Output formats</h2>
 <div class="card"><span class="label">Live, with reasoning</span><pre>Reply with ONLY a JSON object on one line:
@@ -49,36 +51,40 @@ The index must be one of the listed action indices. No prose outside the JSON.</
 <div class="card"><span class="label">Live, action-only</span><pre>Reply with ONLY a JSON object on one line:
 {&quot;action&quot;: &lt;index&gt;}
 The index must be one of the listed action indices. No prose outside the JSON.</pre></div>
-<div class="card"><span class="label">Placement grading</span><pre>TASK: choose where to place an opening settlement. Weigh pip totals, resource diversity, and port access. Follow the response format exactly: a &lt;reasoning&gt; block then an &lt;answer&gt; block with one node id.</pre></div>
+<div class="card"><span class="label">Placement grading</span><pre>TASK: you are choosing where to place an opening settlement. Follow the response format exactly: a &lt;reasoning&gt; block, then an &lt;answer&gt; block containing exactly one node id.</pre></div>
 
 <h2>Example — full live prompt (opening move, seed 1000)</h2>
 <p class="note">System prompt (rules + glossary + output) then the user turn. Note the
 board summary and the per-option production annotations (<code>-&gt; WOOD:11(2p)…</code>)
 that make node ids meaningful.</p>
-<details open><summary>SYSTEM prompt</summary><pre>You are an expert Settlers of Catan player in a 1-vs-1 game (exactly one opponent). Rules that matter:
+<details open><summary>SYSTEM prompt</summary><pre>You are playing a 1-vs-1 game of Settlers of Catan (you and exactly one opponent). Here is how the game works.
 
-GOAL: first to 10 victory points (VP). VP come from: settlement = 1, city = 2, Longest Road (&gt;=5 segments, the most) = 2, Largest Army (&gt;=3 knights played, the most) = 2, and Victory-Point dev cards = 1 each.
+WINNING: the first player to reach 10 victory points (VP) wins. You get VP from each of these: a settlement you own is worth 1 VP; a city is worth 2 VP; holding Longest Road is worth 2 VP (you hold it if you have the single longest connected run of your own roads and it is at least 5 roads long, and longer than the opponent&#x27;s); holding Largest Army is worth 2 VP (you hold it if you have played the most knight cards and have played at least 3, more than the opponent); and each victory-point development card you hold is worth 1 VP (these stay hidden until you win).
 
-BUILD COSTS:
-- Road: 1 wood + 1 brick
-- Settlement: 1 wood + 1 brick + 1 sheep + 1 wheat (must be on a free node &gt;=2 edges from any settlement and connected to your road)
-- City: upgrade a settlement for 2 wheat + 3 ore (doubles its production)
-- Development card: 1 sheep + 1 wheat + 1 ore
+RESOURCES: there are five resources - wood, brick, sheep, wheat, and ore. You spend them to build things.
 
-PRODUCTION: each turn the active player rolls 2d6; every tile with that number pays its resource to adjacent settlements (1) / cities (2). Pips = how likely a number is (6/8=5, 5/9=4, 4/10=3, 3/11=2, 2/12=1); 7 = no production, move robber + steal. Settle high-pip, resource-diverse nodes.
+WHAT THINGS COST:
+- Road: 1 wood + 1 brick.
+- Settlement: 1 wood + 1 brick + 1 sheep + 1 wheat. It must go on an empty intersection that is connected to one of your own roads and is at least two edges away from any existing settlement or city (yours or the opponent&#x27;s).
+- City: 2 wheat + 3 ore to upgrade one of your existing settlements into a city. A city collects 2 resources from each of its tiles instead of 1.
+- Development card: 1 sheep + 1 wheat + 1 ore (you draw a random one).
 
-DEV CARDS: Knight = move robber + steal + counts toward Largest Army; Road Building = 2 free roads; Year of Plenty = take any 2 resources; Monopoly = name a resource, take ALL the opponent&#x27;s of it; VP = +1 VP.
+HOW TILES PRODUCE RESOURCES: every land tile shows one resource and a number from 2 to 12 (one tile is the desert and produces nothing). On a player&#x27;s turn they roll two dice and add them up; every tile whose number equals that total produces, giving its resource to each player who has a settlement (1 resource) or city (2 resources) on a corner of that tile. Because two dice are added, the totals are not equally likely: there are 5 ways to roll a 6 or an 8, 4 ways to roll a 5 or 9, 3 ways for a 4 or 10, 2 ways for a 3 or 11, and 1 way for a 2 or 12. In the board and action descriptions, &#x27;SHEEP on 9&#x27; means a sheep tile that produces when the two dice add up to 9.
 
-ROBBER: blocks a tile (its owners get nothing from it) and steals 1 card from an adjacent player. TRADE: 4:1 with the bank, or 3:1/2:1 at ports you have settled.
+ROLLING A 7 AND THE ROBBER: if the two dice add up to 7, no tile produces. Instead the player who rolled moves the robber onto any tile (while the robber sits on a tile, that tile produces nothing for anyone) and steals 1 random resource card from an opponent who has a settlement or city on that tile. Also, whenever a 7 is rolled, any player holding more than 7 resource cards must discard half of them.
 
-1v1 STRATEGY: tempo and denial decide games. Race Longest Road and Largest Army (each is a 2-VP swing), block the opponent&#x27;s best tile with the robber, and don&#x27;t over-trade away scarce resources. No multiplayer politics.
+DEVELOPMENT CARDS (what each one does when played): Knight - move the robber and steal, the same as rolling a 7; played knights count toward Largest Army. Road Building - place 2 roads for free. Year of Plenty - take any 2 resources from the bank. Monopoly - name one resource and take every card of that resource from the opponent. Victory Point - worth 1 VP. You may play at most one development card per turn, and not on the same turn you bought it (victory-point cards are the exception).
 
-READING THE ACTIONS — you get the EXACT list of legal moves; pick one by index:
-- BUILD_SETTLEMENT N / BUILD_CITY N: N is a node id; its adjacent production (and port) is shown after &#x27;-&gt;&#x27;.
-- BUILD_ROAD (a, b): an edge between nodes a and b.
-- MOVE_ROBBER ((x,y,z), victim): tile to block + whom to steal from.
-- MARITIME_TRADE (...): give the listed resources to the bank for the last.
-- PLAY_KNIGHT/PLAY_*: play that dev card. ROLL / END_TURN / BUY_DEVELOPMENT_CARD as named.
+TRADING: on your turn you may trade resources with the bank, giving 4 of one resource for 1 of any other (a 4:1 trade). If you own a settlement or city on a port you get a better rate there: a generic port lets you trade any 3 matching resources for 1 (3:1), and a specific port lets you trade 2 of its resource for 1 of any other (2:1).
+
+A TURN, STEP BY STEP: first you roll the two dice (this produces resources, or triggers the robber on a 7). After rolling you may take as many actions as you can afford, in any order you like: build roads, settlements, and cities, buy a development card, play one development card, and trade. Each of these is a separate action; you keep taking actions until you choose to end your turn.
+
+HOW TO ANSWER: you are given the exact list of legal moves available right now; choose one of them by its index number. What each move means:
+- BUILD_SETTLEMENT N / BUILD_CITY N: N is a board intersection (node) id. After &#x27;-&gt;&#x27; you are shown which resources that node would collect (which tile and on what dice roll) and whether it sits on a port.
+- BUILD_ROAD (a, b): build a road on the edge between nodes a and b.
+- MOVE_ROBBER ((x, y, z), victim): move the robber onto the tile at that coordinate and steal from the named opponent (or no one).
+- MARITIME_TRADE (...): give the listed resources to the bank in exchange for the last one listed.
+- PLAY_KNIGHT and other PLAY_* moves play that development card. ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say.
 
 Reply with ONLY a JSON object on one line:
 {&quot;action&quot;: &lt;index&gt;, &quot;reasoning&quot;: &quot;&lt;one short sentence&gt;&quot;}
@@ -88,174 +94,178 @@ YOU (RED): VP=0 longest_road=0 dev_cards=0 | hand: WO=0 BR=0 SH=0 WH=0 OR=0
 OPPONENT (BLUE): VP=0 longest_road=0 dev_cards=0 | hand: WO=0 BR=0 SH=0 WH=0 OR=0
 Robber is on tile: (0, 2, -2)
 
-Board tiles (resource: number(pips); robber blocks a tile):
-  BRICK: 9(4p) 10(3p) 3(2p)
-  ORE: 6(5p) 8(5p) 4(3p)
-  SHEEP: 5(4p) 9(4p) 3(2p) 11(2p)
-  WHEAT: 5(4p) 4(3p) 10(3p) 2(1p)
-  WOOD: 6(5p) 8(5p) 11(2p) 12(1p)
-Ports: 3:1 @ nodes [32, 33, 35, 36, 48, 49, 52, 53]; BRICK 2:1 @ nodes [38, 39]; ORE 2:1 @ nodes [25, 26]; SHEEP 2:1 @ nodes [28, 29]; WHEAT 2:1 @ nodes [40, 44]; WOOD 2:1 @ nodes [45, 47]
+Tiles (each produces its resource when the two dice add up to its number; the robber, if on a tile, stops it producing):
+  BRICK: produces on 3, 9, 10
+  ORE: produces on 4, 6, 8
+  SHEEP: produces on 3, 5, 9, 11
+  WHEAT: produces on 2, 4, 5, 10
+  WOOD: produces on 6, 8, 11, 12
+Ports (trade rate available from a settlement/city on these nodes): 3:1 at nodes [32, 33, 35, 36, 48, 49, 52, 53]; BRICK 2:1 at nodes [38, 39]; ORE 2:1 at nodes [25, 26]; SHEEP 2:1 at nodes [28, 29]; WHEAT 2:1 at nodes [40, 44]; WOOD 2:1 at nodes [45, 47]
 
 Legal actions (choose one by index):
-  [0] BUILD_SETTLEMENT 0   -&gt; SHEEP:11(2p), ORE:4(3p), BRICK:9(4p) [9 pips]
-  [1] BUILD_SETTLEMENT 1   -&gt; SHEEP:11(2p), BRICK:10(3p), BRICK:9(4p) [9 pips]
-  [2] BUILD_SETTLEMENT 2   -&gt; SHEEP:11(2p), BRICK:10(3p), SHEEP:3(2p) [7 pips]
-  [3] BUILD_SETTLEMENT 3   -&gt; SHEEP:11(2p), SHEEP:3(2p), WOOD:6(5p) [9 pips]
-  [4] BUILD_SETTLEMENT 4   -&gt; SHEEP:11(2p), WOOD:6(5p), WHEAT:5(4p) [11 pips]
-  [5] BUILD_SETTLEMENT 5   -&gt; SHEEP:11(2p), WHEAT:5(4p), ORE:4(3p) [9 pips]
-  [6] BUILD_SETTLEMENT 6   -&gt; BRICK:10(3p), BRICK:9(4p), WHEAT:2(1p) [8 pips]
-  [7] BUILD_SETTLEMENT 7   -&gt; BRICK:10(3p), SHEEP:5(4p), WHEAT:2(1p) [8 pips]
-  [8] BUILD_SETTLEMENT 8   -&gt; BRICK:10(3p), SHEEP:5(4p), ORE:8(5p) [12 pips]
-  [9] BUILD_SETTLEMENT 9   -&gt; BRICK:10(3p), SHEEP:3(2p), ORE:8(5p) [10 pips]
-  [10] BUILD_SETTLEMENT 10   -&gt; SHEEP:3(2p), ORE:8(5p), WHEAT:4(3p) [10 pips]
-  [11] BUILD_SETTLEMENT 11   -&gt; SHEEP:3(2p), WHEAT:4(3p), WOOD:11(2p) [7 pips]
-  [12] BUILD_SETTLEMENT 12   -&gt; SHEEP:3(2p), WOOD:6(5p), WOOD:11(2p) [9 pips]
-  [13] BUILD_SETTLEMENT 13   -&gt; WOOD:6(5p), WOOD:11(2p), WOOD:12(1p) [8 pips]
-  [14] BUILD_SETTLEMENT 14   -&gt; WOOD:6(5p), WOOD:12(1p), SHEEP:9(4p) [10 pips]
-  [15] BUILD_SETTLEMENT 15   -&gt; WOOD:6(5p), WHEAT:5(4p), SHEEP:9(4p) [13 pips]
-  [16] BUILD_SETTLEMENT 16   -&gt; WHEAT:5(4p), ORE:4(3p), WOOD:8(5p) [12 pips]
-  [17] BUILD_SETTLEMENT 17   -&gt; WHEAT:5(4p), SHEEP:9(4p), WHEAT:10(3p) [11 pips]
-  [18] BUILD_SETTLEMENT 18   -&gt; WHEAT:5(4p), WHEAT:10(3p), WOOD:8(5p) [12 pips]
-  [19] BUILD_SETTLEMENT 19   -&gt; ORE:4(3p), BRICK:3(2p) [5 pips]
-  [20] BUILD_SETTLEMENT 20   -&gt; ORE:4(3p), BRICK:9(4p), BRICK:3(2p) [9 pips]
-  [21] BUILD_SETTLEMENT 21   -&gt; ORE:4(3p), WOOD:8(5p) [8 pips]
-  [22] BUILD_SETTLEMENT 22   -&gt; BRICK:9(4p), BRICK:3(2p), ORE:6(5p) [11 pips]
-  [23] BUILD_SETTLEMENT 23   -&gt; BRICK:9(4p), ORE:6(5p), WHEAT:2(1p) [10 pips]
-  [24] BUILD_SETTLEMENT 24   -&gt; SHEEP:5(4p), WHEAT:2(1p) [5 pips]
-  [25] BUILD_SETTLEMENT 25   -&gt; SHEEP:5(4p), port ORE 2:1 [4 pips]
-  [26] BUILD_SETTLEMENT 26   -&gt; SHEEP:5(4p), port ORE 2:1 [4 pips]
-  [27] BUILD_SETTLEMENT 27   -&gt; SHEEP:5(4p), ORE:8(5p) [9 pips]
-  [28] BUILD_SETTLEMENT 28   -&gt; ORE:8(5p), port SHEEP 2:1 [5 pips]
-  [29] BUILD_SETTLEMENT 29   -&gt; ORE:8(5p), WHEAT:4(3p), port SHEEP 2:1 [8 pips]
-  [30] BUILD_SETTLEMENT 30   -&gt; WHEAT:4(3p) [3 pips]
-  [31] BUILD_SETTLEMENT 31   -&gt; WHEAT:4(3p) [3 pips]
-  [32] BUILD_SETTLEMENT 32   -&gt; WHEAT:4(3p), WOOD:11(2p), port 3:1 [5 pips]
-  [33] BUILD_SETTLEMENT 33   -&gt; WOOD:11(2p), port 3:1 [2 pips]
-  [34] BUILD_SETTLEMENT 34   -&gt; WOOD:11(2p), WOOD:12(1p) [3 pips]
-  [35] BUILD_SETTLEMENT 35   -&gt; WOOD:12(1p), port 3:1 [1 pips]
-  [36] BUILD_SETTLEMENT 36   -&gt; WOOD:12(1p), port 3:1 [1 pips]
-  [37] BUILD_SETTLEMENT 37   -&gt; WOOD:12(1p), SHEEP:9(4p) [5 pips]
-  [38] BUILD_SETTLEMENT 38   -&gt; SHEEP:9(4p), port BRICK 2:1 [4 pips]
-  [39] BUILD_SETTLEMENT 39   -&gt; SHEEP:9(4p), WHEAT:10(3p), port BRICK 2:1 [7 pips]
-  [40] BUILD_SETTLEMENT 40   -&gt; WHEAT:10(3p), WOOD:8(5p), port WHEAT 2:1 [8 pips]
-  [41] BUILD_SETTLEMENT 41   -&gt; WHEAT:10(3p) [3 pips]
-  [42] BUILD_SETTLEMENT 42   -&gt; WHEAT:10(3p) [3 pips]
-  [43] BUILD_SETTLEMENT 43   -&gt; WOOD:8(5p) [5 pips]
-  [44] BUILD_SETTLEMENT 44   -&gt; WOOD:8(5p), port WHEAT 2:1 [5 pips]
-  [45] BUILD_SETTLEMENT 45   -&gt; no production, port WOOD 2:1 [0 pips]
-  [46] BUILD_SETTLEMENT 46   -&gt; BRICK:3(2p) [2 pips]
-  [47] BUILD_SETTLEMENT 47   -&gt; no production, port WOOD 2:1 [0 pips]
-  [48] BUILD_SETTLEMENT 48   -&gt; BRICK:3(2p), port 3:1 [2 pips]
-  [49] BUILD_SETTLEMENT 49   -&gt; BRICK:3(2p), ORE:6(5p), port 3:1 [7 pips]
-  [50] BUILD_SETTLEMENT 50   -&gt; ORE:6(5p) [5 pips]
-  [51] BUILD_SETTLEMENT 51   -&gt; ORE:6(5p) [5 pips]
-  [52] BUILD_SETTLEMENT 52   -&gt; ORE:6(5p), WHEAT:2(1p), port 3:1 [6 pips]
-  [53] BUILD_SETTLEMENT 53   -&gt; WHEAT:2(1p), port 3:1 [1 pips]
+  [0] BUILD_SETTLEMENT 0   -&gt; SHEEP on 11, ORE on 4, BRICK on 9
+  [1] BUILD_SETTLEMENT 1   -&gt; SHEEP on 11, BRICK on 10, BRICK on 9
+  [2] BUILD_SETTLEMENT 2   -&gt; SHEEP on 11, BRICK on 10, SHEEP on 3
+  [3] BUILD_SETTLEMENT 3   -&gt; SHEEP on 11, SHEEP on 3, WOOD on 6
+  [4] BUILD_SETTLEMENT 4   -&gt; SHEEP on 11, WOOD on 6, WHEAT on 5
+  [5] BUILD_SETTLEMENT 5   -&gt; SHEEP on 11, WHEAT on 5, ORE on 4
+  [6] BUILD_SETTLEMENT 6   -&gt; BRICK on 10, BRICK on 9, WHEAT on 2
+  [7] BUILD_SETTLEMENT 7   -&gt; BRICK on 10, SHEEP on 5, WHEAT on 2
+  [8] BUILD_SETTLEMENT 8   -&gt; BRICK on 10, SHEEP on 5, ORE on 8
+  [9] BUILD_SETTLEMENT 9   -&gt; BRICK on 10, SHEEP on 3, ORE on 8
+  [10] BUILD_SETTLEMENT 10   -&gt; SHEEP on 3, ORE on 8, WHEAT on 4
+  [11] BUILD_SETTLEMENT 11   -&gt; SHEEP on 3, WHEAT on 4, WOOD on 11
+  [12] BUILD_SETTLEMENT 12   -&gt; SHEEP on 3, WOOD on 6, WOOD on 11
+  [13] BUILD_SETTLEMENT 13   -&gt; WOOD on 6, WOOD on 11, WOOD on 12
+  [14] BUILD_SETTLEMENT 14   -&gt; WOOD on 6, WOOD on 12, SHEEP on 9
+  [15] BUILD_SETTLEMENT 15   -&gt; WOOD on 6, WHEAT on 5, SHEEP on 9
+  [16] BUILD_SETTLEMENT 16   -&gt; WHEAT on 5, ORE on 4, WOOD on 8
+  [17] BUILD_SETTLEMENT 17   -&gt; WHEAT on 5, SHEEP on 9, WHEAT on 10
+  [18] BUILD_SETTLEMENT 18   -&gt; WHEAT on 5, WHEAT on 10, WOOD on 8
+  [19] BUILD_SETTLEMENT 19   -&gt; ORE on 4, BRICK on 3
+  [20] BUILD_SETTLEMENT 20   -&gt; ORE on 4, BRICK on 9, BRICK on 3
+  [21] BUILD_SETTLEMENT 21   -&gt; ORE on 4, WOOD on 8
+  [22] BUILD_SETTLEMENT 22   -&gt; BRICK on 9, BRICK on 3, ORE on 6
+  [23] BUILD_SETTLEMENT 23   -&gt; BRICK on 9, ORE on 6, WHEAT on 2
+  [24] BUILD_SETTLEMENT 24   -&gt; SHEEP on 5, WHEAT on 2
+  [25] BUILD_SETTLEMENT 25   -&gt; SHEEP on 5, ORE 2:1 port
+  [26] BUILD_SETTLEMENT 26   -&gt; SHEEP on 5, ORE 2:1 port
+  [27] BUILD_SETTLEMENT 27   -&gt; SHEEP on 5, ORE on 8
+  [28] BUILD_SETTLEMENT 28   -&gt; ORE on 8, SHEEP 2:1 port
+  [29] BUILD_SETTLEMENT 29   -&gt; ORE on 8, WHEAT on 4, SHEEP 2:1 port
+  [30] BUILD_SETTLEMENT 30   -&gt; WHEAT on 4
+  [31] BUILD_SETTLEMENT 31   -&gt; WHEAT on 4
+  [32] BUILD_SETTLEMENT 32   -&gt; WHEAT on 4, WOOD on 11, 3:1 port
+  [33] BUILD_SETTLEMENT 33   -&gt; WOOD on 11, 3:1 port
+  [34] BUILD_SETTLEMENT 34   -&gt; WOOD on 11, WOOD on 12
+  [35] BUILD_SETTLEMENT 35   -&gt; WOOD on 12, 3:1 port
+  [36] BUILD_SETTLEMENT 36   -&gt; WOOD on 12, 3:1 port
+  [37] BUILD_SETTLEMENT 37   -&gt; WOOD on 12, SHEEP on 9
+  [38] BUILD_SETTLEMENT 38   -&gt; SHEEP on 9, BRICK 2:1 port
+  [39] BUILD_SETTLEMENT 39   -&gt; SHEEP on 9, WHEAT on 10, BRICK 2:1 port
+  [40] BUILD_SETTLEMENT 40   -&gt; WHEAT on 10, WOOD on 8, WHEAT 2:1 port
+  [41] BUILD_SETTLEMENT 41   -&gt; WHEAT on 10
+  [42] BUILD_SETTLEMENT 42   -&gt; WHEAT on 10
+  [43] BUILD_SETTLEMENT 43   -&gt; WOOD on 8
+  [44] BUILD_SETTLEMENT 44   -&gt; WOOD on 8, WHEAT 2:1 port
+  [45] BUILD_SETTLEMENT 45   -&gt; no production, WOOD 2:1 port
+  [46] BUILD_SETTLEMENT 46   -&gt; BRICK on 3
+  [47] BUILD_SETTLEMENT 47   -&gt; no production, WOOD 2:1 port
+  [48] BUILD_SETTLEMENT 48   -&gt; BRICK on 3, 3:1 port
+  [49] BUILD_SETTLEMENT 49   -&gt; BRICK on 3, ORE on 6, 3:1 port
+  [50] BUILD_SETTLEMENT 50   -&gt; ORE on 6
+  [51] BUILD_SETTLEMENT 51   -&gt; ORE on 6
+  [52] BUILD_SETTLEMENT 52   -&gt; ORE on 6, WHEAT on 2, 3:1 port
+  [53] BUILD_SETTLEMENT 53   -&gt; WHEAT on 2, 3:1 port
 
 Respond with the JSON object.</pre></details>
 
 <h2>Example — placement grading prompt (seed 1000, pick 1)</h2>
-<details><summary>SYSTEM prompt</summary><pre>You are an expert Settlers of Catan player in a 1-vs-1 game (exactly one opponent). Rules that matter:
+<details><summary>SYSTEM prompt</summary><pre>You are playing a 1-vs-1 game of Settlers of Catan (you and exactly one opponent). Here is how the game works.
 
-GOAL: first to 10 victory points (VP). VP come from: settlement = 1, city = 2, Longest Road (&gt;=5 segments, the most) = 2, Largest Army (&gt;=3 knights played, the most) = 2, and Victory-Point dev cards = 1 each.
+WINNING: the first player to reach 10 victory points (VP) wins. You get VP from each of these: a settlement you own is worth 1 VP; a city is worth 2 VP; holding Longest Road is worth 2 VP (you hold it if you have the single longest connected run of your own roads and it is at least 5 roads long, and longer than the opponent&#x27;s); holding Largest Army is worth 2 VP (you hold it if you have played the most knight cards and have played at least 3, more than the opponent); and each victory-point development card you hold is worth 1 VP (these stay hidden until you win).
 
-BUILD COSTS:
-- Road: 1 wood + 1 brick
-- Settlement: 1 wood + 1 brick + 1 sheep + 1 wheat (must be on a free node &gt;=2 edges from any settlement and connected to your road)
-- City: upgrade a settlement for 2 wheat + 3 ore (doubles its production)
-- Development card: 1 sheep + 1 wheat + 1 ore
+RESOURCES: there are five resources - wood, brick, sheep, wheat, and ore. You spend them to build things.
 
-PRODUCTION: each turn the active player rolls 2d6; every tile with that number pays its resource to adjacent settlements (1) / cities (2). Pips = how likely a number is (6/8=5, 5/9=4, 4/10=3, 3/11=2, 2/12=1); 7 = no production, move robber + steal. Settle high-pip, resource-diverse nodes.
+WHAT THINGS COST:
+- Road: 1 wood + 1 brick.
+- Settlement: 1 wood + 1 brick + 1 sheep + 1 wheat. It must go on an empty intersection that is connected to one of your own roads and is at least two edges away from any existing settlement or city (yours or the opponent&#x27;s).
+- City: 2 wheat + 3 ore to upgrade one of your existing settlements into a city. A city collects 2 resources from each of its tiles instead of 1.
+- Development card: 1 sheep + 1 wheat + 1 ore (you draw a random one).
 
-DEV CARDS: Knight = move robber + steal + counts toward Largest Army; Road Building = 2 free roads; Year of Plenty = take any 2 resources; Monopoly = name a resource, take ALL the opponent&#x27;s of it; VP = +1 VP.
+HOW TILES PRODUCE RESOURCES: every land tile shows one resource and a number from 2 to 12 (one tile is the desert and produces nothing). On a player&#x27;s turn they roll two dice and add them up; every tile whose number equals that total produces, giving its resource to each player who has a settlement (1 resource) or city (2 resources) on a corner of that tile. Because two dice are added, the totals are not equally likely: there are 5 ways to roll a 6 or an 8, 4 ways to roll a 5 or 9, 3 ways for a 4 or 10, 2 ways for a 3 or 11, and 1 way for a 2 or 12. In the board and action descriptions, &#x27;SHEEP on 9&#x27; means a sheep tile that produces when the two dice add up to 9.
 
-ROBBER: blocks a tile (its owners get nothing from it) and steals 1 card from an adjacent player. TRADE: 4:1 with the bank, or 3:1/2:1 at ports you have settled.
+ROLLING A 7 AND THE ROBBER: if the two dice add up to 7, no tile produces. Instead the player who rolled moves the robber onto any tile (while the robber sits on a tile, that tile produces nothing for anyone) and steals 1 random resource card from an opponent who has a settlement or city on that tile. Also, whenever a 7 is rolled, any player holding more than 7 resource cards must discard half of them.
 
-1v1 STRATEGY: tempo and denial decide games. Race Longest Road and Largest Army (each is a 2-VP swing), block the opponent&#x27;s best tile with the robber, and don&#x27;t over-trade away scarce resources. No multiplayer politics.
+DEVELOPMENT CARDS (what each one does when played): Knight - move the robber and steal, the same as rolling a 7; played knights count toward Largest Army. Road Building - place 2 roads for free. Year of Plenty - take any 2 resources from the bank. Monopoly - name one resource and take every card of that resource from the opponent. Victory Point - worth 1 VP. You may play at most one development card per turn, and not on the same turn you bought it (victory-point cards are the exception).
 
-TASK: choose where to place an opening settlement. Weigh pip totals, resource diversity, and port access. Follow the response format exactly: a &lt;reasoning&gt; block then an &lt;answer&gt; block with one node id.</pre></details>
-<details><summary>USER prompt</summary><pre>Choose the best opening settlement in this 1v1 game (first to 10 VP).
+TRADING: on your turn you may trade resources with the bank, giving 4 of one resource for 1 of any other (a 4:1 trade). If you own a settlement or city on a port you get a better rate there: a generic port lets you trade any 3 matching resources for 1 (3:1), and a specific port lets you trade 2 of its resource for 1 of any other (2:1).
 
-Resource tiles (resource:number(pips)):
-  (-2, 0, 2) WOOD:12(1p)
-  (-2, 1, 1) SHEEP:9(4p)
-  (-2, 2, 0) WHEAT:10(3p)
-  (-1, -1, 2) WOOD:11(2p)
-  (-1, 0, 1) WOOD:6(5p)
-  (-1, 1, 0) WHEAT:5(4p)
-  (-1, 2, -1) WOOD:8(5p)
-  (0, -2, 2) WHEAT:4(3p)
-  (0, -1, 1) SHEEP:3(2p)
-  (0, 0, 0) SHEEP:11(2p)
-  (0, 1, -1) ORE:4(3p)
-  (1, -2, 1) ORE:8(5p)
-  (1, -1, 0) BRICK:10(3p)
-  (1, 0, -1) BRICK:9(4p)
-  (1, 1, -2) BRICK:3(2p)
-  (2, -2, 0) SHEEP:5(4p)
-  (2, -1, -1) WHEAT:2(1p)
-  (2, 0, -2) ORE:6(5p)
+A TURN, STEP BY STEP: first you roll the two dice (this produces resources, or triggers the robber on a 7). After rolling you may take as many actions as you can afford, in any order you like: build roads, settlements, and cities, buy a development card, play one development card, and trade. Each of these is a separate action; you keep taking actions until you choose to end your turn.
+
+TASK: you are choosing where to place an opening settlement. Follow the response format exactly: a &lt;reasoning&gt; block, then an &lt;answer&gt; block containing exactly one node id.</pre></details>
+<details><summary>USER prompt</summary><pre>Choose where to place an opening settlement in this 1v1 game.
+
+Tiles (resource and the dice total it produces on):
+  (-2, 0, 2) WOOD on 12
+  (-2, 1, 1) SHEEP on 9
+  (-2, 2, 0) WHEAT on 10
+  (-1, -1, 2) WOOD on 11
+  (-1, 0, 1) WOOD on 6
+  (-1, 1, 0) WHEAT on 5
+  (-1, 2, -1) WOOD on 8
+  (0, -2, 2) WHEAT on 4
+  (0, -1, 1) SHEEP on 3
+  (0, 0, 0) SHEEP on 11
+  (0, 1, -1) ORE on 4
+  (1, -2, 1) ORE on 8
+  (1, -1, 0) BRICK on 10
+  (1, 0, -1) BRICK on 9
+  (1, 1, -2) BRICK on 3
+  (2, -2, 0) SHEEP on 5
+  (2, -1, -1) WHEAT on 2
+  (2, 0, -2) ORE on 6
 Existing buildings: none
 Robber: (0, 2, -2)
-Legal nodes (adjacent production):
-  node_0: SHEEP:11(2p), ORE:4(3p), BRICK:9(4p) | total 9p
-  node_1: SHEEP:11(2p), BRICK:10(3p), BRICK:9(4p) | total 9p
-  node_2: SHEEP:3(2p), SHEEP:11(2p), BRICK:10(3p) | total 7p
-  node_3: WOOD:6(5p), SHEEP:3(2p), SHEEP:11(2p) | total 9p
-  node_4: WOOD:6(5p), WHEAT:5(4p), SHEEP:11(2p) | total 11p
-  node_5: WHEAT:5(4p), SHEEP:11(2p), ORE:4(3p) | total 9p
-  node_6: BRICK:10(3p), BRICK:9(4p), WHEAT:2(1p) | total 8p
-  node_7: BRICK:10(3p), SHEEP:5(4p), WHEAT:2(1p) | total 8p
-  node_8: ORE:8(5p), BRICK:10(3p), SHEEP:5(4p) | total 12p
-  node_9: SHEEP:3(2p), ORE:8(5p), BRICK:10(3p) | total 10p
-  node_10: WHEAT:4(3p), SHEEP:3(2p), ORE:8(5p) | total 10p
-  node_11: WOOD:11(2p), WHEAT:4(3p), SHEEP:3(2p) | total 7p
-  node_12: WOOD:11(2p), WOOD:6(5p), SHEEP:3(2p) | total 9p
-  node_13: WOOD:12(1p), WOOD:11(2p), WOOD:6(5p) | total 8p
-  node_14: WOOD:12(1p), SHEEP:9(4p), WOOD:6(5p) | total 10p
-  node_15: SHEEP:9(4p), WOOD:6(5p), WHEAT:5(4p) | total 13p
-  node_16: WHEAT:5(4p), WOOD:8(5p), ORE:4(3p) | total 12p
-  node_17: SHEEP:9(4p), WHEAT:10(3p), WHEAT:5(4p) | total 11p
-  node_18: WHEAT:10(3p), WHEAT:5(4p), WOOD:8(5p) | total 12p
-  node_19: ORE:4(3p), BRICK:3(2p) | total 5p
-  node_20: ORE:4(3p), BRICK:9(4p), BRICK:3(2p) | total 9p
-  node_21: WOOD:8(5p), ORE:4(3p) | total 8p
-  node_22: BRICK:9(4p), BRICK:3(2p), ORE:6(5p) | total 11p
-  node_23: BRICK:9(4p), WHEAT:2(1p), ORE:6(5p) | total 10p
-  node_24: SHEEP:5(4p), WHEAT:2(1p) | total 5p
-  node_25: SHEEP:5(4p) | total 4p
-  node_26: SHEEP:5(4p) | total 4p
-  node_27: ORE:8(5p), SHEEP:5(4p) | total 9p
-  node_28: ORE:8(5p) | total 5p
-  node_29: WHEAT:4(3p), ORE:8(5p) | total 8p
-  node_30: WHEAT:4(3p) | total 3p
-  node_31: WHEAT:4(3p) | total 3p
-  node_32: WOOD:11(2p), WHEAT:4(3p) | total 5p
-  node_33: WOOD:11(2p) | total 2p
-  node_34: WOOD:12(1p), WOOD:11(2p) | total 3p
-  node_35: WOOD:12(1p) | total 1p
-  node_36: WOOD:12(1p) | total 1p
-  node_37: WOOD:12(1p), SHEEP:9(4p) | total 5p
-  node_38: SHEEP:9(4p) | total 4p
-  node_39: SHEEP:9(4p), WHEAT:10(3p) | total 7p
-  node_40: WHEAT:10(3p), WOOD:8(5p) | total 8p
-  node_41: WHEAT:10(3p) | total 3p
-  node_42: WHEAT:10(3p) | total 3p
-  node_43: WOOD:8(5p) | total 5p
-  node_44: WOOD:8(5p) | total 5p
-  node_45: (no production) | total 0p
-  node_46: BRICK:3(2p) | total 2p
-  node_47: (no production) | total 0p
-  node_48: BRICK:3(2p) | total 2p
-  node_49: BRICK:3(2p), ORE:6(5p) | total 7p
-  node_50: ORE:6(5p) | total 5p
-  node_51: ORE:6(5p) | total 5p
-  node_52: WHEAT:2(1p), ORE:6(5p) | total 6p
-  node_53: WHEAT:2(1p) | total 1p
+Legal nodes (the resources each would collect):
+  node_0: SHEEP on 11, ORE on 4, BRICK on 9
+  node_1: SHEEP on 11, BRICK on 10, BRICK on 9
+  node_2: SHEEP on 3, SHEEP on 11, BRICK on 10
+  node_3: WOOD on 6, SHEEP on 3, SHEEP on 11
+  node_4: WOOD on 6, WHEAT on 5, SHEEP on 11
+  node_5: WHEAT on 5, SHEEP on 11, ORE on 4
+  node_6: BRICK on 10, BRICK on 9, WHEAT on 2
+  node_7: BRICK on 10, SHEEP on 5, WHEAT on 2
+  node_8: ORE on 8, BRICK on 10, SHEEP on 5
+  node_9: SHEEP on 3, ORE on 8, BRICK on 10
+  node_10: WHEAT on 4, SHEEP on 3, ORE on 8
+  node_11: WOOD on 11, WHEAT on 4, SHEEP on 3
+  node_12: WOOD on 11, WOOD on 6, SHEEP on 3
+  node_13: WOOD on 12, WOOD on 11, WOOD on 6
+  node_14: WOOD on 12, SHEEP on 9, WOOD on 6
+  node_15: SHEEP on 9, WOOD on 6, WHEAT on 5
+  node_16: WHEAT on 5, WOOD on 8, ORE on 4
+  node_17: SHEEP on 9, WHEAT on 10, WHEAT on 5
+  node_18: WHEAT on 10, WHEAT on 5, WOOD on 8
+  node_19: ORE on 4, BRICK on 3
+  node_20: ORE on 4, BRICK on 9, BRICK on 3
+  node_21: WOOD on 8, ORE on 4
+  node_22: BRICK on 9, BRICK on 3, ORE on 6
+  node_23: BRICK on 9, WHEAT on 2, ORE on 6
+  node_24: SHEEP on 5, WHEAT on 2
+  node_25: SHEEP on 5
+  node_26: SHEEP on 5
+  node_27: ORE on 8, SHEEP on 5
+  node_28: ORE on 8
+  node_29: WHEAT on 4, ORE on 8
+  node_30: WHEAT on 4
+  node_31: WHEAT on 4
+  node_32: WOOD on 11, WHEAT on 4
+  node_33: WOOD on 11
+  node_34: WOOD on 12, WOOD on 11
+  node_35: WOOD on 12
+  node_36: WOOD on 12
+  node_37: WOOD on 12, SHEEP on 9
+  node_38: SHEEP on 9
+  node_39: SHEEP on 9, WHEAT on 10
+  node_40: WHEAT on 10, WOOD on 8
+  node_41: WHEAT on 10
+  node_42: WHEAT on 10
+  node_43: WOOD on 8
+  node_44: WOOD on 8
+  node_45: no production
+  node_46: BRICK on 3
+  node_47: no production
+  node_48: BRICK on 3
+  node_49: BRICK on 3, ORE on 6
+  node_50: ORE on 6
+  node_51: ORE on 6
+  node_52: WHEAT on 2, ORE on 6
+  node_53: WHEAT on 2
 
 Legal settlement nodes: node_0, node_1, node_2, node_3, node_4, node_5, node_6, node_7, node_8, node_9, node_10, node_11, node_12, node_13, node_14, node_15, node_16, node_17, node_18, node_19, node_20, node_21, node_22, node_23, node_24, node_25, node_26, node_27, node_28, node_29, node_30, node_31, node_32, node_33, node_34, node_35, node_36, node_37, node_38, node_39, node_40, node_41, node_42, node_43, node_44, node_45, node_46, node_47, node_48, node_49, node_50, node_51, node_52, node_53
 
-Weigh pip totals, resource diversity, and ports. Reason, then answer.
+Reason, then answer.
 Respond EXACTLY as:
 &lt;reasoning&gt;your reasoning&lt;/reasoning&gt;
 &lt;answer&gt;node_ID&lt;/answer&gt;</pre></details>

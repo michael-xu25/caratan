@@ -31,9 +31,6 @@ def _player_line(game: Game, color: Color, label: str) -> str:
     )
 
 
-# Dice pip counts (ways to roll each number with 2d6) — higher = more likely.
-PIPS = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 0, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1}
-
 # Action types whose `value` is a board node id (so we can annotate production).
 from catanatron.models.enums import ActionType  # noqa: E402
 
@@ -73,18 +70,16 @@ def _node_ports(game: Game) -> dict:
 
 
 def _node_brief(node_id, prod: dict, ports: dict) -> str:
-    parts, total = [], 0
-    for res, num in prod.get(node_id, ()):
-        total += PIPS.get(num, 0)
-        parts.append(f"{res}:{num}({PIPS.get(num,0)}p)")
+    parts = [f"{res} on {num}" for res, num in prod.get(node_id, ())]
     s = ", ".join(parts) if parts else "no production"
     if node_id in ports:
-        s += f", port {ports[node_id]}"
-    return f"{s} [{total} pips]"
+        s += f", {ports[node_id]} port"
+    return s
 
 
 def render_board_summary(game: Game) -> str:
-    """Global board picture: each resource's tiles (number+pips) and the ports."""
+    """Global board picture: each resource's tiles (the numbers that produce it)
+    and the ports. Facts only — no scoring of tiles or nodes."""
     from collections import defaultdict
     by_res = defaultdict(list)
     for tile in game.state.board.map.land_tiles.values():
@@ -92,16 +87,18 @@ def render_board_summary(game: Game) -> str:
         if res is None or num is None:
             continue
         by_res[getattr(res, "value", res)].append(num)
-    lines = ["Board tiles (resource: number(pips); robber blocks a tile):"]
+    lines = ["Tiles (each produces its resource when the two dice add up to its "
+             "number; the robber, if on a tile, stops it producing):"]
     for res in sorted(by_res):
-        nums = sorted(by_res[res], key=lambda n: (-PIPS.get(n, 0), n))
-        lines.append(f"  {res}: " + " ".join(f"{n}({PIPS.get(n,0)}p)" for n in nums))
+        nums = sorted(by_res[res])
+        lines.append(f"  {res}: produces on " + ", ".join(str(n) for n in nums))
     ports = defaultdict(list)
     for n, label in _node_ports(game).items():
         ports[label].append(n)
     if ports:
-        lines.append("Ports: " + "; ".join(
-            f"{label} @ nodes {sorted(ns)}" for label, ns in sorted(ports.items())))
+        lines.append("Ports (trade rate available from a settlement/city on these "
+                     "nodes): " + "; ".join(
+            f"{label} at nodes {sorted(ns)}" for label, ns in sorted(ports.items())))
     return "\n".join(lines)
 
 
@@ -136,43 +133,83 @@ def render_actions(playable_actions: List[Action], game: Game = None) -> str:
 # placement/grading prompt (goldilocks_eval.prompting) so the model is graded
 # with the same game knowledge it plays with.
 CATAN_RULES = (
-    "You are an expert Settlers of Catan player in a 1-vs-1 game (exactly one "
-    "opponent). Rules that matter:\n\n"
-    "GOAL: first to 10 victory points (VP). VP come from: settlement = 1, "
-    "city = 2, Longest Road (>=5 segments, the most) = 2, Largest Army "
-    "(>=3 knights played, the most) = 2, and Victory-Point dev cards = 1 each.\n\n"
-    "BUILD COSTS:\n"
-    "- Road: 1 wood + 1 brick\n"
-    "- Settlement: 1 wood + 1 brick + 1 sheep + 1 wheat (must be on a free node "
-    ">=2 edges from any settlement and connected to your road)\n"
-    "- City: upgrade a settlement for 2 wheat + 3 ore (doubles its production)\n"
-    "- Development card: 1 sheep + 1 wheat + 1 ore\n\n"
-    "PRODUCTION: each turn the active player rolls 2d6; every tile with that "
-    "number pays its resource to adjacent settlements (1) / cities (2). Pips = "
-    "how likely a number is (6/8=5, 5/9=4, 4/10=3, 3/11=2, 2/12=1); 7 = no "
-    "production, move robber + steal. Settle high-pip, resource-diverse nodes.\n\n"
-    "DEV CARDS: Knight = move robber + steal + counts toward Largest Army; "
-    "Road Building = 2 free roads; Year of Plenty = take any 2 resources; "
-    "Monopoly = name a resource, take ALL the opponent's of it; VP = +1 VP.\n\n"
-    "ROBBER: blocks a tile (its owners get nothing from it) and steals 1 card "
-    "from an adjacent player. TRADE: 4:1 with the bank, or 3:1/2:1 at ports you "
-    "have settled.\n\n"
-    "1v1 STRATEGY: tempo and denial decide games. Race Longest Road and Largest "
-    "Army (each is a 2-VP swing), block the opponent's best tile with the robber, "
-    "and don't over-trade away scarce resources. No multiplayer politics."
+    "You are playing a 1-vs-1 game of Settlers of Catan (you and exactly one "
+    "opponent). Here is how the game works.\n\n"
+
+    "WINNING: the first player to reach 10 victory points (VP) wins. You get VP "
+    "from each of these: a settlement you own is worth 1 VP; a city is worth "
+    "2 VP; holding Longest Road is worth 2 VP (you hold it if you have the single "
+    "longest connected run of your own roads and it is at least 5 roads long, and "
+    "longer than the opponent's); holding Largest Army is worth 2 VP (you hold it "
+    "if you have played the most knight cards and have played at least 3, more "
+    "than the opponent); and each victory-point development card you hold is "
+    "worth 1 VP (these stay hidden until you win).\n\n"
+
+    "RESOURCES: there are five resources - wood, brick, sheep, wheat, and ore. "
+    "You spend them to build things.\n\n"
+
+    "WHAT THINGS COST:\n"
+    "- Road: 1 wood + 1 brick.\n"
+    "- Settlement: 1 wood + 1 brick + 1 sheep + 1 wheat. It must go on an empty "
+    "intersection that is connected to one of your own roads and is at least two "
+    "edges away from any existing settlement or city (yours or the opponent's).\n"
+    "- City: 2 wheat + 3 ore to upgrade one of your existing settlements into a "
+    "city. A city collects 2 resources from each of its tiles instead of 1.\n"
+    "- Development card: 1 sheep + 1 wheat + 1 ore (you draw a random one).\n\n"
+
+    "HOW TILES PRODUCE RESOURCES: every land tile shows one resource and a number "
+    "from 2 to 12 (one tile is the desert and produces nothing). On a player's "
+    "turn they roll two dice and add them up; every tile whose number equals that "
+    "total produces, giving its resource to each player who has a settlement "
+    "(1 resource) or city (2 resources) on a corner of that tile. Because two "
+    "dice are added, the totals are not equally likely: there are 5 ways to roll "
+    "a 6 or an 8, 4 ways to roll a 5 or 9, 3 ways for a 4 or 10, 2 ways for a 3 "
+    "or 11, and 1 way for a 2 or 12. In the board and action descriptions, "
+    "'SHEEP on 9' means a sheep tile that produces when the two dice add up to 9.\n\n"
+
+    "ROLLING A 7 AND THE ROBBER: if the two dice add up to 7, no tile produces. "
+    "Instead the player who rolled moves the robber onto any tile (while the "
+    "robber sits on a tile, that tile produces nothing for anyone) and steals "
+    "1 random resource card from an opponent who has a settlement or city on that "
+    "tile. Also, whenever a 7 is rolled, any player holding more than 7 resource "
+    "cards must discard half of them.\n\n"
+
+    "DEVELOPMENT CARDS (what each one does when played): Knight - move the robber "
+    "and steal, the same as rolling a 7; played knights count toward Largest "
+    "Army. Road Building - place 2 roads for free. Year of Plenty - take any "
+    "2 resources from the bank. Monopoly - name one resource and take every card "
+    "of that resource from the opponent. Victory Point - worth 1 VP. You may play "
+    "at most one development card per turn, and not on the same turn you bought "
+    "it (victory-point cards are the exception).\n\n"
+
+    "TRADING: on your turn you may trade resources with the bank, giving 4 of one "
+    "resource for 1 of any other (a 4:1 trade). If you own a settlement or city "
+    "on a port you get a better rate there: a generic port lets you trade any "
+    "3 matching resources for 1 (3:1), and a specific port lets you trade 2 of "
+    "its resource for 1 of any other (2:1).\n\n"
+
+    "A TURN, STEP BY STEP: first you roll the two dice (this produces resources, "
+    "or triggers the robber on a 7). After rolling you may take as many actions "
+    "as you can afford, in any order you like: build roads, settlements, and "
+    "cities, buy a development card, play one development card, and trade. Each of "
+    "these is a separate action; you keep taking actions until you choose to end "
+    "your turn."
 )
 
 # Live-play action glossary (index-based selection over the full legal set).
 _LIVE_ACTION_GLOSSARY = (
-    "READING THE ACTIONS — you get the EXACT list of legal moves; pick one by "
-    "index:\n"
-    "- BUILD_SETTLEMENT N / BUILD_CITY N: N is a node id; its adjacent "
-    "production (and port) is shown after '->'.\n"
-    "- BUILD_ROAD (a, b): an edge between nodes a and b.\n"
-    "- MOVE_ROBBER ((x,y,z), victim): tile to block + whom to steal from.\n"
-    "- MARITIME_TRADE (...): give the listed resources to the bank for the last.\n"
-    "- PLAY_KNIGHT/PLAY_*: play that dev card. ROLL / END_TURN / "
-    "BUY_DEVELOPMENT_CARD as named."
+    "HOW TO ANSWER: you are given the exact list of legal moves available right "
+    "now; choose one of them by its index number. What each move means:\n"
+    "- BUILD_SETTLEMENT N / BUILD_CITY N: N is a board intersection (node) id. "
+    "After '->' you are shown which resources that node would collect (which tile "
+    "and on what dice roll) and whether it sits on a port.\n"
+    "- BUILD_ROAD (a, b): build a road on the edge between nodes a and b.\n"
+    "- MOVE_ROBBER ((x, y, z), victim): move the robber onto the tile at that "
+    "coordinate and steal from the named opponent (or no one).\n"
+    "- MARITIME_TRADE (...): give the listed resources to the bank in exchange "
+    "for the last one listed.\n"
+    "- PLAY_KNIGHT and other PLAY_* moves play that development card. "
+    "ROLL, END_TURN, and BUY_DEVELOPMENT_CARD do what their names say."
 )
 
 RULES_1V1 = CATAN_RULES + "\n\n" + _LIVE_ACTION_GLOSSARY
