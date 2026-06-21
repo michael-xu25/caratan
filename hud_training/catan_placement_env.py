@@ -13,6 +13,8 @@ from hud.graders import EvaluationResult
 
 env = Environment(name="catan-placement")
 
+# MUST match goldilocks_eval.placement_score.REWARD_SHARPNESS (meaner reward).
+REWARD_SHARPNESS = 3.0
 _ANS = re.compile(r"<answer>\s*(.+?)\s*</answer>", re.DOTALL | re.IGNORECASE)
 
 
@@ -38,8 +40,9 @@ def _score(text, spot_scores):
     if chosen not in totals:
         return 0.0, f"illegal {chosen}"
     c, best, worst = totals[chosen], max(totals.values()), min(totals.values())
-    r = 1.0 if best <= worst else (c - worst) / (best - worst)
-    return r, f"{chosen} -> {r:.3f}"
+    base = 1.0 if best <= worst else (c - worst) / (best - worst)
+    r = base ** REWARD_SHARPNESS  # meaner: punish anything short of the best
+    return r, f"{chosen} base={base:.2f} -> {r:.3f}"
 
 
 @env.template()

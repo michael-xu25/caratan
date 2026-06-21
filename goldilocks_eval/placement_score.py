@@ -27,12 +27,17 @@ from goldilocks_eval.prompt import PIPS, _node_production
 
 # ───────────────────────── EXPERT KNOB: tune these ─────────────────────────
 WEIGHTS: Dict[str, float] = {
-    "pip": 1.0,                 # production quantity (dice odds)
+    "pip": 1.5,                 # production quantity (dice odds) — prioritized
     "resource_diversity": 1.0,  # breadth of resource types
     "number_diversity": 1.0,    # avoid stacking the same number on one spot
 }
 # A single spot borders up to 3 tiles; the best case is 3 tiles at 5 pips each.
 MAX_PIPS = 15.0
+# Meanness knob: the normalized reward is raised to this power, so anything short
+# of the best spot is punished hard (reward = ((c-worst)/(best-worst)) ** S).
+# S=1 is the old generous linear reward; higher = meaner. With S=3 a spot at 0.8
+# of the range earns only 0.51, and a random pick (~0.63) earns ~0.25.
+REWARD_SHARPNESS = 3.0
 # ─────────────────────────────────────────────────────────────────────────
 
 
@@ -84,7 +89,20 @@ def _reward(chosen, totals: dict, mode: str) -> float:
     if mode == "rank":
         order = sorted(totals.values(), reverse=True)
         return 1.0 - order.index(c) / (len(order) - 1) if len(order) > 1 else 1.0
-    return (c - worst) / (best - worst) if best > worst else 1.0
+    base = (c - worst) / (best - worst) if best > worst else 1.0
+    return base ** REWARD_SHARPNESS  # meaner: punish anything short of the best
+
+
+def regret(chosen, scored_or_totals) -> float:
+    """Normalized regret in [0,1]: (best - chosen) / (best - worst). 0 = optimal
+    pick, 1 = worst. 1.0 if chosen is missing/illegal. The discriminative eval
+    metric (mean regret + regret==0 rate, i.e. top-1)."""
+    totals = ({k: (v[0] if isinstance(v, tuple) else v)
+               for k, v in scored_or_totals.items()})
+    if chosen not in totals or not totals:
+        return 1.0
+    best, worst = max(totals.values()), min(totals.values())
+    return (best - totals[chosen]) / (best - worst) if best > worst else 0.0
 
 
 def placement_reward(chosen: int, scored: Dict[int, Tuple[float, dict]],

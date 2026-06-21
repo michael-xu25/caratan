@@ -45,7 +45,7 @@ from catanatron.models.enums import ActionType
 
 from goldilocks_eval import prompting
 from goldilocks_eval.placement_score import (
-    WEIGHTS, placement_reward, score_legal_spots,
+    WEIGHTS, placement_reward, regret, score_legal_spots,
 )
 
 SNAKE_ORDER = ["A", "B", "B", "A"]  # who is placing each opening settlement
@@ -207,13 +207,16 @@ def _eval_one(backend, seed: int, weights: dict, mode: str) -> list[dict]:
         # is counted — NEVER silently treated as best/first (that fakes the score).
         # The trajectory advances on the optimal spot so later placements still run.
         reward = round(placement_reward(chosen, scored, mode), 4) if chosen is not None else 0.0
+        order = sorted(scored, key=lambda n: -scored[n][0])
+        rank = order.index(chosen) if chosen is not None else len(order)
         out.append({
             "placement": pick + 1,
             "chosen": prompting.node_id_str(chosen) if chosen is not None else None,
             "gold": prompting.node_id_str(best),
             "status": status,
             "reward": reward,
-            "chosen_score": round(scored[chosen][0], 4) if chosen is not None else None,
+            "regret": round(regret(chosen, scored), 4),
+            "rank": rank,
             "best_score": round(scored[best][0], 4),
         })
         game.execute(next(a for a in settle if a.value == (chosen if chosen is not None else best)))
@@ -236,29 +239,38 @@ def cmd_eval(args):
     seeds = _seeds_for_split(args.split, args.n)
     backend = make_backend(args.model)
     results = asyncio.run(_eval_model(backend, seeds, weights, args.reward, args.concurrency))
-    # per-placement average reward + answer-validity (so a 404-storm or unparseable
-    # outputs can't masquerade as a real score)
-    by_pos = {1: [], 2: [], 3: [], 4: []}
+    # Discriminative metrics: top-1 (regret==0), top-3, mean regret — these
+    # separate models (mean reward is too generous). Plus answer-validity so a
+    # 404-storm / unparseable outputs can't masquerade as a real score.
+    by_pos = {1: [], 2: [], 3: [], 4: []}   # (reward, regret, top1, top3) per decision
     status_counts = {}
     for game in results:
         for d in game:
-            by_pos[d["placement"]].append(d["reward"])
+            by_pos[d["placement"]].append(d)
             status_counts[d["status"]] = status_counts.get(d["status"], 0) + 1
     total = sum(status_counts.values()) or 1
     ok = status_counts.get("ok", 0)
-    print(f"model: {args.model}   boards: {len(seeds)}   reward mode: {args.reward}")
+    print(f"model: {args.model}   boards: {len(seeds)}   reward sharpness applied")
     print(f"valid-answer rate: {ok}/{total} = {ok/total:.1%}"
           + (f"   FAILURES: {dict((k, v) for k, v in status_counts.items() if k != 'ok')}"
              if ok < total else ""))
     if ok == 0:
         print("  ⚠️  0 valid answers — the model was never reached (check the deployment "
-              "id / that the model is deployed). The reward numbers below are MEANINGLESS.")
-    print("per-placement mean reward (1.0 = optimal spot each time):")
+              "id). The numbers below are MEANINGLESS.")
+    print(f"{'opening':<12}{'top1':>8}{'top3':>8}{'mean_regret':>13}{'mean_reward':>13}")
     for p in (1, 2, 3, 4):
-        xs = by_pos[p]
-        print(f"  opening {p} ({SNAKE_ORDER[p-1]}): {sum(xs)/len(xs):.3f}   (n={len(xs)})")
-    allr = [r for xs in by_pos.values() for r in xs]
-    print(f"  overall: {sum(allr)/len(allr):.3f}")
+        ds = by_pos[p]
+        n = len(ds) or 1
+        t1 = sum(d["regret"] <= 1e-9 for d in ds) / n
+        t3 = sum(d["rank"] < 3 for d in ds) / n
+        mreg = sum(d["regret"] for d in ds) / n
+        mrew = sum(d["reward"] for d in ds) / n
+        print(f"{p} ({SNAKE_ORDER[p-1]}){'':<6}{t1:>8.1%}{t3:>8.1%}{mreg:>13.3f}{mrew:>13.3f}")
+    allds = [d for ds in by_pos.values() for d in ds]
+    n = len(allds) or 1
+    print(f"{'OVERALL':<12}{sum(d['regret']<=1e-9 for d in allds)/n:>8.1%}"
+          f"{sum(d['rank']<3 for d in allds)/n:>8.1%}"
+          f"{sum(d['regret'] for d in allds)/n:>13.3f}{sum(d['reward'] for d in allds)/n:>13.3f}")
 
 
 def main(argv=None) -> int:
