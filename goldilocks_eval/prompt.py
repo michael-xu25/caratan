@@ -329,9 +329,12 @@ _LIVE_ACTION_GLOSSARY = (
 RULES_1V1 = CATAN_RULES + "\n\n" + _LIVE_ACTION_GLOSSARY
 
 _OUTPUT_WITH_REASONING = (
-    "\n\nReply with ONLY a JSON object on one line:\n"
-    '{"action": <index>, "reasoning": "<one short sentence>"}\n'
-    "The index must be one of the listed action indices. No prose outside the JSON."
+    "\n\nThink it through briefly, THEN choose — put the reasoning first so it "
+    "informs the choice. Reply with ONLY a JSON object (reasoning before action):\n"
+    '{"reasoning": "<2-4 short steps: what you need now; the key options; '
+    'why this one>", "action": <index>}\n'
+    "Keep reasoning to a few clauses (separate steps with ';'); the index must be "
+    "one of the listed action indices; no prose outside the JSON."
 )
 
 SYSTEM_PROMPT = RULES_1V1 + _OUTPUT_WITH_REASONING

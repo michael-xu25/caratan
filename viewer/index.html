@@ -264,7 +264,10 @@ function updatePanel(step) {
     + `<b>${step.action_type}</b> <span class="muted">${valTxt}</span>`
     + `<span class="muted" style="float:right">${(step.vp||{})[step.color]??""} VP · ${handTotal(step.color)} cards</span>`;
   $("note").textContent = step.note || "";
-  $("reason").textContent = step.reasoning || "(reasoning capture off for this run)";
+  $("reason").textContent = step.reasoning
+    || ((step.num_legal || 0) <= 1
+        ? "(forced move — only one legal option; model not consulted)"
+        : "(no reasoning recorded)");
 
   // VP (public)
   const fv = DATA.meta.final_vp || {};
