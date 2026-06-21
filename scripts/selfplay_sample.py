@@ -166,9 +166,22 @@ def main() -> int:
     summary_path.write_text(summary)
     print(f"\nTranscripts + summary -> {args.run_dir}/")
 
+    import subprocess
+    # Default pipeline: build this run's viewer replay files + refresh the
+    # run-picker manifest so the LATEST run shows first in the viewer (open
+    # viewer/) with no extra step. Non-fatal.
+    _repo = Path(__file__).resolve().parent.parent
+    try:
+        subprocess.run([sys.executable, "scripts/build_viewer_data.py", args.run_dir],
+                       cwd=_repo, check=False)
+        subprocess.run([sys.executable, "scripts/build_viewer_index.py"],
+                       cwd=_repo, check=False)
+        print("Viewer updated — open viewer/ (run picker lists this run, newest first).")
+    except Exception as e:  # never let the viewer build break a completed run
+        print(f"(viewer build skipped: {e})")
+
     # Share the run by default (commit + push the transcripts). Non-fatal; opt out
     # with SHARE_TRANSCRIPTS=0, or use a transcripts/_<name> run dir to keep local.
-    import subprocess
     try:
         subprocess.run(
             [str(Path(__file__).resolve().parent / "share_transcripts.sh"), args.run_dir],
