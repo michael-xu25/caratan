@@ -21,7 +21,7 @@ PY="${PYTHON:-.venv/bin/python}"
 RUN_DIR="transcripts/sample"
 
 echo "================================================================"
-echo " SAMPLE RUN  —  A=$A  B=$B  seeds=$N  (mirrored, balanced dice)"
+echo " SAMPLE RUN  —  A=$A  B=$B  seeds=$N  (mirrored, seeded i.i.d. dice)"
 echo "================================================================"
 echo
 echo "### 1/2  Fairness pair on seed 1 (board + dice identity proof)"

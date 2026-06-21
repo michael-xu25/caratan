@@ -26,10 +26,10 @@ Fairness:
   * `run_batch(..., mirror=True)` plays every seed twice with seats swapped.
     Verified property for 1v1: reusing a seed with the player list swapped
     yields an IDENTICAL board and cleanly swapped seating (RED<->BLUE). Dice
-    are identical too when both policies consume RNG identically; for policies
-    that draw from Python's RNG differently (or trigger different robber/dev
-    draws) the dice streams can diverge -- a decision-independent "balanced
-    dice deck" is the proper fix and is noted as future work.
+    are kept identical across the pair by `goldilocks_eval.dice` (a per-seed RNG
+    decoupled from the global stream) regardless of how each policy draws —
+    default seeded i.i.d. per the build-spec; `balanced_dice=True` for the
+    colonist deck (A/B only).
 """
 
 from __future__ import annotations
@@ -114,7 +114,7 @@ def _board_fingerprint(game) -> str:
 
 
 def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
-                     capture_reasoning=False, balanced_dice=True,
+                     capture_reasoning=False, balanced_dice=False,
                      max_turns=400, vps_to_win=10):
     """Run one full game synchronously and return a MatchResult.
 
@@ -122,16 +122,17 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
     `swap_seats` swaps the list order so A and B trade opening seats while the
     seed keeps the board fixed. `capture_reasoning` turns on model reasoning for
     LLM agents (testing / viewable transcripts); off keeps runs cheap.
-    `balanced_dice` deals dice from a per-seed deck decoupled from the global RNG
-    (the dice half of fairness) so a mirrored pair sees IDENTICAL dice; turn it
-    off to fall back to Catanatron's vanilla global-RNG dice.
+
+    Dice are always dealt from a per-seed RNG decoupled from the global stream
+    (the determinism fix), so a mirrored pair sees IDENTICAL dice. Default is
+    seeded **i.i.d.** (the build-spec decision); `balanced_dice=True` opts into
+    the colonist deck for A/B only.
     `vps_to_win` is the victory-point target (10, standard).
     `max_turns` caps the game; if neither side reaches `vps_to_win` by then the
     game is truncated and the winner is whoever has more VP (true tie -> draw).
     """
-    from contextlib import nullcontext
     import catanatron.game as _catan_game
-    from harness.dice import balanced_dice as _balanced_dice
+    from harness.dice import seeded_dice as _seeded_dice
     # Per-worker turn cap (module global, read at play() time; worker is isolated).
     _catan_game.TURNS_LIMIT = max_turns
     a = make_agent(agent_a_spec, SEATS[0], capture_reasoning=capture_reasoning)
@@ -147,14 +148,14 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
 
     game = Game(players, seed=seed, vps_to_win=vps_to_win)
     fingerprint = _board_fingerprint(game)
-    # Deal dice from a per-seed deck (decoupled from the global RNG) so the
+    # Deal dice from a per-seed RNG (decoupled from the global stream) so the
     # mirrored pair sees identical dice; the deck records what it dealt so we can
-    # fingerprint it the same way we fingerprint the board.
-    dice_ctx = _balanced_dice(seed) if balanced_dice else nullcontext()
-    with dice_ctx as deck:
+    # fingerprint it the same way we fingerprint the board. Default i.i.d.;
+    # balanced (colonist deck) is opt-in.
+    with _seeded_dice(seed, balanced=balanced_dice) as deck:
         game.play(accumulators=[transcript])
-    dice_fingerprint = deck.fingerprint() if deck is not None else ""
-    dice_rolls = tuple(deck.dealt) if deck is not None else ()
+    dice_fingerprint = deck.fingerprint()
+    dice_rolls = tuple(deck.dealt)
     duration = transcript.duration
 
     color_a = a.color
@@ -199,7 +200,7 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
 
 async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
                     run_dir="transcripts/adhoc", executor=None,
-                    capture_reasoning=False, balanced_dice=True,
+                    capture_reasoning=False, balanced_dice=False,
                     max_turns=400, vps_to_win=10):
     """Run a single match in a worker process (isolated global RNG).
 
@@ -217,7 +218,7 @@ async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
 
 async def run_mirror_pair(agent_a_spec, agent_b_spec, seed,
                           run_dir="transcripts/pair", capture_reasoning=False,
-                          balanced_dice=True, max_turns=400, vps_to_win=10):
+                          balanced_dice=False, max_turns=400, vps_to_win=10):
     """The fairness primitive: one board, two games with seats swapped.
 
     Game 1: A seats first (RED), B second (BLUE).
@@ -245,7 +246,7 @@ async def run_batch(agent_a_spec, agent_b_spec, seeds: Sequence[int],
                     mirror: bool = True, concurrency: int = 8,
                     run_dir: str = "transcripts/batch",
                     capture_reasoning: bool = False,
-                    balanced_dice: bool = True,
+                    balanced_dice: bool = False,
                     max_turns: int = 400, vps_to_win: int = 10) -> BatchResult:
     """Run many matches concurrently, bounded by `concurrency`.
 
