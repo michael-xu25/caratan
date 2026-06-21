@@ -49,7 +49,9 @@ def _static_board(g: dict) -> dict:
         ttype = tile.get("type")
         tiles.append({"coord": list(coord), "x": cx, "y": cy, "type": ttype,
                       "resource": tile.get("resource"), "number": tile.get("number"),
-                      "port": (tile.get("resource") or "3:1") if ttype == "PORT" else None})
+                      "port": (tile.get("resource") or "3:1") if ttype == "PORT" else None,
+                      # EdgeRef the port faces — its two access nodes are derived from this
+                      "direction": tile.get("direction") if ttype == "PORT" else None})
     nodes = {str(nid): {"x": x, "y": y}
              for nid in g["nodes"] for x, y in [node_position(g, nid)]}
     edges = [list(e["id"]) for e in g["edges"]]
