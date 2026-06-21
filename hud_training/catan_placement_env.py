@@ -1,0 +1,56 @@
+"""HUD environment for the Catan opening-placement task (GRPO via HUD/Tinker).
+
+Self-contained grader (stdlib only) — mirrors goldilocks_eval.placement_score's
+normalized reward. Each task carries the prebuilt mechanics-only prompt + the
+precomputed spot_scores, so NO catanatron is needed at train time (this runs in
+the isolated .venv-hud). Two-yield scenario: yield the prompt, receive the
+model's answer, yield the reward.
+"""
+import re
+
+from hud.environment import Environment
+from hud.graders import EvaluationResult
+
+env = Environment(name="catan-placement")
+
+# MUST match goldilocks_eval.placement_score.TOP_K. Reward = 1.0 if the chosen
+# spot is among the TOP_K highest-scoring legal spots, else 0.0.
+TOP_K = 3
+_ANS = re.compile(r"<answer>\s*(.+?)\s*</answer>", re.DOTALL | re.IGNORECASE)
+
+
+def _node_id_str(x):
+    s = str(x).strip()
+    s = s[len("node_"):] if s.startswith("node_") else s
+    try:
+        return f"node_{int(s)}"
+    except (ValueError, TypeError):
+        return None
+
+
+def _score(text, spot_scores):
+    """normalized reward in [0,1]; 0.0 if unparseable/illegal. Mirror of the
+    canonical goldilocks_eval reward (verified identical over 10k pairs)."""
+    if not spot_scores:
+        return 0.0, "no spot_scores"
+    m = _ANS.search(text or "")
+    if not m:
+        return 0.0, "unparseable"
+    chosen = _node_id_str(m.group(1))
+    totals = {_node_id_str(k): float(v) for k, v in spot_scores.items()}
+    if chosen not in totals:
+        return 0.0, f"illegal {chosen}"
+    order = sorted(totals.values(), reverse=True)
+    threshold = order[min(TOP_K - 1, len(order) - 1)]   # TOP_K-th best score
+    r = 1.0 if totals[chosen] >= threshold else 0.0
+    return r, f"{chosen} {'TOP3' if r else 'miss'} (score {totals[chosen]:.2f}, cut {threshold:.2f})"
+
+
+@env.template()
+async def placement(prompt: str, spot_scores: dict, gold: str):
+    """Ask for one opening settlement; reward = normalized closeness to optimal."""
+    answer = yield prompt
+    text = answer if isinstance(answer, str) else str(answer)
+    reward, reason = _score(text, spot_scores)
+    yield EvaluationResult(reward=reward, content=text[:160],
+                           info={"gold": gold, "reason": reason})

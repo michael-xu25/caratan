@@ -10,9 +10,14 @@ drift (the seam the scenario-generation-spec flags hardest):
 Contract (matches scenario-generation-spec.md):
     - node ids are canonical strings "node_<int>" (Catanatron actions use raw
       ints; normalize at the boundary with `node_id_str` / `node_id_int`).
-    - the model must reply:
-          <reasoning>...</reasoning>
+    - the model must reply with ONLY the structured decision, no prose:
           <answer>node_27</answer>
+      (No <reasoning> block. Chain-of-thought was for baseline weakness-
+      discovery in live play; for GRPO rollouts it only slows generation and
+      adds variance, and we reward the decision, not the prose. Training
+      rollouts and eval BOTH use this answer-only format — they import this one
+      module — so the baseline-vs-trained comparison is never confounded by a
+      format mismatch.)
     - reward is tiered: 1.0 gold / 0.5 acceptable / 0.0 else (incl. unparseable).
 
 This is the placement (settlement-choice) contract. Live full-game play uses a
@@ -35,10 +40,22 @@ PIPS = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 0, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1}
 # what makes a spot good (that judgment is the reward/rubric, never the prompt).
 from goldilocks_eval.prompt import CATAN_RULES  # noqa: E402
 
-SYSTEM = CATAN_RULES + "\n\n" + (
-    "TASK: you are choosing where to place an opening settlement. Follow the "
-    "response format exactly: a <reasoning> block, then an <answer> block "
-    "containing exactly one node id."
+# Lean, mechanics-only placement primer (NOT the full from-scratch CATAN_RULES —
+# that 1800-token teaching primer is for cold base models in live play; here it
+# only bloats every rollout's prefill). Keeps all the mechanics the decision needs
+# (what a settlement collects, what pips mean) — strategy stays in the reward.
+PLACEMENT_RULES = (
+    "You are choosing where to place an opening settlement in 1-vs-1 Catan. "
+    "A settlement sits on a node (intersection) and collects one resource card "
+    "from each adjacent tile (up to 3) every time that tile's number is rolled. "
+    "A number's pips = the number of ways two dice make it (6 and 8 = 5 pips each, "
+    "down to 2 and 12 = 1 pip), i.e. how often that tile pays out. The board and "
+    "the legal nodes (with the resources/pips each would collect) are given below."
+)
+SYSTEM = PLACEMENT_RULES + "\n\n" + (
+    "TASK: pick the single best node. Respond with ONLY an <answer> block "
+    "containing exactly one node id, e.g. <answer>node_27</answer>. Do not explain, "
+    "reason, or write anything outside the <answer> block."
 )
 
 
@@ -125,9 +142,7 @@ def build_prompt(scenario: Mapping) -> str:
         "Choose where to place an opening settlement in this 1v1 game.\n\n"
         f"{board}\n\n"
         f"Legal settlement nodes: {', '.join(legal)}\n\n"
-        "Reason, then answer.\n"
-        "Respond EXACTLY as:\n"
-        "<reasoning>your reasoning</reasoning>\n"
+        "Respond with ONLY your choice, nothing else:\n"
         "<answer>node_ID</answer>"
     )
 
