@@ -91,6 +91,19 @@ dashboard (job link printed on create). For W&B, add `--wandb-config-enabled
 When training finishes, deploy the resulting LoRA as an on-demand deployment and
 note its deployment id for the AFTER eval below.
 
+## 3b. Monitoring (no babysitting)
+Fireworks shows `RUNNING 0%` for BOTH "provisioning GPUs" and "training" — the
+dashboard doesn't distinguish them. `training/rft_status.py` decodes the real phase
+from the job's progress counters (`totalInputRequests==0` ⇒ still provisioning):
+```bash
+set -a; source .env; set +a
+python training/rft_status.py <job_id>           # one-shot, e.g. PROVISIONING / TRAINING 42% ~18m left
+python training/rft_status.py <job_id> --watch   # poll every 60s until COMPLETED/FAILED
+```
+You don't have to sit and watch: provisioning is ~5–20 min (no rollouts yet),
+then TRAINING shows %, epoch, rollout counts, and a rough ETA. Walk away and check
+back, or let the `--watch` loop run.
+
 ## 4. Eval — before/after (the demo)
 Run the SAME held-out boards on the base and the trained model; each places all
 four openings itself and is scored vs the optimum at each decision:

@@ -28,8 +28,8 @@ from eval_protocol.models import EvaluateResult, EvaluationRow, InputMetadata, M
 
 REWARD_MODE = "normalized"
 DATASET = "data/placement_opening_train.trl.jsonl"
-# Same Qwen2.5-7B family we eval; litellm route is only used for LOCAL testing.
-LOCAL_MODEL = "fireworks_ai/accounts/fireworks/models/qwen2p5-7b-instruct"
+# The RFT base model; litellm route is only used for LOCAL testing (not RFT rollouts).
+LOCAL_MODEL = "fireworks_ai/accounts/fireworks/models/qwen3-4b-instruct-2507"
 
 _ANS = re.compile(r"<answer>\s*(.+?)\s*</answer>", re.DOTALL | re.IGNORECASE)
 
