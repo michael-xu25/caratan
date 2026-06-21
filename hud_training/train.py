@@ -97,6 +97,7 @@ async def main(env_key, steps, group, lr, limit, max_concurrent, max_tokens, rol
           f"steps={steps} group={group} lr={lr}", flush=True)
     session = await Job.start(f"catan-{env_key}-rl", group=group)
     history = []
+    consec_skips = 0
     for step in range(steps):
         # Rollout with retry: Tinker can return 503 upstream_overloaded transiently.
         # Retry the whole taskset.run until every rollout in the batch is valid, so
@@ -121,9 +122,15 @@ async def main(env_key, steps, group, lr, limit, max_concurrent, max_tokens, rol
         # Train on intact groups only (whole multiple of group_size).
         keep = (len(valid) // group) * group
         if keep < group:
+            consec_skips += 1
             print(f"  step {step}: only {len(valid)} valid runs (<group {group}); "
-                  f"skipping train this step", flush=True)
+                  f"skipping (consec {consec_skips})", flush=True)
+            if consec_skips >= 4:
+                print(f"ABORT {env_key}: Tinker unavailable {consec_skips} steps in a "
+                      f"row; stopping this env.", flush=True)
+                break
             continue
+        consec_skips = 0
         t1 = time.perf_counter()
         train_batch = valid[:keep]
         fb = await trainer.forward_backward(train_batch, loss_fn="importance_sampling",
