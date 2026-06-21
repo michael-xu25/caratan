@@ -97,7 +97,13 @@ def review_run(transcripts: list[dict], backend, concurrency: int = 16) -> list[
 
 
 def aggregate_reviews(reviews: list[dict]) -> dict:
-    """Rank strategic failure modes by how many games they appear in."""
+    """Rank strategic failure modes by PRESENCE COUNT (# games they appear in).
+
+    NOTE: unlike the per-decision aggregator, this is count-ranked with NO Wilson
+    discounting and NO sample floor — fine at this scale (40 games, count ≈ rate),
+    but read the ordering less rigorously than the Wilson-ranked per-decision table,
+    and label the percentages as 'games containing this mode', not fail-rates.
+    """
     n_games = len(reviews)
     by_mode = defaultdict(lambda: {"games": 0, "examples": [], "why": []})
     for r in reviews:

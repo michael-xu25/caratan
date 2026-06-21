@@ -17,6 +17,7 @@ aren't seed-reproducible.
 """
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -71,7 +72,10 @@ class DecisionRegret:
     gated: bool = False               # regret >= threshold (set by gate())
 
 
-def compute_regrets(transcript: dict) -> list[DecisionRegret]:
+def compute_regrets(transcript: dict, stats: dict | None = None) -> list[DecisionRegret]:
+    """Per-decision regret. Pass a `stats` dict to collect denominator-shrinking drops
+    (feedback #3): `dropped[<decision_type>]` (chosen value unmatched / no scorable
+    legal set) and `broke_early` (games where replay stopped, losing later decisions)."""
     """Replay a transcript and compute per-decision regret for every real choice."""
     g = transcript["game"]
     records = g["action_records"]
@@ -109,6 +113,15 @@ def compute_regrets(transcript: dict) -> list[DecisionRegret]:
                 value_chosen = next(
                     (v for v, a in scored if a.action_type == chosen.action_type
                      and a.value == chosen.value), None)
+                if value_chosen is None:
+                    # recorded value can differ from the legal action's (e.g.
+                    # BUY_DEVELOPMENT_CARD records the drawn card; the legal action's
+                    # value is None). Fall back to type-match ONLY when unambiguous.
+                    same_type = [v for v, a in scored if a.action_type == chosen.action_type]
+                    if len(same_type) == 1:
+                        value_chosen = same_type[0]
+                if value_chosen is None and stats is not None:
+                    stats.setdefault("dropped", Counter())[dtype] += 1  # chosen not in scored set
                 if value_chosen is not None:
                     raw = max(0.0, value_best - value_chosen)
                     out.append(DecisionRegret(
@@ -122,6 +135,8 @@ def compute_regrets(transcript: dict) -> list[DecisionRegret]:
                                      best_action.action_type.value,
                                      _encode_value(best_action.value)],
                     ))
+            elif stats is not None:
+                stats.setdefault("dropped", Counter())[dtype] += 1  # no legal action scored
 
         # advance the real game with the recorded result (deterministic). If a
         # recorded action can't be replayed (rare engine/result edge cases, e.g.
@@ -131,11 +146,16 @@ def compute_regrets(transcript: dict) -> list[DecisionRegret]:
             game.execute(chosen, validate_action=False,
                          action_record=ActionRecord(action=chosen, result=_norm(rec[1])))
         except Exception:
+            if stats is not None:
+                stats["broke_early"] = stats.get("broke_early", 0) + 1
+                stats["broke_early_at"] = stats.get("broke_early_at", []) + [i]
             break
 
     # attach turn numbers from the transcript's decisions[] if present
     decisions = transcript.get("decisions", [])
-    turn_by_ply = {d.get("i", k): d.get("turn") for k, d in enumerate(decisions)}
+    # ONE identity convention everywhere: ply == position in decisions[] (== the
+    # action_records index dr.ply was built from). Do NOT prefer a `i`/`ply` field.
+    turn_by_ply = {k: d.get("turn") for k, d in enumerate(decisions)}
     for dr in out:
         dr.turn = turn_by_ply.get(dr.ply)
     return out

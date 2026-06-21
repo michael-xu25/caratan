@@ -89,17 +89,25 @@ def main() -> int:
     transcripts = [json.loads(p.read_text()) for p in paths]
     print(f"graders: {ga.name} + {gb.name}  (hybrid: per-decision, concurrency {args.concurrency})\n")
 
+    drop_stats = {}
     objects = grade_run(transcripts, ga, gb, per_game=args.per_game,
-                        concurrency=args.concurrency,
+                        concurrency=args.concurrency, drop_stats=drop_stats,
                         progress=lambda d, n: print(f"  {d}/{n} grader calls done"))
 
     out_dir = Path(args.out) if args.out else (target if target.is_dir() else target.parent) / "grading"
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "findings.jsonl").write_text("\n".join(json.dumps(o) for o in objects))
     rep = report(objects, min_samples=args.min_samples, merge=args.merge)
+    rep["oracle_drops"] = {"dropped_by_type": dict(drop_stats.get("dropped", {})),
+                           "games_broke_early": drop_stats.get("broke_early", 0)}
     (out_dir / "report.json").write_text(json.dumps(rep, indent=2))
+    print(f"\n=== oracle drops (excluded from grading) === by_type {rep['oracle_drops']['dropped_by_type']} "
+          f"| games_broke_early {rep['oracle_drops']['games_broke_early']}")
 
-    print(f"\n=== agreement === {rep['agreement']}")
+    pf = rep.get("parse_failures", {})
+    print(f"\n=== parse failures (excluded from denominator) === "
+          + ", ".join(f"{g.split(':')[0]}: {d['parse_fail_rate']*100:.1f}%" for g, d in pf.items()))
+    print(f"=== agreement === {rep['agreement']}")
     print("=== top weaknesses (detailed; ranked by union Wilson-LB) ===")
     rows = [r for r in rep["detailed_table"] if r["above_floor"]][:12]
     short = lambda g: g.split(":")[0][:6]

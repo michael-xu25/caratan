@@ -86,28 +86,39 @@ reason `"n/a"`. (Don't drop it; missing rows distort the denominator in aggregat
 
 ## Output schema (one object per decision, strict JSON)
 
+> **⚠️ IMPLEMENTATION NOTE (current, read this).** The shipped grader does NOT ask
+> the LLM for `state_tags` or `weakness_labels`. **`state_tags` are derived
+> objectively from the engine** (`harness/grader/context.py`) so BOTH graders share
+> identical aggregation buckets (a grader can't split a bucket by tagging
+> differently). The LLM is asked for **only** `{criteria, summary}`. `decision_type`
+> is also engine-derived. `weakness_labels` is **vestigial** — the aggregator
+> explodes `criteria × state_tags` itself and never reads it. **For env generation,
+> tag your envs from the same frozen `taxonomy.py` vocab — do NOT mirror
+> grader-assigned tags (there are none).** The full record below is the *stored*
+> object (engine fields + LLM criteria merged); the LLM only produces the criteria.
+
 ```json
 {
-  "decision_id": "string, copied verbatim from the transcript",
-  "decision_type": "placement | trade | build_spend",
-  "state_tags": ["from the fixed vocab only"],
+  "decision_id": "string (engine: game_id:ply)",
+  "decision_type": "placement | trade | build_spend   // engine-derived",
+  "state_tags": ["from the fixed vocab only            // engine-derived"],
   "criteria": [
     { "name": "fixed_criterion_id", "score": 0, "failed": true, "reason": "<= 1 sentence" }
   ],
-  "summary": "<= 1 sentence: the single most important thing about this decision",
-  "weakness_labels": [
-    { "criterion": "fixed_criterion_id", "state_tags": ["..."] }
-  ]
+  "summary": "<= 1 sentence                              // LLM",
+  "weakness_labels": [ /* vestigial — aggregator ignores it */ ]
 }
 ```
 
-`weakness_labels` = one entry per failed criterion, pairing it with this decision's
-state_tags. It's derivable from `criteria` + `state_tags`, but emit it explicitly so
-the aggregator just concatenates these lists across all games — no post-processing.
-
 ---
 
-## System Prompt (paste this into the grader)
+## System Prompt (original spec — the LIVE prompt is `prompts.py:SYSTEM_DECISION`)
+
+> The block below is the original rubric prompt and still references grader-assigned
+> tags/`weakness_labels` (rules 3 & 5). The **shipped** prompt is
+> `harness/grader/prompts.py::SYSTEM_DECISION`: it asks only for `{criteria, summary}`
+> (tags are engine-derived), uses the calibrated 0/1/2 scale, and frames the regret
+> oracle as a myopic 1-ply hint. Treat `prompts.py` as the source of truth.
 
 ```
 You are a Settlers of Catan decision grader. You receive ONE decision: the full game
