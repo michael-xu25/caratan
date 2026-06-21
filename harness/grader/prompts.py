@@ -34,7 +34,11 @@ SYSTEM = (
     "0 = clear mistake. Set failed=true ONLY on score 0. Irrelevant criterion -> "
     "score 2, failed=false, reason \"n/a\".\n"
     "3. Judge against the legal options actually available, not an ideal not on the "
-    "menu. The oracle's best legal move + regret are given as evidence.\n"
+    "menu. The oracle's best legal move + regret are a 1-ply value-function HEURISTIC: "
+    "good at catching blunders, but myopic — it ignores multi-turn payoff and the "
+    "opponent's reply, and it undervalues dev-card buys, knight plays, and roads "
+    "toward longest road. Use it as a hint, not ground truth; trust your own judgment "
+    "when it conflicts (especially on dev-card / longest-road / setup moves).\n"
     "4. One-sentence reasons. Output ONLY this JSON object, nothing else:\n"
     '{"verdicts": [{"decision_id": <int>, "criteria": '
     '[{"name": "<criterion id>", "score": 0|1|2, "failed": true|false, '
@@ -154,7 +158,10 @@ SYSTEM_DECISION = (
     "2 = good, 1 = suboptimal but defensible, 0 = clear mistake. failed=true ONLY on 0. "
     "Give a real one-sentence reason for each (no 'n/a' unless truly irrelevant).\n"
     "3. Judge against the legal options actually available; the oracle's best legal move "
-    "+ regret are evidence.\n"
+    "+ regret are a 1-ply value-function HEURISTIC (catches blunders but is myopic — "
+    "ignores multi-turn payoff/opponent reply and undervalues dev-card, knight, and "
+    "longest-road plays). Use it as a hint, not ground truth; trust your own judgment "
+    "when it conflicts.\n"
     "4. Output ONLY this JSON, nothing else:\n"
     '{"criteria": [{"name": "<id>", "score": 0|1|2, "failed": true|false, '
     '"reason": "<= 1 sentence"}], "summary": "<= 1 sentence"}'
