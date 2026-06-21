@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Caratan Replay Viewer</title>
+<style>
+  :root {
+    --bg: #2c5d86; --panel: #14304a; --panel2: #1c4060; --ink: #eaf1f8;
+    --muted: #9fb6cc; --line: #2f5778;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
+  body { background: var(--bg); color: var(--ink); display: flex; height: 100vh; overflow: hidden; }
+  #board { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+  svg { width: 100%; height: 100%; }
+  #side { width: 380px; background: var(--panel); display: flex; flex-direction: column;
+          border-left: 1px solid var(--line); }
+  #side h1 { font-size: 15px; margin: 0; padding: 14px 16px; background: var(--panel2);
+             border-bottom: 1px solid var(--line); letter-spacing: .3px; }
+  .pad { padding: 12px 16px; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .muted { color: var(--muted); font-size: 12px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 12px;
+          font-size: 12px; font-weight: 600; color: #fff; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,.35); }
+  #action { font-size: 16px; font-weight: 700; margin: 6px 0; }
+  #reason { background: var(--panel2); border-radius: 8px; padding: 10px 12px; font-size: 13px;
+            line-height: 1.45; color: #dce8f4; min-height: 46px; white-space: pre-wrap; }
+  .dice { display: inline-flex; gap: 6px; }
+  .die { width: 26px; height: 26px; background: #fff; color: #111; border-radius: 5px; font-weight: 700;
+         display: flex; align-items: center; justify-content: center; box-shadow: inset 0 -2px 0 #bbb; }
+  .vpbar { height: 14px; border-radius: 7px; background: var(--panel2); overflow: hidden; flex: 1; }
+  .vpfill { height: 100%; }
+  #controls { margin-top: auto; padding: 12px 16px; background: var(--panel2);
+              border-top: 1px solid var(--line); }
+  #controls .row { gap: 6px; }
+  button { background: #2a5a86; color: #fff; border: 0; border-radius: 7px; padding: 7px 11px;
+           font-size: 14px; cursor: pointer; }
+  button:hover { background: #356da0; }
+  input[type=range] { width: 100%; }
+  #drop { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+          flex-direction: column; gap: 10px; background: rgba(10,25,40,.85); font-size: 16px; cursor: pointer; }
+  #drop.hidden { display: none; }
+  .files { font-size: 13px; color: var(--muted); }
+  table { width: 100%; font-size: 12px; border-collapse: collapse; }
+  td { padding: 2px 0; }
+</style>
+</head>
+<body>
+  <div id="board">
+    <svg id="svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg>
+    <div id="drop">
+      <div>Drop a <b>.view.json</b> here, or click to choose</div>
+      <div class="files">build one with: scripts/build_viewer_data.py &lt;transcript.json&gt;</div>
+      <input id="file" type="file" accept=".json" style="display:none" />
+    </div>
+  </div>
+
+  <div id="side">
+    <h1>🎲 Caratan Replay</h1>
+    <div class="pad" id="hdr"><div class="muted">No game loaded.</div></div>
+    <div class="pad">
+      <div class="row" style="justify-content:space-between">
+        <span id="turnlbl" class="muted">—</span>
+        <span class="dice" id="dice"></span>
+      </div>
+      <div id="action">—</div>
+      <div id="note" class="muted"></div>
+      <div id="reason"></div>
+    </div>
+    <div class="pad">
+      <div class="muted" style="margin-bottom:6px">Victory points (built — excludes longest road / army / dev)</div>
+      <table id="vptable"></table>
+    </div>
+    <div id="controls">
+      <div class="row" style="justify-content:center; margin-bottom:8px">
+        <button id="first">⏮</button>
+        <button id="prev">◀</button>
+        <button id="play">▶ Play</button>
+        <button id="next">▶</button>
+        <button id="last">⏭</button>
+      </div>
+      <input id="slider" type="range" min="0" max="0" value="0" />
+      <div class="row" style="justify-content:center"><span id="steplbl" class="muted">—</span></div>
+    </div>
+  </div>
+
+<script>
+const RES_COLOR = { WOOD:"#2f7d32", BRICK:"#c4502a", SHEEP:"#9ed16f", WHEAT:"#e6c14b",
+                    ORE:"#8b97a6", DESERT:"#d8c79a" };
+const PLAYER_COLOR = { RED:"#d83b3b", BLUE:"#2f74d0", ORANGE:"#e8862e", WHITE:"#e9eef2" };
+const SVG_NS = "http://www.w3.org/2000/svg";
+const NODE_DELTA = { NORTH:[0,-1], NORTHEAST:[Math.sqrt(3)/2,-0.5], SOUTHEAST:[Math.sqrt(3)/2,0.5],
+                     SOUTH:[0,1], SOUTHWEST:[-Math.sqrt(3)/2,0.5], NORTHWEST:[-Math.sqrt(3)/2,-0.5] };
+
+let DATA = null, idx = 0, playing = null, T = null; // T = transform fn
+
+const $ = id => document.getElementById(id);
+const el = (tag, attrs={}) => { const e = document.createElementNS(SVG_NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+const pcolor = c => PLAYER_COLOR[c] || "#bbb";
+
+function fit() {
+  // compute bounds over nodes (corners) and tiles, then a transform to the viewBox
+  const xs = [], ys = [];
+  for (const n of Object.values(DATA.board.nodes)) { xs.push(n.x); ys.push(n.y); }
+  const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+  const pad = 1.2, W = (maxX-minX)+2*pad, H=(maxY-minY)+2*pad;
+  const box = $("svg"); box.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  T = (x,y) => [ (x-minX)+pad, (y-minY)+pad ];
+}
+
+function hexPoints(cx, cy) {
+  return Object.values(NODE_DELTA).map(([dx,dy]) => { const [x,y]=T(cx+dx, cy+dy); return `${x},${y}`; }).join(" ");
+}
+
+function drawStatic(g) {
+  // tiles
+  for (const t of DATA.board.tiles) {
+    const water = (t.type === "WATER" || t.type === "PORT");
+    const fill = t.type === "DESERT" ? RES_COLOR.DESERT
+               : water ? "#3a79ab" : (RES_COLOR[t.resource] || "#777");
+    g.appendChild(el("polygon", { points: hexPoints(t.x, t.y), fill,
+      stroke:"#1c3d57", "stroke-width":0.06, "stroke-linejoin":"round",
+      opacity: water ? 0.92 : 1 }));
+    const [cx,cy] = T(t.x, t.y);
+    if (t.number != null) {
+      g.appendChild(el("circle", { cx, cy, r:0.34, fill:"#f3ead2", stroke:"#9c8a5e", "stroke-width":0.03 }));
+      const txt = el("text", { x:cx, y:cy+0.13, "text-anchor":"middle", "font-size":0.42,
+        "font-weight":700, fill:(t.number===6||t.number===8)?"#c0392b":"#333" });
+      txt.textContent = t.number; g.appendChild(txt);
+    } else if (t.port) {
+      const txt = el("text", { x:cx, y:cy+0.10, "text-anchor":"middle", "font-size":0.30,
+        "font-weight":700, fill:"#eaf1f8" });
+      txt.textContent = t.port === "3:1" ? "3:1" : t.port.slice(0,2);
+      g.appendChild(txt);
+    }
+  }
+}
+
+function render() {
+  if (!DATA) return;
+  const svg = $("svg"); svg.innerHTML = "";
+  const g = el("g"); svg.appendChild(g);
+  drawStatic(g);
+  const step = DATA.steps[idx];
+
+  // roads
+  for (const [key,color] of Object.entries(step.roads)) {
+    const [a,b] = key.split("-"); const na=DATA.board.nodes[a], nb=DATA.board.nodes[b];
+    if (!na||!nb) continue;
+    const [x1,y1]=T(na.x,na.y), [x2,y2]=T(nb.x,nb.y);
+    g.appendChild(el("line", { x1,y1,x2,y2, stroke:pcolor(color), "stroke-width":0.22, "stroke-linecap":"round" }));
+  }
+  // robber
+  if (step.robber) {
+    const t = DATA.board.tiles.find(t => t.coord.join()===step.robber.join());
+    if (t) { const [cx,cy]=T(t.x,t.y);
+      g.appendChild(el("circle", { cx, cy:cy-0.02, r:0.26, fill:"#1b1b1b", opacity:0.82 })); }
+  }
+  // buildings
+  for (const [nid,b] of Object.entries(step.buildings)) {
+    const n = DATA.board.nodes[nid]; if (!n) continue; const [x,y]=T(n.x,n.y);
+    const isCity = b.type==="CITY", s = isCity?0.30:0.22;
+    g.appendChild(el("rect", { x:x-s, y:y-s, width:2*s, height:2*s, rx:isCity?0.05:0.10,
+      fill:pcolor(b.color), stroke:"#10202e", "stroke-width":0.05,
+      transform:`rotate(45 ${x} ${y})` }));
+  }
+  // highlight the node/edge from THIS action
+  const st = step;
+  if (st.action_type==="BUILD_SETTLEMENT" || st.action_type==="BUILD_CITY") {
+    const n = DATA.board.nodes[String(st.value)]; if (n){ const [x,y]=T(n.x,n.y);
+      g.appendChild(el("circle", { cx:x, cy:y, r:0.5, fill:"none", stroke:"#ffe14d", "stroke-width":0.10 })); }
+  }
+  updatePanel(step);
+}
+
+function dieHTML(n){ return `<span class="die">${n}</span>`; }
+
+function updatePanel(step) {
+  $("turnlbl").textContent = `Turn ${step.turn ?? "—"}`;
+  $("dice").innerHTML = step.dice ? step.dice.map(dieHTML).join("") : "";
+  const valTxt = Array.isArray(step.value) ? `[${step.value}]` : (step.value ?? "");
+  $("action").innerHTML = `<span class="chip" style="background:${pcolor(step.color)}">${step.color}</span> ` +
+                          `${step.action_type} <span class="muted">${valTxt}</span>`;
+  $("note").textContent = step.note || "";
+  $("reason").textContent = step.reasoning || "(no reasoning recorded)";
+  // vp table
+  const fv = DATA.meta.final_vp || {};
+  $("vptable").innerHTML = DATA.players.map(c => {
+    const v = step.vp[c]||0, pct = Math.min(100, v/10*100);
+    return `<tr><td style="width:64px"><span class="chip" style="background:${pcolor(c)}">${c}</span></td>
+      <td><div class="vpbar"><div class="vpfill" style="width:${pct}%;background:${pcolor(c)}"></div></div></td>
+      <td style="width:64px;text-align:right" class="muted">${v} · fin ${fv[c]??"?"}</td></tr>`;
+  }).join("");
+  $("slider").value = idx;
+  $("steplbl").textContent = `Step ${idx+1} / ${DATA.meta.num_steps}`;
+}
+
+function setHeader() {
+  const m = DATA.meta, s = m.seats||{};
+  const seatStr = Object.entries(s).map(([c,a]) =>
+    `<span class="chip" style="background:${pcolor(c)}">${c}</span> ${a}`).join(" &nbsp;vs&nbsp; ");
+  $("hdr").innerHTML = `<div class="row" style="flex-wrap:wrap;gap:6px">${seatStr}</div>
+    <div class="muted" style="margin-top:6px">seed ${m.seed} · winner <b style="color:${pcolor(m.winner)}">${m.winner||"draw"}</b></div>`;
+}
+
+function go(i){ idx = Math.max(0, Math.min(DATA.meta.num_steps-1, i)); render(); }
+function load(data){
+  DATA = data; idx = 0; fit();
+  $("slider").max = DATA.meta.num_steps-1;
+  $("drop").classList.add("hidden"); setHeader(); render();
+}
+
+// ---- wiring ----
+$("first").onclick = ()=>go(0);
+$("prev").onclick = ()=>go(idx-1);
+$("next").onclick = ()=>go(idx+1);
+$("last").onclick = ()=>go(DATA.meta.num_steps-1);
+$("slider").oninput = e=>go(+e.target.value);
+$("play").onclick = function(){
+  if (playing){ clearInterval(playing); playing=null; this.textContent="▶ Play"; }
+  else { this.textContent="⏸ Pause";
+    playing = setInterval(()=>{ if(idx>=DATA.meta.num_steps-1){clearInterval(playing);playing=null;$("play").textContent="▶ Play";} else go(idx+1); }, 450); }
+};
+document.onkeydown = e => { if(!DATA) return;
+  if(e.key==="ArrowRight") go(idx+1); if(e.key==="ArrowLeft") go(idx-1); };
+
+const fileInput = $("file"), drop = $("drop");
+drop.onclick = ()=>fileInput.click();
+fileInput.onchange = e => readFile(e.target.files[0]);
+drop.ondragover = e => { e.preventDefault(); };
+drop.ondrop = e => { e.preventDefault(); readFile(e.dataTransfer.files[0]); };
+function readFile(f){ if(!f) return; const r=new FileReader();
+  r.onload = ()=>load(JSON.parse(r.result)); r.readAsText(f); }
+
+// optional: ?data=<url> when served over http
+const params = new URLSearchParams(location.search);
+const q = params.get("data");
+if (q) fetch(q).then(r=>r.json()).then(d=>{ load(d);
+  const s = params.get("step"); if (s!=null) go(+s); }).catch(()=>{});
+</script>
+</body>
+</html>

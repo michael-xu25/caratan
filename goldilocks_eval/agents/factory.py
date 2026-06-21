@@ -47,16 +47,17 @@ def make_player(spec: str, color: Color) -> Player:
         from goldilocks_eval.agents.fireworks_backend import FireworksBackend, DEFAULT_MODEL
         return LLMPlayer(color, FireworksBackend(model=arg or DEFAULT_MODEL))
 
+    if head == "openai":
+        from goldilocks_eval.agents.openai_backend import OpenAIBackend, DEFAULT_MODEL
+        return LLMPlayer(color, OpenAIBackend(model=arg or DEFAULT_MODEL))
+
     if head == "gemini":
-        raise NotImplementedError(
-            "Gemini backend is a stub. Implement LLMBackend.complete() in "
-            "goldilocks_eval/agents/gemini_backend.py and wire it here — the "
-            "LLMPlayer / runner / transcript code is backend-agnostic."
-        )
+        from goldilocks_eval.agents.gemini_backend import GeminiBackend, DEFAULT_MODEL
+        return LLMPlayer(color, GeminiBackend(model=arg or DEFAULT_MODEL))
 
     raise ValueError(
-        f"Unknown agent spec: {spec!r}. "
-        f"Use one of {sorted(BASELINES)} or claude[:model] / gemini[:model]."
+        f"Unknown agent spec: {spec!r}. Use one of {sorted(BASELINES)} or "
+        f"claude / fireworks / openai / gemini [:model]."
     )
 
 
@@ -76,9 +77,13 @@ def make_backend(spec: str):
     if head == "fireworks":
         from goldilocks_eval.agents.fireworks_backend import FireworksBackend, DEFAULT_MODEL
         return FireworksBackend(model=arg or DEFAULT_MODEL)
+    if head == "openai":
+        from goldilocks_eval.agents.openai_backend import OpenAIBackend, DEFAULT_MODEL
+        return OpenAIBackend(model=arg or DEFAULT_MODEL)
     if head == "gemini":
-        raise NotImplementedError("Gemini backend is a stub — see make_player().")
+        from goldilocks_eval.agents.gemini_backend import GeminiBackend, DEFAULT_MODEL
+        return GeminiBackend(model=arg or DEFAULT_MODEL)
     raise ValueError(
-        f"Scenario eval needs an LLM backend (claude[:model] / fireworks[:model]); got {spec!r}. "
+        f"Scenario eval needs an LLM backend (claude / fireworks / openai / gemini [:model]); got {spec!r}. "
         f"Baselines like {sorted(BASELINES)} can only run in the head-to-head runner."
     )
