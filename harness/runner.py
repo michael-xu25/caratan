@@ -58,12 +58,13 @@ class MatchResult:
     agent_a: str
     agent_b: str
     seat_of_a: Optional[Color]      # which color agent A actually played
-    winner: Optional[str]           # "A" | "B" | None (draw / turn limit)
+    winner: Optional[str]           # "A" | "B" | None (true tie at turn cap)
     winner_color: Optional[str]
     vp_a: int
     vp_b: int
     num_turns: int
     duration: float
+    truncated: bool = False        # hit the turn cap (winner decided by VP, not by reaching vps_to_win)
     board_fingerprint: str = ""    # identical across a mirrored pair == fair board
     dice_fingerprint: str = ""     # hash of THIS game's full dice sequence (replay id)
     dice_rolls: tuple = ()         # the (d1,d2) sequence dealt; prefix-equal across a fair pair
@@ -106,14 +107,16 @@ def _board_fingerprint(game) -> str:
 
     parts = []
     for coord, tile in sorted(game.state.board.map.tiles.items(), key=lambda kv: str(kv[0])):
-        resource = getattr(getattr(tile, "resource", None), "value", None)
+        resource = getattr(tile, "resource", None)
+        resource = getattr(resource, "value", resource)  # Enum -> value; str stays str
         number = getattr(tile, "number", None)
         parts.append(f"{coord}:{resource}:{number}")
     return hashlib.sha1("|".join(parts).encode()).hexdigest()[:12]
 
 
 def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
-                     capture_reasoning=False, balanced_dice=False):
+                     capture_reasoning=False, balanced_dice=False,
+                     max_turns=400, vps_to_win=10):
     """Run one full game synchronously and return a MatchResult.
 
     Seat assignment: by default agent A is passed first (RED-ward), B second.
@@ -125,8 +128,14 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
     (the determinism fix), so a mirrored pair sees IDENTICAL dice. Default is
     seeded **i.i.d.** (the build-spec decision); `balanced_dice=True` opts into
     the colonist deck for A/B only.
+    `vps_to_win` is the victory-point target (10, standard).
+    `max_turns` caps the game; if neither side reaches `vps_to_win` by then the
+    game is truncated and the winner is whoever has more VP (true tie -> draw).
     """
+    import catanatron.game as _catan_game
     from harness.dice import seeded_dice as _seeded_dice
+    # Per-worker turn cap (module global, read at play() time; worker is isolated).
+    _catan_game.TURNS_LIMIT = max_turns
     a = make_agent(agent_a_spec, SEATS[0], capture_reasoning=capture_reasoning)
     b = make_agent(agent_b_spec, SEATS[1], capture_reasoning=capture_reasoning)
     # Give each agent its seat color, then order the list to set who seats first.
@@ -138,7 +147,7 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
     agents_by_color = {a.color: a, b.color: b}
     transcript = TranscriptAccumulator(run_dir, label, agents_by_color)
 
-    game = Game(players, seed=seed)
+    game = Game(players, seed=seed, vps_to_win=vps_to_win)
     fingerprint = _board_fingerprint(game)
     # Deal dice from a per-seed RNG (decoupled from the global stream) so the
     # mirrored pair sees identical dice; the deck records what it dealt so we can
@@ -155,8 +164,16 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
     vp_a = get_actual_victory_points(game.state, color_a)
     vp_b = get_actual_victory_points(game.state, color_b)
     winning_color = game.winning_color()
+    truncated = False
     if winning_color is None:
-        winner = None
+        # Hit the turn cap without anyone reaching vps_to_win -> decide by VP.
+        truncated = True
+        if vp_a > vp_b:
+            winning_color, winner = color_a, "A"
+        elif vp_b > vp_a:
+            winning_color, winner = color_b, "B"
+        else:
+            winner = None  # genuine tie on VP
     else:
         winner = "A" if winning_color == color_a else "B"
 
@@ -173,6 +190,7 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
         vp_b=vp_b,
         num_turns=game.state.num_turns,
         duration=duration,
+        truncated=truncated,
         board_fingerprint=fingerprint,
         dice_fingerprint=dice_fingerprint,
         dice_rolls=dice_rolls,
@@ -183,7 +201,8 @@ def _play_match_sync(agent_a_spec, agent_b_spec, seed, swap_seats, run_dir,
 
 async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
                     run_dir="transcripts/adhoc", executor=None,
-                    capture_reasoning=False, balanced_dice=False):
+                    capture_reasoning=False, balanced_dice=False,
+                    max_turns=400, vps_to_win=10):
     """Run a single match in a worker process (isolated global RNG).
 
     Pass a shared `executor` to run within a batch's process pool; otherwise a
@@ -191,7 +210,7 @@ async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
     """
     loop = asyncio.get_running_loop()
     args = (_play_match_sync, agent_a_spec, agent_b_spec, seed, swap_seats,
-            run_dir, capture_reasoning, balanced_dice)
+            run_dir, capture_reasoning, balanced_dice, max_turns, vps_to_win)
     if executor is not None:
         return await loop.run_in_executor(executor, *args)
     with make_pool(max_workers=1) as ex:
@@ -200,7 +219,7 @@ async def run_match(agent_a_spec, agent_b_spec, seed, swap_seats=False,
 
 async def run_mirror_pair(agent_a_spec, agent_b_spec, seed,
                           run_dir="transcripts/pair", capture_reasoning=False,
-                          balanced_dice=False):
+                          balanced_dice=False, max_turns=400, vps_to_win=10):
     """The fairness primitive: one board, two games with seats swapped.
 
     Game 1: A seats first (RED), B second (BLUE).
@@ -214,10 +233,12 @@ async def run_mirror_pair(agent_a_spec, agent_b_spec, seed,
         normal, swapped = await asyncio.gather(
             run_match(agent_a_spec, agent_b_spec, seed, False, run_dir,
                       executor=ex, capture_reasoning=capture_reasoning,
-                      balanced_dice=balanced_dice),
+                      balanced_dice=balanced_dice, max_turns=max_turns,
+                      vps_to_win=vps_to_win),
             run_match(agent_a_spec, agent_b_spec, seed, True, run_dir,
                       executor=ex, capture_reasoning=capture_reasoning,
-                      balanced_dice=balanced_dice),
+                      balanced_dice=balanced_dice, max_turns=max_turns,
+                      vps_to_win=vps_to_win),
         )
     return normal, swapped
 
@@ -226,7 +247,8 @@ async def run_batch(agent_a_spec, agent_b_spec, seeds: Sequence[int],
                     mirror: bool = True, concurrency: int = 8,
                     run_dir: str = "transcripts/batch",
                     capture_reasoning: bool = False,
-                    balanced_dice: bool = True) -> BatchResult:
+                    balanced_dice: bool = False,
+                    max_turns: int = 400, vps_to_win: int = 10) -> BatchResult:
     """Run many matches concurrently, bounded by `concurrency`.
 
     With `mirror=True` each seed is played twice (seats swapped). `concurrency`
@@ -244,7 +266,8 @@ async def run_batch(agent_a_spec, agent_b_spec, seeds: Sequence[int],
         jobs = [
             run_match(agent_a_spec, agent_b_spec, seed, swap, run_dir,
                       executor=ex, capture_reasoning=capture_reasoning,
-                      balanced_dice=balanced_dice)
+                      balanced_dice=balanced_dice, max_turns=max_turns,
+                      vps_to_win=vps_to_win)
             for seed, swap in plan
         ]
         matches = await asyncio.gather(*jobs)

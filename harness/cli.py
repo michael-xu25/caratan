@@ -40,6 +40,11 @@ def main():
                         "sees identical dice.")
     p.add_argument("--concurrency", type=int, default=8,
                    help="max concurrent games == max concurrent LLM calls")
+    p.add_argument("--max-turns", type=int, default=400,
+                   help="turn cap; if neither side reaches --vps-to-win by then, "
+                        "the player with the most VP wins (true tie -> draw)")
+    p.add_argument("--vps-to-win", type=int, default=10,
+                   help="victory points needed to win (10 = standard)")
     p.add_argument("--reasoning", action="store_true",
                    help="capture model reasoning (for viewable testing transcripts); "
                         "off by default to keep runs cheap")
@@ -50,7 +55,8 @@ def main():
         normal, swapped = asyncio.run(
             run_mirror_pair(args.a, args.b, args.pair, run_dir=args.run_dir,
                             capture_reasoning=args.reasoning,
-                            balanced_dice=args.balanced_dice))
+                            balanced_dice=args.balanced_dice,
+                            max_turns=args.max_turns, vps_to_win=args.vps_to_win))
         report = render_pair_report(normal, swapped)
         print(report)
         report_path = Path(args.run_dir) / f"pair_seed{args.pair}.txt"
@@ -66,6 +72,7 @@ def main():
         run_dir=args.run_dir,
         capture_reasoning=args.reasoning,
         balanced_dice=args.balanced_dice,
+        max_turns=args.max_turns, vps_to_win=args.vps_to_win,
     ))
 
     summary = render_summary_table(result)
