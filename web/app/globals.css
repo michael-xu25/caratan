@@ -131,10 +131,13 @@ h2.section-title {
 
 /* ---------- hero ---------- */
 .hero {
-  padding: 96px 0 80px;
+  position: relative;
+  overflow: hidden;
+  padding: 116px 0 96px;
   text-align: center;
   border-bottom: 1px solid rgba(35, 46, 61, 0.5);
 }
+.hero .wrap { position: relative; z-index: 2; }
 .hero .tag {
   display: inline-flex;
   align-items: center;
@@ -666,4 +669,44 @@ h1, h2, .section-title, .hero h1 { text-wrap: balance; }
 /* visible keyboard focus (accessibility + polish) */
 a:focus-visible, button:focus-visible, .btn:focus-visible, .gal-card:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px;
+}
+
+/* ============================================================
+   hero Catan board backdrop (decorative, behind the content)
+   ============================================================ */
+.hero-glow {
+  position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%);
+  width: 1100px; height: 720px; z-index: 0; pointer-events: none;
+  background: radial-gradient(closest-side,
+    rgba(255, 138, 61, 0.20), rgba(255, 138, 61, 0.06) 55%, transparent 72%);
+  filter: blur(8px);
+}
+.hero-board {
+  position: absolute; left: 50%; top: 50%;
+  width: min(840px, 96vw); transform: translate(-50%, -50%);
+  z-index: 0; pointer-events: none;
+}
+.hexsvg {
+  width: 100%; height: auto; display: block; opacity: 0.55;
+  transform: perspective(1700px) rotateX(15deg);
+  transform-origin: center;
+  filter: drop-shadow(0 26px 48px rgba(0, 0, 0, 0.55));
+  animation: heroFloat 14s ease-in-out infinite;
+}
+@keyframes heroFloat {
+  0%, 100% { transform: perspective(1700px) rotateX(15deg) translateY(0); }
+  50%      { transform: perspective(1700px) rotateX(15deg) translateY(-16px); }
+}
+/* vignette so the headline stays crisp over the board */
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse 56% 52% at 50% 44%,
+    var(--bg) 8%, rgba(11, 15, 21, 0.72) 38%, transparent 72%);
+}
+@media (max-width: 640px) {
+  .hexsvg { opacity: 0.4; }
+  .hero-glow { width: 90vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hexsvg { animation: none; }
 }

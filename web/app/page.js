@@ -1,5 +1,6 @@
 import results from "./data/results.json";
 import GameGallery from "./GameGallery";
+import HexBoard from "./HexBoard";
 
 /* ---------- helpers ---------- */
 function fmtVal(v) {
@@ -152,6 +153,10 @@ export default function Page() {
 
       {/* hero */}
       <header className="hero">
+        <div className="hero-glow" aria-hidden="true" />
+        <div className="hero-board" aria-hidden="true">
+          <HexBoard />
+        </div>
         <div className="wrap">
           <span className="tag">Reinforcement learning · Settlers of Catan</span>
           <h1>Caratan</h1>
