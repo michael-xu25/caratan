@@ -207,7 +207,7 @@ class LLMAgent(Agent):
 
 
 # What kind of construction each backend needs.
-_LLM_BACKENDS = {"claude", "fireworks", "openai", "hud"}
+_LLM_BACKENDS = {"claude", "fireworks", "openai", "hud", "modal"}
 AGENT_BACKENDS = {
     **{name: "bot" for name in _BOT_BACKENDS},
     **{name: "llm" for name in _LLM_BACKENDS},

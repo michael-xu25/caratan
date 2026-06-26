@@ -1,4 +1,5 @@
 import results from "./data/results.json";
+import GameGallery from "./GameGallery";
 
 /* ---------- helpers ---------- */
 function fmtVal(v) {
@@ -125,7 +126,7 @@ const EXPLORE = [
 ];
 
 export default function Page() {
-  const { model, curves, heldout, stats, winrate } = results;
+  const { model, curves, heldout, stats, winrate, loop_run } = results;
   const curveOrder = ["placement", "maritime", "build"];
 
   return (
@@ -138,6 +139,7 @@ export default function Page() {
             Caratan
           </div>
           <div className="nav-links">
+            <a href="#games">Games</a>
             <a href="#winrate">Win rate</a>
             <a href="#loop">The loop</a>
             <a href="#results">Results</a>
@@ -160,8 +162,8 @@ export default function Page() {
           </p>
           <div className="model-tag">{model}</div>
           <div className="hero-cta">
-            <a className="btn replay" href="/viewer/index" target="_blank" rel="noreferrer">
-              <span className="play-ico">▶</span> Watch the model play
+            <a className="btn replay" href="#games">
+              <span className="play-ico">▶</span> Watch the games
             </a>
             <a className="btn" href="#winrate">
               See the win rate
@@ -195,7 +197,7 @@ export default function Page() {
           <div className="wr-cards">
             {winrate.entries.map((e, i) => (
               <div className={"wr-card" + (i === 0 ? " best" : "")} key={e.label}>
-                {i === 0 && <span className="wr-flag">Best checkpoint</span>}
+                {i === 0 && <span className="wr-flag">Head-to-head</span>}
                 <div className="wr-value">{Math.round(e.value * 100)}%</div>
                 <div className="wr-label">{e.label}</div>
                 <div className="wr-sub">{e.sub}</div>
@@ -203,7 +205,35 @@ export default function Page() {
               </div>
             ))}
           </div>
+          {winrate.trajectory && (
+            <div className="wr-traj">
+              <div className="wr-traj-title">Win-rate trajectory · recursive self-improvement</div>
+              <div className="wr-traj-row">
+                {winrate.trajectory.map((t, i) => (
+                  <div className="wr-traj-pt" key={i}>
+                    {i > 0 && <span className="wr-traj-arrow">→</span>}
+                    <div className="wr-traj-val">{Math.round(t.winrate * 100)}%</div>
+                    <div className="wr-traj-lbl">{t.label}</div>
+                    {t.games ? <div className="wr-traj-sub">{t.games} games</div> : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <p className="heldout-note">{winrate.footnote}</p>
+        </div>
+      </section>
+
+      {/* game picker */}
+      <section id="games">
+        <div className="wrap">
+          <p className="eyebrow">Watch the games</p>
+          <h2 className="section-title">Pick a game to replay</h2>
+          <p className="section-sub">
+            Step through any game on a rendered board — the trained model beating the
+            base, or the base model playing itself. Click a game to open its replay.
+          </p>
+          <GameGallery />
         </div>
       </section>
 
@@ -230,6 +260,29 @@ export default function Page() {
           <div className="loop-cycle">
             ↻ repeats autonomously — every cycle makes the next one smarter
           </div>
+
+          {loop_run && (
+            <div className="loop-run">
+              <p className="eyebrow">We left it running</p>
+              <h3 className="section-title">
+                {loop_run.rounds} autonomous rounds in {loop_run.hours} hours
+              </h3>
+              <div className="wr-traj">
+                <div className="wr-traj-row">
+                  <div className="wr-traj-pt">
+                    <div className="wr-traj-val">{Math.round(loop_run.winrate_start * 100)}%</div>
+                    <div className="wr-traj-lbl">fresh model vs base</div>
+                  </div>
+                  <div className="wr-traj-pt">
+                    <span className="wr-traj-arrow">→</span>
+                    <div className="wr-traj-val">{Math.round(loop_run.winrate_end * 100)}%</div>
+                    <div className="wr-traj-lbl">after {loop_run.hours}h, fully autonomous</div>
+                  </div>
+                </div>
+              </div>
+              <p className="section-sub">{loop_run.note}</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -380,7 +433,7 @@ export default function Page() {
               </span>
               {"\n\n"}
               <span className="cmt"># 2. then open the play UI in your browser</span>
-              {"\n"}http://localhost:8000/viewer/play
+              {"\n"}http://localhost:8000/viewer/play.html
             </div>
           </div>
         </div>

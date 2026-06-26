@@ -1,158 +1,167 @@
 {
- "model": "Qwen3.5 8B \u00b7 thinking off",
- "curves": {
-  "placement": {
-   "metric": "top-3 hit rate",
-   "reward": [
-    0.68,
-    0.727,
-    0.773,
-    0.758,
-    0.781,
-    0.781,
-    0.805,
-    0.805,
-    0.805,
-    0.812,
-    0.805,
-    0.812,
-    0.805,
-    0.812,
-    0.812,
-    0.812,
-    0.812,
-    0.812,
-    0.828,
-    0.867,
-    0.875,
-    0.875,
-    0.906,
-    0.938,
-    0.984,
-    1.0,
-    1.0,
-    1.0,
-    1.0,
-    1.0
-   ]
+  "model": "Qwen3.5 8B \u00b7 thinking off",
+  "curves": {
+    "placement": {
+      "metric": "top-3 hit rate",
+      "reward": [
+        0.68,
+        0.727,
+        0.773,
+        0.758,
+        0.781,
+        0.781,
+        0.805,
+        0.805,
+        0.805,
+        0.812,
+        0.805,
+        0.812,
+        0.805,
+        0.812,
+        0.812,
+        0.812,
+        0.812,
+        0.812,
+        0.828,
+        0.867,
+        0.875,
+        0.875,
+        0.906,
+        0.938,
+        0.984,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "maritime": {
+      "metric": "mean reward",
+      "reward": [
+        -0.461,
+        -0.455,
+        -0.424,
+        -0.361,
+        -0.301,
+        -0.284,
+        -0.191,
+        -0.128,
+        -0.157,
+        -0.093,
+        -0.014,
+        -0.013,
+        0.064,
+        0.088,
+        0.081,
+        0.096,
+        0.077,
+        0.103,
+        0.095,
+        0.103,
+        0.103,
+        0.103,
+        0.103,
+        0.095,
+        0.103
+      ]
+    },
+    "build": {
+      "metric": "mean reward",
+      "reward": [
+        0.637,
+        1.37,
+        1.44,
+        1.452,
+        1.455,
+        1.455,
+        1.455,
+        1.455,
+        1.455,
+        1.455,
+        1.455,
+        1.455,
+        1.455,
+        1.456,
+        1.457,
+        1.46,
+        1.463,
+        1.464,
+        1.464,
+        1.464,
+        1.464,
+        1.464,
+        1.464,
+        1.464,
+        1.464
+      ]
+    }
   },
-  "maritime": {
-   "metric": "mean reward",
-   "reward": [
-    -0.461,
-    -0.455,
-    -0.424,
-    -0.361,
-    -0.301,
-    -0.284,
-    -0.191,
-    -0.128,
-    -0.157,
-    -0.093,
-    -0.014,
-    -0.013,
-    0.064,
-    0.088,
-    0.081,
-    0.096,
-    0.077,
-    0.103,
-    0.095,
-    0.103,
-    0.103,
-    0.103,
-    0.103,
-    0.095,
-    0.103
-   ]
-  },
-  "build": {
-   "metric": "mean reward",
-   "reward": [
-    0.637,
-    1.37,
-    1.44,
-    1.452,
-    1.455,
-    1.455,
-    1.455,
-    1.455,
-    1.455,
-    1.455,
-    1.455,
-    1.455,
-    1.455,
-    1.456,
-    1.457,
-    1.46,
-    1.463,
-    1.464,
-    1.464,
-    1.464,
-    1.464,
-    1.464,
-    1.464,
-    1.464,
-    1.464
-   ]
-  }
- },
- "heldout": [
-  {
-   "env": "placement",
-   "title": "Opening placement",
-   "metric": "top-3 hit",
-   "before": 0.41,
-   "after": 0.78,
-   "extra": "top-1 29%\u219249%, regret 0.125\u21920.044",
-   "good": true
-  },
-  {
-   "env": "build",
-   "title": "Build vs hoard",
-   "metric": "build-rate",
-   "before": 0.78,
-   "after": 0.97,
-   "extra": "mean reward 0.93\u21921.38",
-   "good": true
-  },
-  {
-   "env": "maritime",
-   "title": "Maritime trades",
-   "metric": "trade-rate",
-   "before": 0.2,
-   "after": 0.03,
-   "extra": "learns to stop aimless trading; reward \u22120.03\u2192+0.004",
-   "good": true
-  }
- ],
- "stats": {
-  "optim_steps": 104,
-  "rollouts": 12979,
-  "train_minutes": 123,
-  "infer_cost_usd": 4.6
- },
- "winrate": {
-  "cap_turns": 300,
-  "entries": [
-   {
-    "label": "Placement-trained",
-    "sub": "best checkpoint",
-    "value": 0.88,
-    "note": "opening-placement RL alone \u2014 the strongest model"
-   },
-   {
-    "label": "Full chain",
-    "sub": "placement + maritime + build",
-    "value": 0.7,
-    "note": "later envs sharpened isolated decisions but slightly hurt end-to-end play"
-   }
+  "heldout": [
+    {
+      "env": "placement",
+      "title": "Opening placement",
+      "metric": "top-3 hit",
+      "before": 0.41,
+      "after": 0.78,
+      "extra": "top-1 29%\u219249%, regret 0.125\u21920.044",
+      "good": true
+    },
+    {
+      "env": "build",
+      "title": "Build vs hoard",
+      "metric": "build-rate",
+      "before": 0.78,
+      "after": 0.97,
+      "extra": "mean reward 0.93\u21921.38",
+      "good": true
+    },
+    {
+      "env": "maritime",
+      "title": "Maritime trades",
+      "metric": "trade-rate",
+      "before": 0.2,
+      "after": 0.03,
+      "extra": "learns to stop aimless trading; reward \u22120.03\u2192+0.004",
+      "good": true
+    }
   ],
-  "footnote": "Trained = the placement-RL checkpoint (our best). A coin-flip baseline wins ~50% by definition. Full-chain (placement+maritime+build) lands ~70% \u2014 the later envs sharpened isolated decisions but slightly hurt end-to-end play, so the placement-only checkpoint is the one we ship. (300-turn cap.)",
-  "headline": {
-   "trained": 0.88,
-   "baseline": 0.5,
-   "games": 100
+  "stats": {
+    "optim_steps": 104,
+    "rollouts": 12979,
+    "train_minutes": 123,
+    "infer_cost_usd": 4.6
+  },
+  "winrate": {
+    "cap_turns": 300,
+    "entries": [
+      {
+        "label": "Placement-trained",
+        "sub": "best checkpoint",
+        "value": 0.88,
+        "note": "opening-placement RL alone \u2014 the strongest model"
+      },
+      {
+        "label": "Full chain",
+        "sub": "placement + maritime + build",
+        "value": 0.7,
+        "note": "later envs sharpened isolated decisions but slightly hurt end-to-end play"
+      }
+    ],
+    "footnote": "Trained = the placement-RL checkpoint (our best). A coin-flip baseline wins ~50% by definition. Full-chain (placement+maritime+build) lands ~70% \u2014 the later envs sharpened isolated decisions but slightly hurt end-to-end play, so the placement-only checkpoint is the one we ship. (300-turn cap.)",
+    "headline": {
+      "trained": 0.88,
+      "baseline": 0.5,
+      "games": 100
+    }
+  },
+  "loop_run": {
+    "hours": "~2",
+    "rounds": 12,
+    "promotions": 6,
+    "winrate_start": 0.5,
+    "winrate_end": 0.561,
+    "heldout_example": "opening placement 45% \u2192 78%",
+    "note": "Left the fully-autonomous loop running ~2 hours (12 rounds, no human in the loop). It played, mined its own weaknesses, wrote new reward envs, and kept only checkpoints that beat the last \u2014 lifting win-rate vs base from a coin flip to 56%, with held-out decision quality climbing too."
   }
- }
 }

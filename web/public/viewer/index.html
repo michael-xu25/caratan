@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<base href="/viewer/">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Caratan Replay Viewer</title>
@@ -194,12 +195,14 @@ function readFile(f){ if(!f) return; const r=new FileReader();
   r.onload = ()=>load(JSON.parse(r.result)); r.readAsText(f); }
 
 // ---- run picker (populated from viewer/runs.json) ----
-const params = new URLSearchParams(location.search);
+// accept the deep-link param from query OR hash (#data=…) — the hash survives
+// trailing-slash redirects on both Vercel (/viewer) and local serve (/viewer/).
+const params = new URLSearchParams(location.search || location.hash.replace(/^#/, "?"));
 function fmtGame(g){ const w = g.winner ? mshort((g.seats||{})[g.winner]) + " won" : "draw";
   return `${g.label} — ${w}` + (g.num_steps ? ` · ${g.num_steps} plies` : ""); }
 async function initPicker(){
   let manifest = null;
-  try { manifest = await (await fetch("runs.json", {cache:"no-store"})).json(); } catch(e){}
+  try { manifest = await (await fetch("/viewer/runs.json", {cache:"no-store"})).json(); } catch(e){}
   if (!manifest || !manifest.runs || !manifest.runs.length) return null;
   const sel = $("runsel"); sel.innerHTML = ""; VIEWS = [];
   for (const run of manifest.runs){
