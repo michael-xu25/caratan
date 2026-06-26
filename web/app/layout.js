@@ -1,4 +1,14 @@
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
+
+// Display font with character for headings — replaces the system default.
+// Self-hosted at build time (works with static export, no runtime dependency).
+const display = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const metadata = {
   title: "Caratan — teaching a small LLM to play Catan with RL",
@@ -8,7 +18,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={display.variable}>
       <body>{children}</body>
     </html>
   );

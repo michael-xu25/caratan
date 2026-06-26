@@ -637,3 +637,33 @@ footer {
 .loop-run .eyebrow { color: var(--good); }
 .loop-run .section-title { margin-bottom: 18px; }
 .loop-run .section-sub { max-width: 760px; margin: 16px auto 0; }
+
+/* ============================================================
+   taste polish — display font + targeted refinements
+   (additive; headings/numerals/focus only, layout untouched)
+   ============================================================ */
+html { scroll-behavior: smooth; }
+
+/* characterful display font for headings + eyebrows (next/font sets --font-display) */
+h1, h2, h3,
+.section-title, .hero h1, .hero .tag, .eyebrow,
+.loop-card h3, .wr-label, .callout h3, .explore-card h3, .gal-run-head h3 {
+  font-family: var(--font-display, var(--font));
+}
+/* avoid orphaned words on big text */
+h1, h2, .section-title, .hero h1 { text-wrap: balance; }
+.section-sub, .hero p.lede, p.lede, .heldout-note, .ll-eg-why { text-wrap: pretty; }
+
+/* data-heavy interface: align numerals + use the display font for the big stats */
+.wr-hero-val, .wr-value, .ll-stat b, .wr-traj-val, .ll-best-card .ll-rew {
+  font-family: var(--font-display, var(--font));
+  font-variant-numeric: tabular-nums;
+}
+
+/* one accent: unify the game-card hover (was blue #3a82f6) with the orange accent */
+.gal-card:hover { border-color: var(--accent-line); box-shadow: 0 14px 36px rgba(255, 138, 61, 0.16); }
+
+/* visible keyboard focus (accessibility + polish) */
+a:focus-visible, button:focus-visible, .btn:focus-visible, .gal-card:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px;
+}
