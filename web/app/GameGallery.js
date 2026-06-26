@@ -4,6 +4,18 @@ import { useEffect, useState } from "react";
 /* Game picker for the live demo: reads /viewer/runs.json and shows every game as
    a card, grouped by matchup. Clicking a card opens that exact replay
    (/viewer/index?data=<view>) in a new tab. */
+// friendly short model name from any backend spec (hud / fireworks / modal)
+function short(spec) {
+  const s = String(spec || "").toLowerCase();
+  if (!s) return "";
+  if (s.includes("grpo") || s.includes("catan-grpo") || s.includes("placement-only"))
+    return "Trained";
+  if (s.includes("qwen3-8b")) return "Base (Qwen3-8B)";
+  if (s.includes("qwen2p5-7b") || s.includes("qwen2.5-7b")) return "Qwen2.5-7B";
+  if (s.includes("qwen2p5") || s.includes("qwen2.5")) return "Qwen2.5";
+  return String(spec).split(/[:#/]/).filter(Boolean).pop() || String(spec);
+}
+
 export default function GameGallery() {
   const [runs, setRuns] = useState(null);
 
@@ -27,7 +39,7 @@ export default function GameGallery() {
           </div>
           <div className="gal-grid">
             {run.games.map((g) => {
-              const won = g.winner_model;
+              const won = g.winner ? short((g.seats || {})[g.winner]) : null;
               return (
                 <a
                   className={"gal-card" + (won ? " win" : "")}
@@ -47,7 +59,7 @@ export default function GameGallery() {
                   <div className="gal-vp">
                     {g.final_vp
                       ? Object.entries(g.final_vp)
-                          .map(([c, v]) => `${(g.seats && g.seats[c]) || c}: ${v} VP`)
+                          .map(([c, v]) => `${short((g.seats || {})[c]) || c}: ${v} VP`)
                           .join("   ·   ")
                       : ""}
                   </div>
